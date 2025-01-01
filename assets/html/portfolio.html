@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Portfolio</title>
+
+    <!--
+    - favicon
+  -->
+    <link rel="shortcut icon" href="../images/logo.ico" type="image/x-icon" />
+
+    <!--
+    - custom css link
+  -->
+    <link rel="stylesheet" href="../css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <!--
+    - google font link
+  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!--
+    - #MAIN
+  -->
+
+    <main>
+      <!--
+      - #SIDEBAR
+    -->
+
+      <aside class="sidebar" data-sidebar>
+        <div class="sidebar-info">
+          <figure class="avatar-box">
+            <img
+              src="../images/portrait.png"
+              alt="Devanshu Singhvi"
+              width="80"
+            />
+          </figure>
+
+          <div class="info-content">
+            <h1 class="name" title="Richard hanrick">Devanshu Singhvi</h1>
+
+            <p class="title">Student and developer</p>
+          </div>
+
+          <button class="info_more-btn" data-sidebar-btn>
+            <span>Show Contacts</span>
+
+            <ion-icon name="chevron-down"></ion-icon>
+          </button>
+        </div>
+
+        <div class="sidebar-info_more">
+          <div class="separator"></div>
+
+          <ul class="contacts-list">
+            <li class="contact-item">
+              <a href="mailto:dev.singhvi@utoronto.ca" target="_blank">
+                <div class="icon-box">
+                  <ion-icon name="mail-outline"></ion-icon>
+                </div>
+
+                <div class="contact-info">
+                  <p class="contact-title">Email</p>
+
+                  <a
+                    href="mailto:dev.singhvi@utoronto.ca"
+                    target="_blank"
+                    class="contact-link"
+                    >dev.singhvi@utoronto.ca</a
+                  >
+                </div>
+              </a>
+            </li>
+
+            <li class="contact-item">
+              <a href="https://github.com/Dev301203/" target="_blank">
+                <div class="icon-box">
+                  <ion-icon name="logo-github"></ion-icon>
+                </div>
+
+                <div class="contact-info">
+                  <p class="contact-title">Github</p>
+
+                  <a
+                    href="https://github.com/Dev301203/"
+                    target="_blank"
+                    class="contact-link"
+                    >https://github.com/Dev301203/</a
+                  >
+                </div>
+              </a>
+            </li>
+
+            <li class="contact-item">
+              <a
+                href="https://www.linkedin.com/in/devanshu-singhvi/"
+                target="_blank"
+              >
+                <div class="icon-box">
+                  <ion-icon name="logo-linkedin"></ion-icon>
+                </div>
+
+                <div class="contact-info">
+                  <p class="contact-title">LinkedIn</p>
+
+                  <a
+                    href="https://www.linkedin.com/in/devanshu-singhvi/"
+                    target="_blank"
+                    class="contact-link"
+                    >https://www.linkedin.com/in/devanshu-singhvi/</a
+                  >
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <!--
+      - #main-content
+    -->
+
+      <div class="main-content">
+        <!--
+        - #NAVBAR
+      -->
+
+        <nav class="navbar">
+          <ul class="navbar-list">
+            <a href="about.html">
+              <li class="navbar-item">
+                <button class="navbar-link" data-nav-link>About</button>
+              </li>
+            </a>
+            <a href="resume.html">
+              <li class="navbar-item">
+                <button class="navbar-link" data-nav-link>Resume</button>
+              </li>
+            </a>
+            <a>
+              <li class="navbar-item">
+                <button class="navbar-link active" data-nav-link>
+                  Portfolio
+                </button>
+              </li>
+            </a>
+            <a href="contact.html">
+              <li class="navbar-item">
+                <button class="navbar-link" data-nav-link>Contact</button>
+              </li>
+            </a>
+          </ul>
+        </nav>
+
+        <!--
+        - #PORTFOLIO
+      -->
+
+        <article class="portfolio active" data-page="portfolio">
+          <header>
+            <h2 class="h2 article-title">Portfolio</h2>
+          </header>
+
+          <section class="projects">
+            <ul class="filter-list">
+              <li class="filter-item">
+                <button class="active" data-filter-btn>All</button>
+              </li>
+
+              <!--             <li class="filter-item">
+              <button data-filter-btn>Web design</button>
+            </li> -->
+
+              <li class="filter-item">
+                <button data-filter-btn>Applications</button>
+              </li>
+
+              <li class="filter-item">
+                <button data-filter-btn>Web app</button>
+              </li>
+            </ul>
+
+            <div class="filter-select-box">
+              <button class="filter-select" data-select>
+                <div class="select-value" data-selecct-value>
+                  Select category
+                </div>
+
+                <div class="select-icon">
+                  <ion-icon name="chevron-down"></ion-icon>
+                </div>
+              </button>
+
+              <ul class="select-list">
+                <li class="select-item">
+                  <button data-select-item>All</button>
+                </li>
+
+                <li class="select-item">
+                  <button data-select-item>Web app</button>
+                </li>
+
+                <li class="select-item">
+                  <button data-select-item>Applications</button>
+                </li>
+
+                <!--               <li class="select-item">
+                <button data-select-item>Web development</button>
+              </li> -->
+              </ul>
+            </div>
+
+            <ul class="project-list">
+              <li
+                class="project-item active"
+                data-filter-item
+                data-category="web app"
+              >
+                <a href="https://github.com/Dev301203/Appointify">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img
+                      src="../images/appointify.png"
+                      alt="appointify"
+                      loading="lazy"
+                    />
+                  </figure>
+
+                  <h3 class="project-title">Appointify</h3>
+
+                  <p class="project-category">Web app</p>
+                </a>
+              </li>
+
+              <li
+                class="project-item active"
+                data-filter-item
+                data-category="applications"
+              >
+                <a
+                  href="https://github.com/Dev301203/Book-Cover-Via-Vocabulary-Tree"
+                >
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img
+                      src="../images/bookcover.jpg"
+                      alt="book cover"
+                      loading="lazy"
+                    />
+                  </figure>
+
+                  <h3 class="project-title">Book Cover Identification</h3>
+
+                  <p class="project-category">Python application</p>
+                </a>
+              </li>
+
+              <li
+                class="project-item active"
+                data-filter-item
+                data-category="applications"
+              >
+                <a href="https://github.com/Dev301203/Social-Media-App">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img
+                      src="../images/socialmedia.jpg"
+                      alt="social media"
+                      loading="lazy"
+                    />
+                  </figure>
+
+                  <h3 class="project-title">CLI social network</h3>
+
+                  <p class="project-category">C Application</p>
+                </a>
+              </li>
+
+              <li
+                class="project-item active"
+                data-filter-item
+                data-category="applications"
+              >
+                <a href="https://github.com/Dev301203/broccoli-men">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="../images/cms.jpg" alt="cms" loading="lazy" />
+                  </figure>
+
+                  <h3 class="project-title">Company Management System</h3>
+
+                  <p class="project-category">Java Application</p>
+                </a>
+              </li>
+
+              <li
+                class="project-item active"
+                data-filter-item
+                data-category="applications"
+              >
+                <a href="https://github.com/Dev301203/Brick-Breaker">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img
+                      src="../images/brickbreaker.jpg"
+                      alt="brick breaker"
+                      loading="lazy"
+                    />
+                  </figure>
+
+                  <h3 class="project-title">Brick Breaker</h3>
+
+                  <p class="project-category">Assembly application</p>
+                </a>
+              </li>
+
+              <li
+                class="project-item active"
+                data-filter-item
+                data-category="applications"
+              >
+                <a href="https://github.com/Dev301203/Braille-Translator">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img
+                      src="../images/braille.jpg"
+                      alt="braille translator"
+                      loading="lazy"
+                    />
+                  </figure>
+
+                  <h3 class="project-title">Braille Translator</h3>
+
+                  <p class="project-category">Python application</p>
+                </a>
+              </li>
+
+              <!--             <li class="project-item  active" data-filter-item data-category="web development">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="../images/project-7.png" alt="summary" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Summary</h3>
+
+                <p class="project-category">Web development</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="applications">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="../images/project-8.jpg" alt="task manager" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Task Manager</h3>
+
+                <p class="project-category">Applications</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="web development">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="../images/project-9.png" alt="arrival" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Arrival</h3>
+
+                <p class="project-category">Web development</p>
+
+              </a>
+            </li> -->
+            </ul>
+          </section>
+        </article>
+      </div>
+    </main>
+
+    <!--
+    - custom js link
+  -->
+    <script src="../js/script.js"></script>
+
+    <!--
+    - ionicon link
+  -->
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
+</html>
