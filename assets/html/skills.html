@@ -7,13 +7,13 @@
     <title>Personal Portfolio</title>
 
     <!--
-- favicon
--->
+    - favicon
+  -->
     <link rel="shortcut icon" href="../images/logo.ico" type="image/x-icon" />
 
     <!--
-- custom css link
--->
+    - custom css link
+  -->
     <link rel="stylesheet" href="../css/style.css" />
     <link
       rel="stylesheet"
@@ -21,8 +21,8 @@
     />
 
     <!--
-- google font link
--->
+    - google font link
+  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -33,13 +33,13 @@
 
   <body>
     <!--
-- #MAIN
--->
+    - #MAIN
+  -->
 
     <main>
       <!--
-- #SIDEBAR
--->
+      - #SIDEBAR
+    -->
 
       <aside class="sidebar" data-sidebar>
         <div class="sidebar-info">
@@ -132,19 +132,19 @@
       </aside>
 
       <!--
-- #main-content
--->
+      - #main-content
+    -->
 
       <div class="main-content">
         <!--
-- #NAVBAR
--->
+        - #NAVBAR
+      -->
 
         <nav class="navbar">
           <ul class="navbar-list">
-            <a>
+            <a href="about.html">
               <li class="navbar-item">
-                <button class="navbar-link active" data-nav-link>About</button>
+                <button class="navbar-link" data-nav-link>About</button>
               </li>
             </a>
             <a href="resume.html">
@@ -152,9 +152,9 @@
                 <button class="navbar-link" data-nav-link>Resume</button>
               </li>
             </a>
-            <a href="skills.html">
+            <a>
               <li class="navbar-item">
-                <button class="navbar-link" data-nav-link>Skills</button>
+                <button class="navbar-link active" data-nav-link>Skills</button>
               </li>
             </a>
             <a href="portfolio.html">
@@ -171,63 +171,60 @@
         </nav>
 
         <!--
-- #ABOUT
--->
+        - #RESUME
+      -->
 
-        <article class="about active" data-page="about">
+        <article class="resume active" data-page="skills">
           <header>
-            <h2 class="h2 article-title">About me</h2>
+            <h2 class="h2 article-title">Skills</h2>
           </header>
 
-          <section class="about-text">
-            <p>
-              Hey there! I'm Dev, a final-year Honours Bachelor of Science
-              student at the University of Toronto, majoring in Computer Science
-              and Mathematical Sciences. My journey in computer science has been
-              driven by an insatiable curiosity and a relentless drive to
-              innovate, aiming to make a significant impact on society through
-              technological advancements.
-            </p>
+          <section class="skill">
+            <h3 class="h3 skills-title">My skills</h3>
 
-            <p>
-              I’ve gained diverse experience through internships in IT Security
-              at BBK and in I&IT Transit at Metrolinx. Currently, I’m a Teaching
-              Assistant for CSC347 - Introduction to Information Security at the
-              University of Toronto, where I mentor students and refine my
-              technical expertise.
-            </p>
+            <ul class="skills-list content-card">
+              <li class="skills-item">
+                <div class="title-wrapper">
+                  <h5 class="h5">Web design</h5>
+                  <data value="80">80%</data>
+                </div>
 
-            <p>
-              I’m always seeking opportunities to learn, grow, and contribute
-              meaningful solutions. If you're interested in collaboration,
-              internships, or discussing exciting tech ideas, let’s connect!
-            </p>
-          </section>
-
-          <!--
-- clients
--->
-
-          <section class="clients">
-            <h3 class="h3 clients-title">Worked With</h3>
-
-            <ul class="clients-list has-scrollbar">
-              <li class="clients-item">
-                <a>
-                  <img src="../images/uoft.png" alt="client logo" />
-                </a>
+                <div class="skill-progress-bg">
+                  <div class="skill-progress-fill" style="width: 80%"></div>
+                </div>
               </li>
 
-              <li class="clients-item">
-                <a>
-                  <img src="../images/bbk.png" alt="client logo" />
-                </a>
+              <li class="skills-item">
+                <div class="title-wrapper">
+                  <h5 class="h5">Graphic design</h5>
+                  <data value="70">70%</data>
+                </div>
+
+                <div class="skill-progress-bg">
+                  <div class="skill-progress-fill" style="width: 70%"></div>
+                </div>
               </li>
 
-              <li class="clients-item">
-                <a>
-                  <img src="../images/metrolinx.png" alt="client logo" />
-                </a>
+              <li class="skills-item">
+                <div class="title-wrapper">
+                  <h5 class="h5">Branding</h5>
+                  <data value="90">90%</data>
+                </div>
+
+                <div class="skill-progress-bg">
+                  <div class="skill-progress-fill" style="width: 90%"></div>
+                </div>
+              </li>
+
+              <li class="skills-item">
+                <div class="title-wrapper">
+                  <h5 class="h5">WordPress</h5>
+                  <data value="50">50%</data>
+                </div>
+
+                <div class="skill-progress-bg">
+                  <div class="skill-progress-fill" style="width: 50%"></div>
+                </div>
               </li>
             </ul>
           </section>
@@ -236,13 +233,13 @@
     </main>
 
     <!--
-- custom js link
--->
+    - custom js link
+  -->
     <script src="../js/script.js"></script>
 
     <!--
-- ionicon link
--->
+    - ionicon link
+  -->
     <script
       type="module"
       src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
