@@ -1,280 +1,569 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Portfolio</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personal Portfolio</title>
-
-  <!--
+    <!--
     - favicon
   -->
-  <link rel="shortcut icon" href="../images/logo.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/logo.ico" type="image/x-icon" />
 
-  <!--
+    <!--
     - custom css link
   -->
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
 
-  <!--
+    <!--
     - google font link
   -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-</head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
-
-  <!--
+  <body>
+    <!--
     - #MAIN
   -->
 
-  <main>
-
-    <!--
+    <main>
+      <!--
       - #SIDEBAR
     -->
 
-    <aside class="sidebar" data-sidebar>
+      <aside class="sidebar" data-sidebar>
+        <div class="sidebar-info">
+          <figure class="avatar-box">
+            <img
+              src="../images/portrait.png"
+              alt="Devanshu Singhvi"
+              width="80"
+            />
+          </figure>
 
-      <div class="sidebar-info">
+          <div class="info-content">
+            <h1 class="name" title="Richard hanrick">Devanshu Singhvi</h1>
 
-        <figure class="avatar-box">
-          <img src="../images/portrait.png" alt="Devanshu Singhvi" width="80">
-        </figure>
+            <p class="title">Student and developer</p>
+          </div>
 
-        <div class="info-content">
-          <h1 class="name" title="Richard hanrick">Devanshu Singhvi</h1>
+          <button class="info_more-btn" data-sidebar-btn>
+            <span>Show Contacts</span>
 
-          <p class="title">Student and developer</p>
+            <ion-icon name="chevron-down"></ion-icon>
+          </button>
         </div>
 
-        <button class="info_more-btn" data-sidebar-btn>
-          <span>Show Contacts</span>
+        <div class="sidebar-info_more">
+          <div class="separator"></div>
 
-          <ion-icon name="chevron-down"></ion-icon>
-        </button>
+          <ul class="contacts-list">
+            <li class="contact-item">
+              <a href="mailto:dev.singhvi@utoronto.ca" target="_blank">
+                <div class="icon-box">
+                  <ion-icon name="mail-outline"></ion-icon>
+                </div>
 
-      </div>
+                <div class="contact-info">
+                  <p class="contact-title">Email</p>
 
-      <div class="sidebar-info_more">
+                  <a
+                    href="mailto:dev.singhvi@utoronto.ca"
+                    target="_blank"
+                    class="contact-link"
+                    >dev.singhvi@utoronto.ca</a
+                  >
+                </div>
+              </a>
+            </li>
 
-        <div class="separator"></div>
+            <li class="contact-item">
+              <a href="https://github.com/Dev301203/" target="_blank">
+                <div class="icon-box">
+                  <ion-icon name="logo-github"></ion-icon>
+                </div>
 
-        <ul class="contacts-list">
+                <div class="contact-info">
+                  <p class="contact-title">Github</p>
 
-          <li class="contact-item">
-            <a href="mailto:dev.singhvi@utoronto.ca" target="_blank">
-              <div class="icon-box">
-                <ion-icon name="mail-outline"></ion-icon>
-              </div>
+                  <a
+                    href="https://github.com/Dev301203/"
+                    target="_blank"
+                    class="contact-link"
+                    >https://github.com/Dev301203/</a
+                  >
+                </div>
+              </a>
+            </li>
 
-              <div class="contact-info">
-                <p class="contact-title">Email</p>
+            <li class="contact-item">
+              <a
+                href="https://www.linkedin.com/in/devanshu-singhvi/"
+                target="_blank"
+              >
+                <div class="icon-box">
+                  <ion-icon name="logo-linkedin"></ion-icon>
+                </div>
 
-                <a href="mailto:dev.singhvi@utoronto.ca" target="_blank" class="contact-link">dev.singhvi@utoronto.ca</a>
-              </div>
-            </a>
-          </li>
-          
-          <li class="contact-item">
-            <a href="https://github.com/Dev301203/" target="_blank">
-              <div class="icon-box">
-                <ion-icon name="logo-github"></ion-icon>
-              </div>
+                <div class="contact-info">
+                  <p class="contact-title">LinkedIn</p>
 
-              <div class="contact-info">
-                <p class="contact-title">Github</p>
+                  <a
+                    href="https://www.linkedin.com/in/devanshu-singhvi/"
+                    target="_blank"
+                    class="contact-link"
+                    >https://www.linkedin.com/in/devanshu-singhvi/</a
+                  >
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
 
-                <a href="https://github.com/Dev301203/" target="_blank" class="contact-link">https://github.com/Dev301203/</a>
-              </div>
-            </a>
-          </li>
-          
-          <li class="contact-item">
-            <a href="https://www.linkedin.com/in/devanshu-singhvi/" target="_blank">
-              <div class="icon-box">
-                <ion-icon name="logo-linkedin"></ion-icon>
-              </div>
-
-              <div class="contact-info">
-                <p class="contact-title">LinkedIn</p>
-
-                <a href="https://www.linkedin.com/in/devanshu-singhvi/" target="_blank" class="contact-link">https://www.linkedin.com/in/devanshu-singhvi/</a>
-              </div>
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-    </aside>
-
-
-
-
-
-    <!--
+      <!--
       - #main-content
     -->
 
-    <div class="main-content">
-
-      <!--
+      <div class="main-content">
+        <!--
         - #NAVBAR
       -->
 
-      <nav class="navbar">
-        <ul class="navbar-list">
-          <a href="about.html">
-            <li class="navbar-item">
-              <button class="navbar-link" data-nav-link>About</button>
-            </li>
-          </a>
-          <a href="resume.html">
-            <li class="navbar-item">
-              <button class="navbar-link" data-nav-link>Resume</button>
-            </li>
-          </a>
-          <a href="skills.html">
-            <li class="navbar-item">
-              <button class="navbar-link" data-nav-link>Skills</button>
-            </li>
-          </a>
-          <a href="portfolio.html">
-            <li class="navbar-item">
-              <button class="navbar-link" data-nav-link>Portfolio</button>
-            </li>
-          </a>
-          <a>
-            <li class="navbar-item">
-              <button class="navbar-link active" data-nav-link>Contact</button>
-            </li>
-          </a>
-        </ul>
-      </nav>
+        <nav class="navbar">
+          <ul class="navbar-list">
+            <a href="about.html">
+              <li class="navbar-item">
+                <button class="navbar-link" data-nav-link>About</button>
+              </li>
+            </a>
+            <a href="resume.html">
+              <li class="navbar-item">
+                <button class="navbar-link" data-nav-link>Resume</button>
+              </li>
+            </a>
+            <a href="skills.html">
+              <li class="navbar-item">
+                <button class="navbar-link" data-nav-link>Skills</button>
+              </li>
+            </a>
+            <a href="portfolio.html">
+              <li class="navbar-item">
+                <button class="navbar-link" data-nav-link>Portfolio</button>
+              </li>
+            </a>
+            <a>
+              <li class="navbar-item">
+                <button class="navbar-link active" data-nav-link>
+                  Contact
+                </button>
+              </li>
+            </a>
+          </ul>
+        </nav>
 
-      <!--
+        <!--
         - #CONTACT
       -->
 
-      <article class="contact active" data-page="contact">
+        <article class="contact active" data-page="contact">
+          <header>
+            <h2 class="h2 article-title">Contact</h2>
+          </header>
 
-        <header>
-          <h2 class="h2 article-title">Contact</h2>
-        </header>
+          <ul class="contactsection-list">
+            <li class="contactsection-item">
+              <div class="contactsection-content-box">
+                <h4 class="h4 contactsection-item-title">Write me an email</h4>
+                <ul class="contactsectioncontent-list">
+                  <li class="contactsectioncontent-item">
+                    <div class="icon-box">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        x="0px"
+                        y="0px"
+                        width="100"
+                        height="100"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          fill="#4caf50"
+                          d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"
+                        ></path>
+                        <path
+                          fill="#1e88e5"
+                          d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"
+                        ></path>
+                        <polygon
+                          fill="#e53935"
+                          points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"
+                        ></polygon>
+                        <path
+                          fill="#c62828"
+                          d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"
+                        ></path>
+                        <path
+                          fill="#fbc02d"
+                          d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"
+                        ></path>
+                      </svg>
+                    </div>
 
-        <ul class="contactsection-list">
+                    <div class="contactsectioncontent-info">
+                      <a
+                        href="mailto:devanshu301203@gmail.com"
+                        target="_blank"
+                        class="contactsectioncontent-title"
+                        >Gmail
+                      </a>
+                      <a
+                        href="mailto:devanshu301203@gmail.com"
+                        target="_blank"
+                        class="contactsectioncontent-link"
+                        >devanshu301203(at)gmail.com</a
+                      >
+                    </div>
+                  </li>
 
-          <li class="contactsection-item">
+                  <li class="contactsectioncontent-item">
+                    <div class="icon-box">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        x="0px"
+                        y="0px"
+                        width="100"
+                        height="100"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          fill="#103262"
+                          d="M43.255,23.547l-6.81-3.967v11.594H44v-6.331C44,24.309,43.716,23.816,43.255,23.547z"
+                        ></path>
+                        <path fill="#0084d7" d="M13,10h10v9H13V10z"></path>
+                        <path fill="#33afec" d="M23,10h10v9H23V10z"></path>
+                        <path fill="#54daff" d="M33,10h10v9H33V10z"></path>
+                        <path fill="#027ad4" d="M23,19h10v9H23V19z"></path>
+                        <path fill="#0553a4" d="M23,28h10v9H23V28z"></path>
+                        <path fill="#25a2e5" d="M33,19h10v9H33V19z"></path>
+                        <path fill="#0262b8" d="M33,28h10v9H33V28z"></path>
+                        <polygon
+                          points="13,37 43,37 43,24.238 28.99,32.238 13,24.238"
+                          opacity=".019"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,24.476 28.99,32.476 13,24.476"
+                          opacity=".038"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,24.714 28.99,32.714 13,24.714"
+                          opacity=".057"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,24.952 28.99,32.952 13,24.952"
+                          opacity=".076"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,25.19 28.99,33.19 13,25.19"
+                          opacity=".095"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,25.429 28.99,33.429 13,25.429"
+                          opacity=".114"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,25.667 28.99,33.667 13,25.667"
+                          opacity=".133"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,25.905 28.99,33.905 13,25.905"
+                          opacity=".152"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,26.143 28.99,34.143 13,26.143"
+                          opacity=".171"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,26.381 28.99,34.381 13,26.381"
+                          opacity=".191"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,26.619 28.99,34.619 13,26.619"
+                          opacity=".209"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,26.857 28.99,34.857 13,26.857"
+                          opacity=".229"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,27.095 28.99,35.095 13,27.095"
+                          opacity=".248"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,27.333 28.99,35.333 13,27.333"
+                          opacity=".267"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,27.571 28.99,35.571 13,27.571"
+                          opacity=".286"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,27.81 28.99,35.81 13,27.81"
+                          opacity=".305"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,28.048 28.99,36.048 13,28.048"
+                          opacity=".324"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,28.286 28.99,36.286 13,28.286"
+                          opacity=".343"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,28.524 28.99,36.524 13,28.524"
+                          opacity=".362"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,28.762 28.99,36.762 13,28.762"
+                          opacity=".381"
+                        ></polygon>
+                        <polygon
+                          points="13,37 43,37 43,29 28.99,37 13,29"
+                          opacity=".4"
+                        ></polygon>
+                        <linearGradient
+                          id="Qf7015RosYe_HpjKeG0QTa_ut6gQeo5pNqf_gr1"
+                          x1="38.925"
+                          x2="32.286"
+                          y1="24.557"
+                          y2="36.024"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset="0" stop-color="#31abec"></stop>
+                          <stop offset="1" stop-color="#1582d5"></stop>
+                        </linearGradient>
+                        <path
+                          fill="url(#Qf7015RosYe_HpjKeG0QTa_ut6gQeo5pNqf_gr1)"
+                          d="M15.441,42h26.563c1.104,0,1.999-0.889,2-1.994C44.007,35.485,44,24.843,44,24.843	s-0.007,0.222-1.751,1.212S14.744,41.566,14.744,41.566S14.978,42,15.441,42z"
+                        ></path>
+                        <linearGradient
+                          id="Qf7015RosYe_HpjKeG0QTb_ut6gQeo5pNqf_gr2"
+                          x1="13.665"
+                          x2="41.285"
+                          y1="6.992"
+                          y2="9.074"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset=".042" stop-color="#076db4"></stop>
+                          <stop offset=".85" stop-color="#0461af"></stop>
+                        </linearGradient>
+                        <path
+                          fill="url(#Qf7015RosYe_HpjKeG0QTb_ut6gQeo5pNqf_gr2)"
+                          d="M43,10H13V8c0-1.105,0.895-2,2-2h26c1.105,0,2,0.895,2,2V10z"
+                        ></path>
+                        <linearGradient
+                          id="Qf7015RosYe_HpjKeG0QTc_ut6gQeo5pNqf_gr3"
+                          x1="28.153"
+                          x2="23.638"
+                          y1="33.218"
+                          y2="41.1"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset="0" stop-color="#33acee"></stop>
+                          <stop offset="1" stop-color="#1b8edf"></stop>
+                        </linearGradient>
+                        <path
+                          fill="url(#Qf7015RosYe_HpjKeG0QTc_ut6gQeo5pNqf_gr3)"
+                          d="M13,25v15c0,1.105,0.895,2,2,2h15h12.004c0.462,0,0.883-0.162,1.221-0.425L13,25z"
+                        ></path>
+                        <path
+                          d="M21.319,13H13v24h8.319C23.352,37,25,35.352,25,33.319V16.681C25,14.648,23.352,13,21.319,13z"
+                          opacity=".05"
+                        ></path>
+                        <path
+                          d="M21.213,36H13V13.333h8.213c1.724,0,3.121,1.397,3.121,3.121v16.425	C24.333,34.603,22.936,36,21.213,36z"
+                          opacity=".07"
+                        ></path>
+                        <path
+                          d="M21.106,35H13V13.667h8.106c1.414,0,2.56,1.146,2.56,2.56V32.44C23.667,33.854,22.52,35,21.106,35z"
+                          opacity=".09"
+                        ></path>
+                        <linearGradient
+                          id="Qf7015RosYe_HpjKeG0QTd_ut6gQeo5pNqf_gr4"
+                          x1="3.53"
+                          x2="22.41"
+                          y1="14.53"
+                          y2="33.41"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset="0" stop-color="#1784d8"></stop>
+                          <stop offset="1" stop-color="#0864c5"></stop>
+                        </linearGradient>
+                        <path
+                          fill="url(#Qf7015RosYe_HpjKeG0QTd_ut6gQeo5pNqf_gr4)"
+                          d="M21,34H5c-1.105,0-2-0.895-2-2V16c0-1.105,0.895-2,2-2h16c1.105,0,2,0.895,2,2v16	C23,33.105,22.105,34,21,34z"
+                        ></path>
+                        <path
+                          fill="#fff"
+                          d="M13,18.691c-3.111,0-4.985,2.377-4.985,5.309S9.882,29.309,13,29.309	c3.119,0,4.985-2.377,4.985-5.308C17.985,21.068,16.111,18.691,13,18.691z M13,27.517c-1.765,0-2.82-1.574-2.82-3.516	s1.06-3.516,2.82-3.516s2.821,1.575,2.821,3.516S14.764,27.517,13,27.517z"
+                        ></path>
+                      </svg>
+                    </div>
 
-            <div class="contactsection-content-box">
-              <h4 class="h4 contactsection-item-title">Write me an email</h4>
-              <ul class="contactsectioncontent-list">
+                    <div class="contactsectioncontent-info">
+                      <a
+                        href="mailto:dev.singhvi@utoronto.ca"
+                        target="_blank"
+                        class="contactsectioncontent-title"
+                        >University Mail
+                      </a>
+                      <a
+                        href="mailto:dev.singhvi@utoronto.ca"
+                        target="_blank"
+                        class="contactsectioncontent-link"
+                        >dev.singhvi(at)utoronto.ca</a
+                      >
+                    </div>
+                  </li>
+                </ul>
 
-                <li class="contactsectioncontent-item">
-      
-                  <div class="icon-box">
-                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
-                      <path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"></path><path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"></path><polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"></polygon><path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"></path><path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"></path>
-                    </svg>
+                <li class="contactsection-item">
+                  <div class="contactsection-content-box">
+                    <h4 class="h4 contactsection-item-title">
+                      Reach me on social media
+                    </h4>
+                    <ul class="contactsectioncontent-list">
+                      <li class="contactsectioncontent-item">
+                        <div class="icon-box">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            x="0px"
+                            y="0px"
+                            width="100"
+                            height="100"
+                            viewBox="0 0 48 48"
+                          >
+                            <path
+                              fill="#0288D1"
+                              d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"
+                            ></path>
+                            <path
+                              fill="#FFF"
+                              d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"
+                            ></path>
+                          </svg>
+                        </div>
+
+                        <div class="contactsectioncontent-info">
+                          <a
+                            href="https://www.linkedin.com/in/devanshu-singhvi/"
+                            target="_blank"
+                            class="contactsectioncontent-title"
+                            >LinkedIn
+                          </a>
+                          <a
+                            href="https://www.linkedin.com/in/devanshu-singhvi/"
+                            target="_blank"
+                            class="contactsectioncontent-link"
+                            >devanshu-singhvi</a
+                          >
+                        </div>
+                      </li>
+
+                      <li class="contactsectioncontent-item">
+                        <div class="icon-box">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            x="0px"
+                            y="0px"
+                            width="100"
+                            height="100"
+                            viewBox="0 0 64 64"
+                          >
+                            <linearGradient
+                              id="KpzH_ttTMIjq8dhx1zD2pa_52539_gr1"
+                              x1="30.999"
+                              x2="30.999"
+                              y1="16"
+                              y2="55.342"
+                              gradientUnits="userSpaceOnUse"
+                              spreadMethod="reflect"
+                            >
+                              <stop offset="0" stop-color="#6dc7ff"></stop>
+                              <stop offset="1" stop-color="#e6abff"></stop>
+                            </linearGradient>
+                            <path
+                              fill="url(#KpzH_ttTMIjq8dhx1zD2pa_52539_gr1)"
+                              d="M25.008,56.007c-0.003-0.368-0.006-1.962-0.009-3.454l-0.003-1.55 c-6.729,0.915-8.358-3.78-8.376-3.83c-0.934-2.368-2.211-3.045-2.266-3.073l-0.124-0.072c-0.463-0.316-1.691-1.157-1.342-2.263 c0.315-0.997,1.536-1.1,2.091-1.082c3.074,0.215,4.63,2.978,4.694,3.095c1.569,2.689,3.964,2.411,5.509,1.844 c0.144-0.688,0.367-1.32,0.659-1.878C20.885,42.865,15.27,40.229,15.27,30.64c0-2.633,0.82-4.96,2.441-6.929 c-0.362-1.206-0.774-3.666,0.446-6.765l0.174-0.442l0.452-0.144c0.416-0.137,2.688-0.624,7.359,2.433 c1.928-0.494,3.969-0.749,6.074-0.759c2.115,0.01,4.158,0.265,6.09,0.759c4.667-3.058,6.934-2.565,7.351-2.433l0.451,0.145 l0.174,0.44c1.225,3.098,0.813,5.559,0.451,6.766c1.618,1.963,2.438,4.291,2.438,6.929c0,9.591-5.621,12.219-10.588,13.087 c0.563,1.065,0.868,2.402,0.868,3.878c0,1.683-0.007,7.204-0.015,8.402l-2-0.014c0.008-1.196,0.015-6.708,0.015-8.389 c0-2.442-0.943-3.522-1.35-3.874l-1.73-1.497l2.274-0.253c5.205-0.578,10.525-2.379,10.525-11.341c0-2.33-0.777-4.361-2.31-6.036 l-0.43-0.469l0.242-0.587c0.166-0.401,0.894-2.442-0.043-5.291c-0.758,0.045-2.568,0.402-5.584,2.447l-0.384,0.259l-0.445-0.123 c-1.863-0.518-3.938-0.796-6.001-0.806c-2.052,0.01-4.124,0.288-5.984,0.806l-0.445,0.123l-0.383-0.259 c-3.019-2.044-4.833-2.404-5.594-2.449c-0.935,2.851-0.206,4.892-0.04,5.293l0.242,0.587l-0.429,0.469 c-1.536,1.681-2.314,3.712-2.314,6.036c0,8.958,5.31,10.77,10.504,11.361l2.252,0.256l-1.708,1.49 c-0.372,0.325-1.03,1.112-1.254,2.727l-0.075,0.549l-0.506,0.227c-1.321,0.592-5.839,2.162-8.548-2.485 c-0.015-0.025-0.544-0.945-1.502-1.557c0.646,0.639,1.433,1.673,2.068,3.287c0.066,0.19,1.357,3.622,7.28,2.339l1.206-0.262 l0.012,3.978c0.003,1.487,0.006,3.076,0.009,3.444L25.008,56.007z"
+                            ></path>
+                            <linearGradient
+                              id="KpzH_ttTMIjq8dhx1zD2pb_52539_gr2"
+                              x1="32"
+                              x2="32"
+                              y1="5"
+                              y2="59.167"
+                              gradientUnits="userSpaceOnUse"
+                              spreadMethod="reflect"
+                            >
+                              <stop offset="0" stop-color="#1a6dff"></stop>
+                              <stop offset="1" stop-color="#c822ff"></stop>
+                            </linearGradient>
+                            <path
+                              fill="url(#KpzH_ttTMIjq8dhx1zD2pb_52539_gr2)"
+                              d="M32,58C17.663,58,6,46.337,6,32S17.663,6,32,6s26,11.663,26,26S46.337,58,32,58z M32,8 C18.767,8,8,18.767,8,32s10.767,24,24,24s24-10.767,24-24S45.233,8,32,8z"
+                            ></path>
+                          </svg>
+                        </div>
+
+                        <div class="contactsectioncontent-info">
+                          <a
+                            href="https://github.com/Dev301203/"
+                            target="_blank"
+                            class="contactsectioncontent-title"
+                            >Github
+                          </a>
+                          <a
+                            href="https://github.com/Dev301203/"
+                            target="_blank"
+                            class="contactsectioncontent-link"
+                            >Dev301203</a
+                          >
+                        </div>
+                      </li>
+                    </ul>
                   </div>
-      
-                  <div class="contactsectioncontent-info">
-                    <a href="mailto:devanshu301203@gmail.com" target="_blank" class="contactsectioncontent-title">Gmail </a>
-                    <a href="mailto:devanshu301203@gmail.com" target="_blank" class="contactsectioncontent-link">devanshu301203(at)gmail.com</a>
-                  </div>
-
                 </li>
+              </div>
 
-                <li class="contactsectioncontent-item">
-      
-                  <div class="icon-box">
-                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
-                      <path fill="#103262" d="M43.255,23.547l-6.81-3.967v11.594H44v-6.331C44,24.309,43.716,23.816,43.255,23.547z"></path><path fill="#0084d7" d="M13,10h10v9H13V10z"></path><path fill="#33afec" d="M23,10h10v9H23V10z"></path><path fill="#54daff" d="M33,10h10v9H33V10z"></path><path fill="#027ad4" d="M23,19h10v9H23V19z"></path><path fill="#0553a4" d="M23,28h10v9H23V28z"></path><path fill="#25a2e5" d="M33,19h10v9H33V19z"></path><path fill="#0262b8" d="M33,28h10v9H33V28z"></path><polygon points="13,37 43,37 43,24.238 28.99,32.238 13,24.238" opacity=".019"></polygon><polygon points="13,37 43,37 43,24.476 28.99,32.476 13,24.476" opacity=".038"></polygon><polygon points="13,37 43,37 43,24.714 28.99,32.714 13,24.714" opacity=".057"></polygon><polygon points="13,37 43,37 43,24.952 28.99,32.952 13,24.952" opacity=".076"></polygon><polygon points="13,37 43,37 43,25.19 28.99,33.19 13,25.19" opacity=".095"></polygon><polygon points="13,37 43,37 43,25.429 28.99,33.429 13,25.429" opacity=".114"></polygon><polygon points="13,37 43,37 43,25.667 28.99,33.667 13,25.667" opacity=".133"></polygon><polygon points="13,37 43,37 43,25.905 28.99,33.905 13,25.905" opacity=".152"></polygon><polygon points="13,37 43,37 43,26.143 28.99,34.143 13,26.143" opacity=".171"></polygon><polygon points="13,37 43,37 43,26.381 28.99,34.381 13,26.381" opacity=".191"></polygon><polygon points="13,37 43,37 43,26.619 28.99,34.619 13,26.619" opacity=".209"></polygon><polygon points="13,37 43,37 43,26.857 28.99,34.857 13,26.857" opacity=".229"></polygon><polygon points="13,37 43,37 43,27.095 28.99,35.095 13,27.095" opacity=".248"></polygon><polygon points="13,37 43,37 43,27.333 28.99,35.333 13,27.333" opacity=".267"></polygon><polygon points="13,37 43,37 43,27.571 28.99,35.571 13,27.571" opacity=".286"></polygon><polygon points="13,37 43,37 43,27.81 28.99,35.81 13,27.81" opacity=".305"></polygon><polygon points="13,37 43,37 43,28.048 28.99,36.048 13,28.048" opacity=".324"></polygon><polygon points="13,37 43,37 43,28.286 28.99,36.286 13,28.286" opacity=".343"></polygon><polygon points="13,37 43,37 43,28.524 28.99,36.524 13,28.524" opacity=".362"></polygon><polygon points="13,37 43,37 43,28.762 28.99,36.762 13,28.762" opacity=".381"></polygon><polygon points="13,37 43,37 43,29 28.99,37 13,29" opacity=".4"></polygon><linearGradient id="Qf7015RosYe_HpjKeG0QTa_ut6gQeo5pNqf_gr1" x1="38.925" x2="32.286" y1="24.557" y2="36.024" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#31abec"></stop><stop offset="1" stop-color="#1582d5"></stop></linearGradient><path fill="url(#Qf7015RosYe_HpjKeG0QTa_ut6gQeo5pNqf_gr1)" d="M15.441,42h26.563c1.104,0,1.999-0.889,2-1.994C44.007,35.485,44,24.843,44,24.843	s-0.007,0.222-1.751,1.212S14.744,41.566,14.744,41.566S14.978,42,15.441,42z"></path><linearGradient id="Qf7015RosYe_HpjKeG0QTb_ut6gQeo5pNqf_gr2" x1="13.665" x2="41.285" y1="6.992" y2="9.074" gradientUnits="userSpaceOnUse"><stop offset=".042" stop-color="#076db4"></stop><stop offset=".85" stop-color="#0461af"></stop></linearGradient><path fill="url(#Qf7015RosYe_HpjKeG0QTb_ut6gQeo5pNqf_gr2)" d="M43,10H13V8c0-1.105,0.895-2,2-2h26c1.105,0,2,0.895,2,2V10z"></path><linearGradient id="Qf7015RosYe_HpjKeG0QTc_ut6gQeo5pNqf_gr3" x1="28.153" x2="23.638" y1="33.218" y2="41.1" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#33acee"></stop><stop offset="1" stop-color="#1b8edf"></stop></linearGradient><path fill="url(#Qf7015RosYe_HpjKeG0QTc_ut6gQeo5pNqf_gr3)" d="M13,25v15c0,1.105,0.895,2,2,2h15h12.004c0.462,0,0.883-0.162,1.221-0.425L13,25z"></path><path d="M21.319,13H13v24h8.319C23.352,37,25,35.352,25,33.319V16.681C25,14.648,23.352,13,21.319,13z" opacity=".05"></path><path d="M21.213,36H13V13.333h8.213c1.724,0,3.121,1.397,3.121,3.121v16.425	C24.333,34.603,22.936,36,21.213,36z" opacity=".07"></path><path d="M21.106,35H13V13.667h8.106c1.414,0,2.56,1.146,2.56,2.56V32.44C23.667,33.854,22.52,35,21.106,35z" opacity=".09"></path><linearGradient id="Qf7015RosYe_HpjKeG0QTd_ut6gQeo5pNqf_gr4" x1="3.53" x2="22.41" y1="14.53" y2="33.41" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1784d8"></stop><stop offset="1" stop-color="#0864c5"></stop></linearGradient><path fill="url(#Qf7015RosYe_HpjKeG0QTd_ut6gQeo5pNqf_gr4)" d="M21,34H5c-1.105,0-2-0.895-2-2V16c0-1.105,0.895-2,2-2h16c1.105,0,2,0.895,2,2v16	C23,33.105,22.105,34,21,34z"></path><path fill="#fff" d="M13,18.691c-3.111,0-4.985,2.377-4.985,5.309S9.882,29.309,13,29.309	c3.119,0,4.985-2.377,4.985-5.308C17.985,21.068,16.111,18.691,13,18.691z M13,27.517c-1.765,0-2.82-1.574-2.82-3.516	s1.06-3.516,2.82-3.516s2.821,1.575,2.821,3.516S14.764,27.517,13,27.517z"></path>
-                    </svg>
-                  </div>
-      
-                  <div class="contactsectioncontent-info">
-                    <a href="mailto:dev.singhvi@utoronto.ca" target="_blank" class="contactsectioncontent-title">University Mail </a>
-                    <a href="mailto:dev.singhvi@utoronto.ca" target="_blank" class="contactsectioncontent-link">dev.singhvi(at)utoronto.ca</a>
-                  </div>
-
-                </li>
-      
-              </ul>
-
-          </li>
-
-          <li class="contactsection-item">
-
-            <div class="contactsection-content-box">
-              <h4 class="h4 contactsection-item-title">Reach me on social media</h4>
-              <ul class="contactsectioncontent-list">
-
-                <li class="contactsectioncontent-item">
-      
-                  <div class="icon-box">
-                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
-                      <path fill="#0288D1" d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"></path><path fill="#FFF" d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"></path>
-                    </svg>
-                  </div>
-      
-                  <div class="contactsectioncontent-info">
-                    <a href="https://www.linkedin.com/in/devanshu-singhvi/" target="_blank" class="contactsectioncontent-title">LinkedIn </a>
-                    <a href="https://www.linkedin.com/in/devanshu-singhvi/" target="_blank" class="contactsectioncontent-link">devanshu-singhvi</a>
-                  </div>
-      
-                </li>
-
-                <li class="contactsectioncontent-item">
-      
-                  <div class="icon-box">
-                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 64 64">
-                      <linearGradient id="KpzH_ttTMIjq8dhx1zD2pa_52539_gr1" x1="30.999" x2="30.999" y1="16" y2="55.342" gradientUnits="userSpaceOnUse" spreadMethod="reflect"><stop offset="0" stop-color="#6dc7ff"></stop><stop offset="1" stop-color="#e6abff"></stop></linearGradient><path fill="url(#KpzH_ttTMIjq8dhx1zD2pa_52539_gr1)" d="M25.008,56.007c-0.003-0.368-0.006-1.962-0.009-3.454l-0.003-1.55 c-6.729,0.915-8.358-3.78-8.376-3.83c-0.934-2.368-2.211-3.045-2.266-3.073l-0.124-0.072c-0.463-0.316-1.691-1.157-1.342-2.263 c0.315-0.997,1.536-1.1,2.091-1.082c3.074,0.215,4.63,2.978,4.694,3.095c1.569,2.689,3.964,2.411,5.509,1.844 c0.144-0.688,0.367-1.32,0.659-1.878C20.885,42.865,15.27,40.229,15.27,30.64c0-2.633,0.82-4.96,2.441-6.929 c-0.362-1.206-0.774-3.666,0.446-6.765l0.174-0.442l0.452-0.144c0.416-0.137,2.688-0.624,7.359,2.433 c1.928-0.494,3.969-0.749,6.074-0.759c2.115,0.01,4.158,0.265,6.09,0.759c4.667-3.058,6.934-2.565,7.351-2.433l0.451,0.145 l0.174,0.44c1.225,3.098,0.813,5.559,0.451,6.766c1.618,1.963,2.438,4.291,2.438,6.929c0,9.591-5.621,12.219-10.588,13.087 c0.563,1.065,0.868,2.402,0.868,3.878c0,1.683-0.007,7.204-0.015,8.402l-2-0.014c0.008-1.196,0.015-6.708,0.015-8.389 c0-2.442-0.943-3.522-1.35-3.874l-1.73-1.497l2.274-0.253c5.205-0.578,10.525-2.379,10.525-11.341c0-2.33-0.777-4.361-2.31-6.036 l-0.43-0.469l0.242-0.587c0.166-0.401,0.894-2.442-0.043-5.291c-0.758,0.045-2.568,0.402-5.584,2.447l-0.384,0.259l-0.445-0.123 c-1.863-0.518-3.938-0.796-6.001-0.806c-2.052,0.01-4.124,0.288-5.984,0.806l-0.445,0.123l-0.383-0.259 c-3.019-2.044-4.833-2.404-5.594-2.449c-0.935,2.851-0.206,4.892-0.04,5.293l0.242,0.587l-0.429,0.469 c-1.536,1.681-2.314,3.712-2.314,6.036c0,8.958,5.31,10.77,10.504,11.361l2.252,0.256l-1.708,1.49 c-0.372,0.325-1.03,1.112-1.254,2.727l-0.075,0.549l-0.506,0.227c-1.321,0.592-5.839,2.162-8.548-2.485 c-0.015-0.025-0.544-0.945-1.502-1.557c0.646,0.639,1.433,1.673,2.068,3.287c0.066,0.19,1.357,3.622,7.28,2.339l1.206-0.262 l0.012,3.978c0.003,1.487,0.006,3.076,0.009,3.444L25.008,56.007z"></path><linearGradient id="KpzH_ttTMIjq8dhx1zD2pb_52539_gr2" x1="32" x2="32" y1="5" y2="59.167" gradientUnits="userSpaceOnUse" spreadMethod="reflect"><stop offset="0" stop-color="#1a6dff"></stop><stop offset="1" stop-color="#c822ff"></stop></linearGradient><path fill="url(#KpzH_ttTMIjq8dhx1zD2pb_52539_gr2)" d="M32,58C17.663,58,6,46.337,6,32S17.663,6,32,6s26,11.663,26,26S46.337,58,32,58z M32,8 C18.767,8,8,18.767,8,32s10.767,24,24,24s24-10.767,24-24S45.233,8,32,8z"></path>
-                    </svg>
-                  </div>
-      
-                  <div class="contactsectioncontent-info">
-                    <a href="https://github.com/Dev301203/" target="_blank" class="contactsectioncontent-title">Github </a>
-                    <a href="https://github.com/Dev301203/" target="_blank" class="contactsectioncontent-link">Dev301203</a>
-                  </div>
-      
-                </li>
-      
-              </ul>
-            </div>
-
-          </li>
-
-        </ul>
-
-      </article>
-
-    </div>
-
-  </main>
-
-
-
-
-
-
-  <!--
+              <!--
     - custom js link
   -->
-  <script src="../js/script.js"></script>
+              <script src="../js/script.js"></script>
 
-  <!--
+              <!--
     - ionicon link
   -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
-</body>
-
+              <script
+                type="module"
+                src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+              ></script>
+              <script
+                nomodule
+                src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+              ></script>
+            </li>
+          </ul>
+        </article>
+      </div>
+    </main>
+  </body>
 </html>
