@@ -764,6 +764,7 @@ main {
 
 .skills-list {
   padding: 20px;
+  gap: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
