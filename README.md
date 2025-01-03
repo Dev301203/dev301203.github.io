@@ -1,4 +1,4 @@
 # Personal portfolio
 This a fully responsive personal portfolio website, responsive for all devices, built using HTML, CSS, and JavaScript.
 
-I built this over [vCard](https://github.com/codewithsadee/vcard-personal-portfolio/), personalizing it as I go.
+I took references from [vCard](https://github.com/codewithsadee/vcard-personal-portfolio/) for the base website template, and updated/rewrote it as necessary to personalize it.
