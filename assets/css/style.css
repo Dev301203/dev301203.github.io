@@ -1038,6 +1038,12 @@ main {
   }
 }
 
+.resume-item {
+  min-width: 100%;
+  display: flex;
+  gap: 20px;
+}
+
 .resume-compliteracy-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
