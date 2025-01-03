@@ -1,0 +1,44 @@
+[
+    {
+        "title": "Appointify",
+        "image": "../images/projects/appointify.png",
+        "alt": "appointify",
+        "category": "Web app",
+        "link": "https://github.com/Dev301203/Appointify"
+    },
+    {
+        "title": "Book Cover Identification",
+        "image": "../images/projects/bookcover.jpg",
+        "alt": "book cover",
+        "category": "Applications",
+        "link": "https://github.com/Dev301203/Book-Cover-Via-Vocabulary-Tree"
+    },
+    {
+        "title": "CLI social network",
+        "image": "../images/projects/socialmedia.jpg",
+        "alt": "social media",
+        "category": "Applications",
+        "link": "https://github.com/Dev301203/Social-Media-App"
+    },
+    {
+        "title": "Company Management System",
+        "image": "../images/projects/cms.jpg",
+        "alt": "cms",
+        "category": "Applications",
+        "link": "https://github.com/Dev301203/company-management-system"
+    },
+    {
+        "title": "Brick Breaker",
+        "image": "../images/projects/brickbreaker.jpg",
+        "alt": "brick breaker",
+        "category": "Applications",
+        "link": "https://github.com/Dev301203/Brick-Breaker"
+    },
+    {
+        "title": "Braille Translator",
+        "image": "../images/projects/braille.jpg",
+        "alt": "braille translator",
+        "category": "Applications",
+        "link": "https://github.com/Dev301203/Braille-Translator"
+    }
+]
