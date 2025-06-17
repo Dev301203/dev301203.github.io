@@ -1,5 +1,12 @@
 [
     {
+        "title": "Advisory",
+        "image": "../images/projects/advsry.png",
+        "alt": "personal ai tutor",
+        "category": "Web app",
+        "link": "https://advsry.utm.utoronto.ca"
+    },
+    {
         "title": "Appointify",
         "image": "../images/projects/appointify.png",
         "alt": "appointify",
