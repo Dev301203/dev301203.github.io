@@ -1,0 +1,354 @@
+{
+  "meta": {
+    "title": "Devanshu Singhvi | Portfolio",
+    "description": "Devanshu Singhvi - student and developer. Computer science, systems, and security.",
+    "favicon": "./assets/images/berserk.jpg"
+  },
+  "header": {
+    "logoHref": "#hero",
+    "logoMark": { "text": "Dev", "accent": "301203" },
+    "nav": [
+      { "href": "#about", "label": "About" },
+      { "href": "#skills", "label": "Skills" },
+      { "href": "#experience", "label": "Experience" },
+      { "href": "#projects", "label": "Projects" },
+      { "href": "#contact", "label": "Contact" }
+    ]
+  },
+  "hero": {
+    "badge": "Level up",
+    "name": "Devanshu Singhvi",
+    "tagline": "Student & developer - systems, security and real-world problems.",
+    "ctaLabel": "Enter the story",
+    "ctaTarget": "#about"
+  },
+  "about": {
+    "kicker": "Episode 01",
+    "title": "Origin story",
+    "portrait": {
+      "src": "./assets/images/portrait.png",
+      "alt": "Portrait of Devanshu Singhvi"
+    },
+    "paragraphs": [
+      "I'm <strong>Devanshu Singhvi</strong> - a student and developer with an Honours B.Sc. in <strong>Computer Science</strong> and <strong>Mathematical Sciences</strong> from the University of Toronto. I care about <strong>systems</strong>, <strong>security</strong>, and problems that matter in the real world.",
+      "I've interned in <strong>IT Security</strong> at the Bank of Bahrain and Kuwait and in <strong>I&amp;IT Transit</strong> at Metrolinx. I've been a teaching assistant for <strong>CSC347</strong> (Information Security) and <strong>CSC427</strong> (Computer Security).",
+      "I'm currently pursuing an <strong>MScAC</strong> (Master of Science in Applied Computing) at the University of Toronto."
+    ],
+    "workedWithTitle": "Worked with",
+    "logos": [
+      {
+        "src": "./assets/images/work/uoft.png",
+        "alt": "University of Toronto",
+        "width": 280,
+        "height": 120,
+        "matte": false
+      },
+      {
+        "src": "./assets/images/work/bbk.png",
+        "alt": "Bank of Bahrain and Kuwait",
+        "width": 280,
+        "height": 120,
+        "matte": false
+      },
+      {
+        "src": "./assets/images/work/metrolinx.png",
+        "alt": "Metrolinx",
+        "width": 280,
+        "height": 120,
+        "matte": false
+      },
+      {
+        "src": "./assets/images/work/daitaflow.png",
+        "alt": "dAItaflow",
+        "width": 280,
+        "height": 120,
+        "matte": false
+      }
+    ]
+  },
+  "skills": {
+    "kicker": "Power tree",
+    "title": "Skills & tools",
+    "groups": [
+      {
+        "title": "Languages",
+        "items": [
+          "Python",
+          "C",
+          "C++",
+          "Assembly",
+          "Java",
+          "JavaScript",
+          "R",
+          "HTML5",
+          "CSS3",
+          "LaTeX",
+          "PowerShell",
+          "Shell"
+        ]
+      },
+      {
+        "title": "Frameworks",
+        "items": [".NET", "Bootstrap", "Tailwind", "Django", "React"]
+      },
+      {
+        "title": "Tools",
+        "items": [
+          "Vercel",
+          "GitHub Pages",
+          "npm",
+          "OpenCV",
+          "Postgres",
+          "MySQL",
+          "MongoDB",
+          "SQLite",
+          "Blender",
+          "Matplotlib",
+          "NumPy",
+          "Pandas",
+          "TensorFlow",
+          "scikit-learn",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Prometheus",
+          "Grafana"
+        ]
+      }
+    ]
+  },
+  "experience": {
+    "kicker": "Quest log",
+    "title": "Experience & resume",
+    "resume": {
+      "description": "Full PDF resume",
+      "linkText": "Open resume",
+      "url": "https://drive.google.com/file/d/1eB3Upi9rR1_bf-CPjYCtO9YMcvMYYGWi/view?usp=sharing"
+    },
+    "educationTitle": "Education",
+    "education": [
+      {
+        "title": "University of Toronto",
+        "location": "Toronto, Canada",
+        "date": "Sept 2025 - Dec 2026",
+        "subtitle": "MSc in Applied Computing (MScAC), Computer Science",
+        "paragraphs": [
+          "Relevant courses: Database System Technology, Research Topics in Database Management, Compilers and Interpreters, Applications for Mobile Devices.",
+          "<strong>cGPA: 4.0/4.0</strong>"
+        ]
+      },
+      {
+        "title": "University of Toronto",
+        "location": "Toronto, Canada",
+        "date": "Sep 2021 - Jun 2025",
+        "subtitle": "Honours Bachelor of Science (B.Sc.), Computer Science and Math",
+        "paragraphs": [
+          "Relevant courses: Algorithm Design, Analysis &amp; Complexity, Data Structures and Analysis, Operating Systems, Computer Security, Image Understanding, Databases, Machine Learning, Web Programming, Systems Programming.",
+          "<strong>cGPA: 3.92/4.0</strong>"
+        ]
+      },
+      {
+        "title": "New Millennium School",
+        "location": "Bahrain",
+        "date": "2007 - 2021",
+        "subtitle": "High School Diploma",
+        "paragraphs": [
+          "Class 12: Physics, Chemistry, Mathematics, Computer Science, English. CBSE Class 12 - <strong>97%</strong>.",
+          "Class 10: Science, Social Science, Mathematics, French, English. CBSE Class 10 - <strong>95.2%</strong>."
+        ]
+      }
+    ],
+    "workTitle": "Experience",
+    "work": [
+      {
+        "title": "Software Engineer (Full-Stack)",
+        "location": "dAItaflow Technologies (Early-stage startup)",
+        "date": "July 2025 – Present",
+        "paragraphs": [
+          "» Built and shipped an MVP Procore-integrated automation platform using async Django/ADRF APIs and OAuth2.",
+          "» Improved reliability with correlation-ID tracing, structured logging, Redis caching, and OpenAPI documentation.",
+          "» Dockerized services with GitHub Actions CI/CD to Cloud Run and deployed the React frontend to Firebase Hosting."
+        ]
+      },
+      {
+        "title": "Teaching Assistant",
+        "location": "University of Toronto",
+        "date": "Jan 2026 - Apr 2026",
+        "paragraphs": [
+          "CSC148 - Introduction to Computer Science",
+          "CSC209 - Software Tools and Systems Programming"
+        ]
+      },
+      {
+        "title": "Teaching Assistant",
+        "location": "University of Toronto",
+        "date": "Sept 2025 - Dec 2025",
+        "paragraphs": [
+          "CSC207 - Software Design",
+          "CSC309 - Programming on the Web",
+          "CSC347 - Introduction to Information Security",
+          "CSC369 - Operating Systems"
+        ]
+      },
+      {
+        "title": "Teaching Assistant - CSC427",
+        "location": "University of Toronto",
+        "date": "Jan 2025 - Apr 2025",
+        "subtitle": "Computer Security",
+        "paragraphs": []
+      },
+      {
+        "title": "Teaching Assistant - CSC347",
+        "location": "University of Toronto",
+        "date": "Sept 2024 - Dec 2024",
+        "subtitle": "Introduction to Information Security",
+        "paragraphs": [
+          "» Conducted weekly tutorials and practical sessions for 80+ undergraduates on software security, systems security, network security, and cryptography.",
+          "» Graded and provided detailed feedback for 200+ students, keeping pace with course schedules."
+        ]
+      },
+      {
+        "title": "IT Security Intern",
+        "location": "Bank of Bahrain and Kuwait, Bahrain",
+        "date": "Jun 2024 - Aug 2024",
+        "paragraphs": [
+          "» Used Trend Micro Vision One to identify and assess vulnerable assets and prioritize remediation.",
+          "» Deployed packages with Lansweeper to automate configuration changes, mitigate 1500+ security risks, and update software across 4000+ assets.",
+          "» Hardened Ubuntu 22 servers toward STIG compliance; updated GPOs and firewall rules for network security."
+        ]
+      },
+      {
+        "title": "I&IT Transit Summer Student",
+        "location": "Metrolinx, Toronto",
+        "date": "May 2023 - Aug 2023",
+        "paragraphs": [
+          "» Built Grafana and Prometheus dashboards for real-time GO Train and Bus insights from transit telemetry.",
+          "» Added custom IoT metrics to C# and Node.js services; monitoring for multiple apps and APIs.",
+          "» Created alerts that cut MTTD by over 75%; contributed to RTI enhancements including Schedule Manager and HTTPS updates."
+        ]
+      }
+    ],
+    "honoursTitle": "Honours & awards",
+    "honours": [
+      {
+        "title": "UofT Dean's List Scholar",
+        "location": "University of Toronto",
+        "date": "Winter 2022, 2023, 2024 & 2025",
+        "paragraphs": [
+          "For UTM degree students with CGPA ≥ 3.50 at the end of the session when the 5th, 10th, 15th, or 20th credit is passed."
+        ]
+      },
+      {
+        "title": "UofT Renewable Entrance Scholarship",
+        "location": "University of Toronto",
+        "date": "Sep 2021 - 2024",
+        "paragraphs": [
+          "$3,000/year for 95%+ high school average and maintaining 3.7+ CGPA in university."
+        ]
+      },
+      {
+        "title": "UofT Scholars Award",
+        "location": "University of Toronto",
+        "date": "Sep 2021",
+        "paragraphs": [
+          "Recognition for outstanding students at admission; ~900 domestic and international students considered automatically from admission average."
+        ]
+      }
+    ]
+  },
+  "projects": {
+    "kicker": "Battle records",
+    "title": "Projects",
+    "filters": [
+      { "value": "all", "label": "All" },
+      { "value": "Applications", "label": "Applications" },
+      { "value": "Web app", "label": "Web app" }
+    ],
+    "items": [
+      {
+        "title": "Advisory",
+        "category": "Web app",
+        "image": "./assets/images/projects/advsry.png",
+        "alt": "Advisory web app",
+        "href": "https://advsry.utm.utoronto.ca"
+      },
+      {
+        "title": "Appointify",
+        "category": "Web app",
+        "image": "./assets/images/projects/appointify.png",
+        "alt": "Appointify",
+        "href": "https://github.com/Dev301203/Appointify"
+      },
+      {
+        "title": "Book Cover Identification",
+        "category": "Applications",
+        "image": "./assets/images/projects/bookcover.jpg",
+        "alt": "Book cover identification",
+        "href": "https://github.com/Dev301203/Book-Cover-Via-Vocabulary-Tree"
+      },
+      {
+        "title": "CLI social network",
+        "category": "Applications",
+        "image": "./assets/images/projects/socialmedia.jpg",
+        "alt": "CLI social network",
+        "href": "https://github.com/Dev301203/Social-Media-App"
+      },
+      {
+        "title": "Company Management System",
+        "category": "Applications",
+        "image": "./assets/images/projects/cms.jpg",
+        "alt": "Company management system",
+        "href": "https://github.com/Dev301203/company-management-system"
+      },
+      {
+        "title": "Brick Breaker",
+        "category": "Applications",
+        "image": "./assets/images/projects/brickbreaker.jpg",
+        "alt": "Brick Breaker",
+        "href": "https://github.com/Dev301203/Brick-Breaker"
+      },
+      {
+        "title": "Braille Translator",
+        "category": "Applications",
+        "image": "./assets/images/projects/braille.jpg",
+        "alt": "Braille Translator",
+        "href": "https://github.com/Dev301203/Braille-Translator"
+      }
+    ]
+  },
+  "contact": {
+    "kicker": "Side quest",
+    "title": "Contact",
+    "lead": "Want to collaborate or chat about systems and security? Reach out - I'm always up for a good technical fight scene.",
+    "links": [
+      {
+        "href": "mailto:dev.singhvi@utoronto.ca",
+        "label": "dev.singhvi@utoronto.ca",
+        "icon": "mail-outline",
+        "external": false
+      },
+      {
+        "href": "mailto:devanshu301203@gmail.com",
+        "label": "devanshu301203@gmail.com",
+        "icon": "mail-unread-outline",
+        "external": false
+      },
+      {
+        "href": "https://github.com/Dev301203/",
+        "label": "GitHub",
+        "icon": "logo-github",
+        "external": true
+      },
+      {
+        "href": "https://www.linkedin.com/in/devanshu-singhvi/",
+        "label": "LinkedIn",
+        "icon": "logo-linkedin",
+        "external": true
+      }
+    ]
+  },
+  "footer": {
+    "name": "Devanshu Singhvi",
+    "note": "Built for GitHub Pages."
+  }
+}
