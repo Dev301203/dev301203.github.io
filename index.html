@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <title>Portfolio</title>
+    <link rel="shortcut icon" href="./assets/images/berserk.jpg" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <div class="speed-lines" aria-hidden="true">
+      <svg class="layer-a parallax-layer" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="currentColor" stroke-width="1.5" fill="none">
+          <line x1="380" y1="0" x2="20" y2="600" />
+          <line x1="360" y1="0" x2="0" y2="580" />
+          <line x1="340" y1="40" x2="0" y2="620" />
+          <line x1="400" y1="80" x2="40" y2="620" />
+          <line x1="320" y1="0" x2="0" y2="520" />
+        </g>
+      </svg>
+      <svg class="layer-b parallax-layer" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="currentColor" stroke-width="1.2" fill="none">
+          <line x1="0" y1="0" x2="400" y2="600" />
+          <line x1="40" y1="0" x2="400" y2="560" />
+          <line x1="0" y1="100" x2="360" y2="600" />
+          <line x1="80" y1="0" x2="400" y2="520" />
+        </g>
+      </svg>
+    </div>
+
+    <div class="page-wrap">
+      <header class="site-header">
+        <div class="container">
+          <span id="mount-logo"></span>
+          <nav class="site-nav" id="site-nav" aria-label="Primary">
+            <button
+              type="button"
+              class="nav-toggle"
+              id="nav-toggle"
+              aria-expanded="false"
+              aria-controls="nav-menu"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <ul class="nav-list" id="nav-menu"></ul>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <section class="section section--hero" id="hero">
+          <div class="container hero-inner" id="mount-hero"></div>
+          <div class="scroll-cue" aria-hidden="true">
+            <span>Scroll</span>
+            <ion-icon name="chevron-down-outline"></ion-icon>
+          </div>
+        </section>
+
+        <section class="section" id="about">
+          <div class="container" id="mount-about"></div>
+        </section>
+
+        <section class="section" id="skills">
+          <div class="container" id="mount-skills"></div>
+        </section>
+
+        <section class="section" id="experience">
+          <div class="container" id="mount-experience"></div>
+        </section>
+
+        <section class="section" id="projects">
+          <div class="container" id="mount-projects"></div>
+        </section>
+
+        <section class="section contact-section" id="contact">
+          <div class="container" id="mount-contact"></div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container" id="mount-footer"></div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+    <!-- file:// preview: assigns window.__SITE_CONTENT__. Regenerate after editing content.json. -->
+    <script src="./assets/data/site-data.js"></script>
+    <script src="./assets/js/main.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  </body>
+</html>
