@@ -206,6 +206,37 @@
       .join("");
   }
 
+  function renderHonours(entries) {
+    return (entries || [])
+      .map(function (entry, index) {
+        var body = (entry.paragraphs || [])
+          .map(function (p) {
+            return "<p>" + p + "</p>";
+          })
+          .join("");
+        return (
+          '<article class="award-card" data-award-card>' +
+          '<div class="award-card__mark">' +
+          String(index + 1).padStart(2, "0") +
+          "</div>" +
+          '<div class="award-card__body">' +
+          "<h4>" +
+          escapeHtml(entry.title || "") +
+          "</h4>" +
+          '<p class="award-card__issuer">' +
+          escapeHtml(entry.location || "") +
+          "</p>" +
+          '<p class="award-card__date">' +
+          escapeHtml(entry.date || "") +
+          "</p>" +
+          body +
+          "</div>" +
+          "</article>"
+        );
+      })
+      .join("");
+  }
+
   function renderExperience(ex) {
     var el = document.getElementById("mount-experience");
     if (!ex || !el) return;
@@ -245,8 +276,55 @@
       '<h3 class="section-kicker" style="margin: 3rem 0 1.5rem">' +
       escapeHtml(ex.honoursTitle || "Honours & awards") +
       "</h3>" +
-      '<div class="timeline">' +
-      renderTimelineEntries(ex.honours) +
+      '<div class="award-grid">' +
+      renderHonours(ex.honours) +
+      "</div>";
+  }
+
+  function renderTeaching(t) {
+    var el = document.getElementById("mount-teaching");
+    if (!t || !el) return;
+    var cards = (t.items || [])
+      .map(function (item) {
+        var instructor = item.instructor
+          ? '<p class="teaching-card__instructor">Taught by ' +
+            escapeHtml(item.instructor) +
+            "</p>"
+          : "";
+        return (
+          '<article class="teaching-card" data-teaching-card>' +
+          '<div class="teaching-card__main">' +
+          "<h3>" +
+          escapeHtml(item.course || "") +
+          "</h3>" +
+          '<p class="teaching-card__school">' +
+          escapeHtml(item.institution || "") +
+          "</p>" +
+          instructor +
+          "</div>" +
+          '<div class="teaching-card__meta">' +
+          '<span class="teaching-card__role">' +
+          escapeHtml(item.role || "") +
+          "</span>" +
+          '<span class="teaching-card__date">' +
+          escapeHtml(item.date || "") +
+          "</span>" +
+          "</div>" +
+          "</article>"
+        );
+      })
+      .join("");
+    el.innerHTML =
+      '<header class="section-header">' +
+      '<p class="section-kicker">' +
+      escapeHtml(t.kicker || "") +
+      "</p>" +
+      '<h2 class="section-title">' +
+      escapeHtml(t.title || "") +
+      "</h2>" +
+      '<span class="section-slash"></span></header>' +
+      '<div class="teaching-grid">' +
+      cards +
       "</div>";
   }
 
@@ -269,6 +347,20 @@
       .join("");
     var cards = (p.items || [])
       .map(function (item) {
+        var media = item.image
+          ? '<div class="project-card__media">' +
+            '<img src="' +
+            escapeAttr(item.image) +
+            '" alt="' +
+            escapeAttr(item.alt) +
+            '" width="640" height="400" />' +
+            "</div>"
+          : '<div class="project-card__media project-card__media--generated" aria-hidden="true"><span>' +
+            escapeHtml(item.mark || (item.title || "?").slice(0, 2)) +
+            "</span></div>";
+        var description = item.description
+          ? '<p class="project-card__desc">' + escapeHtml(item.description) + "</p>"
+          : "";
         return (
           '<article class="project-card" data-category="' +
           escapeAttr(item.category) +
@@ -276,20 +368,16 @@
           '<a class="project-card__link" href="' +
           escapeAttr(item.href) +
           '" target="_blank" rel="noopener noreferrer">' +
-          '<div class="project-card__media">' +
-          '<img src="' +
-          escapeAttr(item.image) +
-          '" alt="' +
-          escapeAttr(item.alt) +
-          '" width="640" height="400" />' +
-          "</div>" +
+          media +
           '<div class="project-card__body">' +
           '<p class="project-card__cat">' +
           escapeHtml(item.category) +
           "</p>" +
           '<h3 class="project-card__title">' +
           escapeHtml(item.title) +
-          "</h3></div></a></article>"
+          "</h3>" +
+          description +
+          "</div></a></article>"
         );
       })
       .join("");
@@ -561,6 +649,7 @@
     observeSection("#experience", function () {
       var resumeCta = document.querySelector("[data-animate='resume-cta']");
       var blocks = document.querySelectorAll("[data-timeline]");
+      var awards = document.querySelectorAll("[data-award-card]");
 
       if (animeOk) {
         if (resumeCta) {
@@ -588,10 +677,45 @@
             easing: "easeOutCubic",
           });
         });
+        if (awards.length) {
+          anime.set(awards, { opacity: 0, translateY: 38, scale: 0.96 });
+          anime({
+            targets: awards,
+            opacity: 1,
+            translateY: 0,
+            scale: 1,
+            duration: 620,
+            delay: anime.stagger(90, { start: blocks.length * 90 + 160 }),
+            easing: "easeOutCubic",
+          });
+        }
       } else {
         if (resumeCta) resumeCta.style.opacity = "1";
         blocks.forEach(function (b) {
           b.style.opacity = "1";
+        });
+        awards.forEach(function (award) {
+          award.style.opacity = "1";
+        });
+      }
+    });
+
+    observeSection("#teaching", function () {
+      var cards = document.querySelectorAll("[data-teaching-card]");
+      if (animeOk && cards.length) {
+        anime.set(cards, { opacity: 0, translateY: 44, scale: 0.96 });
+        anime({
+          targets: cards,
+          opacity: 1,
+          translateY: 0,
+          scale: 1,
+          delay: anime.stagger(70, { start: 80 }),
+          duration: 620,
+          easing: "easeOutCubic",
+        });
+      } else {
+        cards.forEach(function (card) {
+          card.style.opacity = "1";
         });
       }
     });
@@ -799,6 +923,7 @@
     renderAbout(data.about);
     renderSkills(data.skills);
     renderExperience(data.experience);
+    renderTeaching(data.teaching);
     renderProjects(data.projects);
     renderContact(data.contact);
     renderFooter(data.footer);

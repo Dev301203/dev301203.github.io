@@ -12,6 +12,8 @@ Single-page personal portfolio: dark high-contrast palette, speed-line motifs, a
 
 Open `index.html` in a browser, or serve the repo root with any static server (e.g. `npx serve .`).
 
+After editing `assets/data/content.json`, refresh the embedded local-preview data with `node tools/sync-site-data.js`.
+
 ## GitHub Pages
 
 This repo is set up as a **user site** (`username.github.io`). Push to the default branch; in **Settings → Pages**, use **Deploy from branch** (root `/`). No build step is required.

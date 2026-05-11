@@ -7,13 +7,35 @@ window.__SITE_CONTENT__ = {
   },
   "header": {
     "logoHref": "#hero",
-    "logoMark": { "text": "Dev", "accent": "301203" },
+    "logoMark": {
+      "text": "Dev",
+      "accent": "301203"
+    },
     "nav": [
-      { "href": "#about", "label": "About" },
-      { "href": "#skills", "label": "Skills" },
-      { "href": "#experience", "label": "Experience" },
-      { "href": "#projects", "label": "Projects" },
-      { "href": "#contact", "label": "Contact" }
+      {
+        "href": "#about",
+        "label": "About"
+      },
+      {
+        "href": "#skills",
+        "label": "Skills"
+      },
+      {
+        "href": "#experience",
+        "label": "Experience"
+      },
+      {
+        "href": "#teaching",
+        "label": "Teaching"
+      },
+      {
+        "href": "#projects",
+        "label": "Projects"
+      },
+      {
+        "href": "#contact",
+        "label": "Contact"
+      }
     ]
   },
   "hero": {
@@ -90,7 +112,13 @@ window.__SITE_CONTENT__ = {
       },
       {
         "title": "Frameworks",
-        "items": [".NET", "Bootstrap", "Tailwind", "Django", "React"]
+        "items": [
+          ".NET",
+          "Bootstrap",
+          "Tailwind",
+          "Django",
+          "React"
+        ]
       },
       {
         "title": "Tools",
@@ -131,8 +159,18 @@ window.__SITE_CONTENT__ = {
       {
         "title": "University of Toronto",
         "location": "Toronto, Canada",
+        "date": "Sept 2025 - Dec 2026",
+        "subtitle": "MSc in Applied Computing (MScAC), Computer Science",
+        "paragraphs": [
+          "Relevant courses: Database System Technology, Research Topics in Database Management, Compilers and Interpreters, Applications for Mobile Devices.",
+          "<strong>cGPA: 4.0/4.0</strong>"
+        ]
+      },
+      {
+        "title": "University of Toronto",
+        "location": "Toronto, Canada",
         "date": "Sep 2021 - Jun 2025",
-        "subtitle": "Honours B.Sc. in Computer Science and Mathematical Sciences",
+        "subtitle": "Honours Bachelor of Science (B.Sc.), Computer Science and Math",
         "paragraphs": [
           "Relevant courses: Algorithm Design, Analysis &amp; Complexity, Data Structures and Analysis, Operating Systems, Computer Security, Image Understanding, Databases, Machine Learning, Web Programming, Systems Programming.",
           "<strong>cGPA: 3.92/4.0</strong>"
@@ -152,30 +190,19 @@ window.__SITE_CONTENT__ = {
     "workTitle": "Experience",
     "work": [
       {
+        "title": "AI Engineer",
+        "location": "Next Pathway",
+        "date": "May 2026 – Present",
+        "paragraphs": []
+      },
+      {
         "title": "Software Engineer (Full-Stack)",
         "location": "dAItaflow Technologies (Early-stage startup)",
-        "date": "July 2025 – Present",
+        "date": "July 2025 – April 2026",
         "paragraphs": [
           "» Built and shipped an MVP Procore-integrated automation platform using async Django/ADRF APIs and OAuth2.",
           "» Improved reliability with correlation-ID tracing, structured logging, Redis caching, and OpenAPI documentation.",
           "» Dockerized services with GitHub Actions CI/CD to Cloud Run and deployed the React frontend to Firebase Hosting."
-        ]
-      },
-      {
-        "title": "Teaching Assistant - CSC427",
-        "location": "University of Toronto",
-        "date": "Jan 2025 - Apr 2025",
-        "subtitle": "Computer Security",
-        "paragraphs": []
-      },
-      {
-        "title": "Teaching Assistant - CSC347",
-        "location": "University of Toronto",
-        "date": "Sept 2024 - Dec 2024",
-        "subtitle": "Introduction to Information Security",
-        "paragraphs": [
-          "» Conducted weekly tutorials and practical sessions for 80+ undergraduates on software security, systems security, network security, and cryptography.",
-          "» Graded and provided detailed feedback for 200+ students, keeping pace with course schedules."
         ]
       },
       {
@@ -227,20 +254,147 @@ window.__SITE_CONTENT__ = {
       }
     ]
   },
+  "teaching": {
+    "kicker": "Instructor log",
+    "title": "Teaching Experience",
+    "items": [
+      {
+        "course": "CSC148H1S: Introduction to Computer Science",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Jan 2026 - Apr 2026"
+      },
+      {
+        "course": "CSC148H5S: Introduction to Computer Science",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Jan 2026 - Apr 2026"
+      },
+      {
+        "course": "CSC209H5S: Software Tools and Systems Programming",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Jan 2026 - Apr 2026"
+      },
+      {
+        "course": "CSC207H5F: Software Design",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Sep 2025 - Dec 2025"
+      },
+      {
+        "course": "CSC309H1F: Programming on the Web",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Sep 2025 - Dec 2025"
+      },
+      {
+        "course": "CSC347H5F: Introduction to Information Security",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Sep 2025 - Dec 2025"
+      },
+      {
+        "course": "CSC369H5F: Operating Systems",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Sep 2025 - Dec 2025"
+      },
+      {
+        "course": "CSC427H5S: Computer Security",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Jan 2025 - Apr 2025"
+      },
+      {
+        "course": "CSC347H5F: Introduction to Information Security",
+        "institution": "University of Toronto",
+        "instructor": "",
+        "role": "Teaching Assistant",
+        "date": "Sep 2024 - Dec 2024"
+      }
+    ]
+  },
   "projects": {
     "kicker": "Battle records",
     "title": "Projects",
     "filters": [
-      { "value": "all", "label": "All" },
-      { "value": "Applications", "label": "Applications" },
-      { "value": "Web app", "label": "Web app" }
+      {
+        "value": "all",
+        "label": "All"
+      },
+      {
+        "value": "Applications",
+        "label": "Applications"
+      },
+      {
+        "value": "Web app",
+        "label": "Web app"
+      },
+      {
+        "value": "Systems",
+        "label": "Systems"
+      },
+      {
+        "value": "AI",
+        "label": "AI"
+      }
     ],
     "items": [
       {
+        "title": "Better Leveled MPHF",
+        "category": "Systems",
+        "image": "./assets/images/projects/mphf.png",
+        "alt": "Better Leveled minimal perfect hash function",
+        "description": "Rust minimal perfect hash function that maps fixed key sets to collision-free indices using leveled bitsets.",
+        "href": "https://github.com/Dev301203/better-leveledmphf"
+      },
+      {
+        "title": "LegalEase",
+        "category": "AI",
+        "image": "./assets/images/projects/legal-ease.png",
+        "alt": "LegalEase AI-powered divorce negotiation simulator",
+        "description": "AI negotiation simulator that helps family lawyers practice realistic, emotionally aware divorce-case dialogues.",
+        "href": "https://github.com/Dev301203/legal-ease"
+      },
+      {
+        "title": "Ticket Priority MLOps",
+        "category": "AI",
+        "image": "./assets/images/projects/tp.png",
+        "alt": "Ticket Priority MLOps platform",
+        "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
+        "href": "https://github.com/Dev301203/ticket-priority-mlops"
+      },
+      {
+        "title": "Customer Support AI",
+        "category": "AI",
+        "image": "./assets/images/projects/customer-support-ai.png",
+        "alt": "Customer support AI reply drafting app",
+        "description": "Gemini-powered support assistant that drafts empathetic replies while extracting structured ticket metadata.",
+        "href": "https://github.com/Dev301203/customer-support-ai"
+      },
+      {
+        "title": "LSM Key-Value Store",
+        "category": "Systems",
+        "image": "./assets/images/projects/lsm.png",
+        "alt": "LSM key-value store",
+        "description": "Persistent C++ LSM-tree key-value store with AVL memtables, B-tree SSTs, Bloom filters, and benchmarked lookup paths.",
+        "href": "https://github.com/mnkhoi/kv-database"
+      },
+      {
         "title": "Advisory",
-        "category": "Web app",
+        "category": "AI",
         "image": "./assets/images/projects/advsry.png",
         "alt": "Advisory web app",
+        "description": "Academic advising web app for exploring degree planning and course decisions with a cleaner student workflow.",
         "href": "https://advsry.utm.utoronto.ca"
       },
       {
@@ -248,6 +402,7 @@ window.__SITE_CONTENT__ = {
         "category": "Web app",
         "image": "./assets/images/projects/appointify.png",
         "alt": "Appointify",
+        "description": "Appointment scheduling dashboard with authentication, calendars, contacts, and event management.",
         "href": "https://github.com/Dev301203/Appointify"
       },
       {
@@ -255,13 +410,15 @@ window.__SITE_CONTENT__ = {
         "category": "Applications",
         "image": "./assets/images/projects/bookcover.jpg",
         "alt": "Book cover identification",
+        "description": "Computer vision system that identifies oblique book covers using SIFT features and a hierarchical vocabulary tree.",
         "href": "https://github.com/Dev301203/Book-Cover-Via-Vocabulary-Tree"
       },
       {
         "title": "CLI social network",
-        "category": "Applications",
+        "category": "Systems",
         "image": "./assets/images/projects/socialmedia.jpg",
         "alt": "CLI social network",
+        "description": "Socket-based C social network server where users can list profiles, make friends, and post messages asynchronously.",
         "href": "https://github.com/Dev301203/Social-Media-App"
       },
       {
@@ -269,6 +426,7 @@ window.__SITE_CONTENT__ = {
         "category": "Applications",
         "image": "./assets/images/projects/cms.jpg",
         "alt": "Company management system",
+        "description": "JavaFX company operations manager for departments, teams, employees, budgets, and expenses.",
         "href": "https://github.com/Dev301203/company-management-system"
       },
       {
@@ -276,6 +434,7 @@ window.__SITE_CONTENT__ = {
         "category": "Applications",
         "image": "./assets/images/projects/brickbreaker.jpg",
         "alt": "Brick Breaker",
+        "description": "Assembly brick breaker game with paddle controls, ball physics, score tracking, lives, and sound effects.",
         "href": "https://github.com/Dev301203/Brick-Breaker"
       },
       {
@@ -283,6 +442,7 @@ window.__SITE_CONTENT__ = {
         "category": "Applications",
         "image": "./assets/images/projects/braille.jpg",
         "alt": "Braille Translator",
+        "description": "Command-line translator that automatically converts between English text and six-dot Braille notation.",
         "href": "https://github.com/Dev301203/Braille-Translator"
       }
     ]
