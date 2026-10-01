@@ -356,7 +356,11 @@
       }
     });
 
+    var mi = 0;
+    while (mi < trunk.n - 1 && trunk.y[mi] > H) mi++;
+
     return {
+      mouth: { x: trunk.x[mi], hw: trunk.hw[mi] },
       W: W, H: H, S: S, Dmax: Dmax, branches: branches, strokes: strokes,
       islands: islands, obstacles: obstacles, dashes: dashes
     };
@@ -530,7 +534,13 @@
     sizeLayers();
     readColors();
     scene = buildScene(seed, W, H);
+    // The page river picks up where the hero's main channel leaves the frame.
+    api.seed = seed;
+    api.mouth = scene.mouth;
+    window.dispatchEvent(new Event('ink:scene'));
   }
+
+  var api = window.InkRiver = { mulberry32: mulberry32, makeNoise: makeNoise, art: root, seed: 0, mouth: null };
 
   var resizeTimer = 0;
   window.addEventListener('resize', function () {
@@ -553,6 +563,7 @@
       document.documentElement.setAttribute('data-theme', next);
       try { localStorage.setItem('ink-theme', next); } catch (e) {}
       syncTheme(); readColors(); resetInk(); kick();
+      window.dispatchEvent(new Event('ink:theme'));
     });
   }
   syncTheme();

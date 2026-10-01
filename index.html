@@ -3,117 +3,112 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Devanshu Singhvi — systems, security, data lineage. AI engineer building infrastructure-grade tools." />
+    <meta name="description" content="Devanshu Singhvi. AI engineer and graduate student at the University of Toronto." />
     <meta property="og:title" content="Devanshu Singhvi" />
-    <meta property="og:description" content="Systems, security, and data lineage." />
+    <meta property="og:description" content="AI engineer and graduate student at the University of Toronto." />
     <meta property="og:type" content="website" />
     <title>Devanshu Singhvi</title>
     <link rel="shortcut icon" href="./assets/images/berserk.jpg" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/css/style.css" />
+    <script>
+      try {
+        var t = new URLSearchParams(location.search).get('theme') || localStorage.getItem('ink-theme');
+        if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) {}
+    </script>
   </head>
   <body>
-    <a href="#main-content" class="sr-only">Skip to content</a>
+    <a href="#about" class="skip">Skip to content</a>
 
-    <nav class="nav" id="nav" aria-label="Primary">
-      <span class="nav-brand">DS</span>
-      <div class="nav-links" id="nav-links"></div>
-    </nav>
-
-    <header class="hero" id="hero">
-      <div class="hero-landscape" id="hero-landscape" aria-hidden="true"></div>
-      <div class="hero-content" id="hero-content">
-        <h1 class="hero-name" id="hero-name"></h1>
-        <p class="hero-role" id="hero-role"></p>
-        <p class="hero-degree" id="hero-degree"></p>
-      </div>
-      <div class="hero-scroll-hint" id="scroll-hint">
-        <span>scroll</span>
-        <svg class="scroll-arrow" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-          <line x1="8" y1="2" x2="8" y2="13" />
-          <polyline points="3,9 8,14 13,9" />
-        </svg>
-      </div>
+    <header class="top">
+      <a class="seal" href="#hero" aria-label="Devanshu Singhvi, back to top">DS</a>
+      <nav class="nav" id="nav" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#teaching">Teaching</a>
+        <a href="#contact">Contact</a>
+      </nav>
     </header>
 
-    <main id="main-content">
+    <section class="hero" id="hero">
+      <div class="art" id="river-art" aria-hidden="true"></div>
 
-      <section class="section" id="about">
-        <div class="section-inner">
-          <div class="vignette" data-vignette="mountain-cluster"></div>
-          <h2 class="section-title">About</h2>
-          <div class="about-grid">
-            <div class="about-portrait">
-              <img src="./assets/images/portrait.png" alt="Portrait of Devanshu Singhvi" width="280" height="280" />
-            </div>
-            <div class="about-text" id="about-text"></div>
-          </div>
+      <div class="title">
+        <h1 class="name" id="hero-name" aria-label="Devanshu Singhvi">
+          <span class="name-line" data-text="Devanshu">Devanshu</span>
+          <span class="name-line" data-text="Singhvi">Singhvi</span>
+        </h1>
+        <p class="caption caption--solid" id="hero-role">SHIFT AI Engineer @ Next Pathway</p>
+        <p class="caption" id="hero-degree">MScAC, Computer Science, University of Toronto</p>
+      </div>
+
+      <div class="controls">
+        <button id="theme" type="button" aria-pressed="false">Night</button>
+        <button id="redraw" type="button">Redraw</button>
+      </div>
+    </section>
+
+    <main class="flow" id="main">
+      <div class="river-layer" id="page-river" aria-hidden="true"></div>
+
+      <section class="sec sec--about" id="about">
+        <div class="lane" aria-hidden="true"></div>
+        <h2 class="slab">About</h2>
+        <div class="card about" data-reveal>
+          <img class="about__portrait" src="./assets/images/portrait.png" alt="Portrait of Devanshu Singhvi" width="280" height="280" />
+          <div class="about__text prose" id="about-text"></div>
         </div>
       </section>
 
-      <section class="section" id="experience">
-        <div class="section-inner">
-          <div class="vignette" data-vignette="lone-pine"></div>
-          <h2 class="section-title">Experience</h2>
-          <div class="subsection">
-            <h3 class="subsection-title">Education</h3>
-            <div id="education-list"></div>
-          </div>
-          <div class="subsection">
-            <h3 class="subsection-title">Work</h3>
-            <div id="work-list"></div>
-          </div>
-          <div class="subsection">
-            <h3 class="subsection-title">Honours</h3>
-            <div id="honours-list"></div>
-          </div>
+      <section class="sec sec--experience" id="experience">
+        <div class="lane" aria-hidden="true"></div>
+        <h2 class="slab">Experience</h2>
+        <div class="jobs" id="work-list"></div>
+        <div class="card ledger ledger--edu" data-reveal>
+          <h3 class="tab">Education</h3>
+          <div id="education-list"></div>
+        </div>
+        <div class="card ledger ledger--honours" data-reveal>
+          <h3 class="tab">Honours</h3>
+          <div id="honours-list"></div>
           <div id="resume-mount"></div>
         </div>
       </section>
 
-      <section class="section" id="skills">
-        <div class="section-inner">
-          <div class="vignette" data-vignette="water-ripples"></div>
-          <h2 class="section-title">Skills</h2>
-          <div class="skills-grid" id="skills-grid"></div>
-        </div>
+      <section class="sec sec--projects" id="projects">
+        <div class="lane" aria-hidden="true"></div>
+        <h2 class="slab">Projects</h2>
+        <div class="proj-big" id="projects-big"></div>
+        <div class="proj-small" id="projects-small"></div>
       </section>
 
-      <section class="section" id="projects">
-        <div class="section-inner section-inner--wide">
-          <div class="vignette" data-vignette="bamboo"></div>
-          <h2 class="section-title">Projects</h2>
-          <div class="projects-grid" id="projects-grid"></div>
+      <section class="sec sec--teaching" id="teaching">
+        <div class="lane" aria-hidden="true"></div>
+        <div class="teaching-head">
+          <h2 class="slab">Teaching</h2>
+          <p class="card note prose" id="teaching-note" data-reveal></p>
         </div>
+        <ul class="stamps" id="teaching-list"></ul>
       </section>
 
-      <section class="section" id="teaching">
-        <div class="section-inner">
-          <div class="vignette" data-vignette="cloud-wisp"></div>
-          <h2 class="section-title">Teaching</h2>
-          <div class="teaching-list" id="teaching-list"></div>
+      <section class="sea" id="contact">
+        <canvas class="sea__waves" id="sea-waves" aria-hidden="true"></canvas>
+        <div class="sea__inner">
+          <h2 class="slab slab--invert">Contact</h2>
+          <ul class="contact" id="contact-links"></ul>
+          <p class="sea__foot">&copy; <span id="footer-year"></span> Devanshu Singhvi</p>
         </div>
       </section>
-
-      <section class="section" id="contact">
-        <div class="section-inner">
-          <div class="vignette" data-vignette="mountain-cluster"></div>
-          <h2 class="section-title">Contact</h2>
-          <div class="contact-links" id="contact-links"></div>
-        </div>
-      </section>
-
     </main>
 
-    <footer class="footer">
-      <p>&copy; <span id="footer-year"></span> Devanshu Singhvi</p>
-    </footer>
-
     <script src="./assets/data/site-data.js"></script>
-    <script src="./assets/js/ink-landscape.js"></script>
-    <script src="./assets/js/ink-vignettes.js"></script>
+    <script src="./assets/js/vendor/anime.umd.min.js"></script>
+    <script src="./assets/js/ink-river.js"></script>
     <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/page-river.js"></script>
   </body>
 </html>
