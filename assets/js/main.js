@@ -9,7 +9,6 @@
   setText('hero-name', hero.name);
   setText('hero-role', hero.role);
   setText('hero-degree', hero.degree + ' · ' + hero.school);
-  setText('hero-seal', hero.gpa);
 
   // ── Nav ────────────────────────────────────
   var sections = ['about', 'experience', 'skills', 'projects', 'teaching', 'contact'];
@@ -207,7 +206,6 @@
         if (y < vh) {
           var ratio = y / vh;
           heroContent.style.opacity = Math.max(0, 1 - ratio * 1.8);
-          heroLandscape.style.transform = 'translateY(' + (y * 0.35) + 'px)';
         }
         ticking = false;
       });

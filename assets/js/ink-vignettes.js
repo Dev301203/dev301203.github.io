@@ -66,7 +66,7 @@
         pts.push([x, y]);
       }
       var color = 'rgba(45,38,32,' + pk.a.toFixed(2) + ')';
-      svg += stroke(pts, color, 1.5, rng, p);
+      svg += stroke(pts, { col: color, wid: 1.5 });
       var filled = pts.slice();
       filled.push([pk.cx + pk.bw / 2, h]);
       filled.push([pk.cx - pk.bw / 2, h]);
@@ -89,11 +89,14 @@
       var t = i / 10;
       trunk.push([40 + p.noise(t * 5, 0) * 1.5, h - t * 55]);
     }
-    svg += stroke(trunk, 'rgba(45,38,32,0.7)', 1.8, rng, p);
+    svg += stroke(trunk, { col: 'rgba(45,38,32,0.7)', wid: 1.8 });
     for (var i = 0; i < 5; i++) {
       var cy = h - 30 - i * 8;
       var r = 10 - i * 1.2;
-      svg += blob(40 + (rng() - 0.5) * 6, cy, r, 8, 'rgba(45,38,32,' + (0.15 + rng() * 0.15).toFixed(2) + ')', rng, p);
+      svg += blob(40 + (rng() - 0.5) * 6, cy, {
+        len: r * 2, wid: 8,
+        col: 'rgba(45,38,32,' + (0.15 + rng() * 0.15).toFixed(2) + ')'
+      });
     }
     return wrap(svg, w, h);
   }
@@ -115,7 +118,7 @@
           var t = i / 6;
           pts.push([sx + t * len, y + Math.sin(t * Math.PI * 2) * 1.5 + p.noise(sx + t * 8, y) * 1]);
         }
-        svg += stroke(pts, 'rgba(45,38,32,' + (0.12 + rng() * 0.1).toFixed(2) + ')', 0.6, rng, p);
+        svg += stroke(pts, { col: 'rgba(45,38,32,' + (0.12 + rng() * 0.1).toFixed(2) + ')', wid: 0.6 });
       }
     }
     return wrap(svg, w, h);
@@ -135,14 +138,12 @@
         var t = i / 12;
         pts.push([bx + p.noise(t * 4 + s, 0) * 2, h - t * 75]);
       }
-      svg += stroke(pts, 'rgba(45,38,32,0.55)', 2.5, rng, p);
-      // Nodes
+      svg += stroke(pts, { col: 'rgba(45,38,32,0.55)', wid: 2.5 });
       for (var n = 1; n < 5; n++) {
         var ny = h - n * 16;
         var npts = [[bx - 3, ny], [bx + 3, ny]];
-        svg += stroke(npts, 'rgba(45,38,32,0.4)', 1.5, rng, p);
+        svg += stroke(npts, { col: 'rgba(45,38,32,0.4)', wid: 1.5 });
       }
-      // Leaves
       var leafCount = 2 + Math.floor(rng() * 3);
       for (var l = 0; l < leafCount; l++) {
         var ly = h - 30 - rng() * 40;
@@ -152,7 +153,7 @@
           var t = i / 6;
           leafPts.push([bx + side * t * 18 + p.noise(t * 3, ly) * 2, ly - Math.sin(t * Math.PI) * 6]);
         }
-        svg += stroke(leafPts, 'rgba(45,38,32,' + (0.2 + rng() * 0.15).toFixed(2) + ')', 0.8, rng, p);
+        svg += stroke(leafPts, { col: 'rgba(45,38,32,' + (0.2 + rng() * 0.15).toFixed(2) + ')', wid: 0.8 });
       }
     }
     return wrap(svg, w, h);
@@ -168,14 +169,17 @@
       var cx = 30 + c * 35 + (rng() - 0.5) * 15;
       var cy = 18 + (rng() - 0.5) * 8;
       var r = 10 + rng() * 8;
-      svg += blob(cx, cy, r, 10, 'rgba(45,38,32,' + (0.05 + rng() * 0.06).toFixed(2) + ')', rng, p);
+      svg += blob(cx, cy, {
+        len: r * 2, wid: 10,
+        col: 'rgba(45,38,32,' + (0.05 + rng() * 0.06).toFixed(2) + ')'
+      });
     }
     var pts = [];
     for (var i = 0; i <= 20; i++) {
       var t = i / 20;
       pts.push([10 + t * (w - 20), 20 + p.noise(t * 5, 0) * 4]);
     }
-    svg += stroke(pts, 'rgba(45,38,32,0.08)', 0.5, rng, p);
+    svg += stroke(pts, { col: 'rgba(45,38,32,0.08)', wid: 0.5 });
     return wrap(svg, w, h);
   }
 

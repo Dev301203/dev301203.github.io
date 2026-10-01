@@ -146,7 +146,7 @@ button { font-family: inherit; cursor: pointer; }
 .hero-landscape {
   position: absolute; inset: 0;
   z-index: var(--z-hero-bg);
-  will-change: transform;
+  background: white;
 }
 .hero-landscape svg {
   width: 100%; height: 100%;
