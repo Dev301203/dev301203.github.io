@@ -330,13 +330,21 @@ button { font-family: inherit; cursor: pointer; }
 .edu-entry__details { font-size: var(--text-sm); color: var(--ink-med); margin-top: var(--space-xs); }
 
 .honour-entry {
-  display: flex; justify-content: space-between; align-items: baseline;
   padding: var(--space-sm) 0; font-size: var(--text-sm);
+  border-bottom: 1px solid var(--ink-faint);
+}
+.honour-entry:last-child { border-bottom: none; }
+.honour-entry__header {
+  display: flex; justify-content: space-between; align-items: baseline;
 }
 .honour-entry__title { font-weight: 600; }
 .honour-entry__meta {
   color: var(--ink-med); font-style: italic;
   flex-shrink: 0; margin-left: var(--space-md);
+}
+.honour-entry__desc {
+  color: var(--ink-med); font-size: var(--text-xs);
+  margin-top: 2px; line-height: 1.5;
 }
 
 .resume-link {
@@ -485,7 +493,7 @@ button { font-family: inherit; cursor: pointer; }
   .teaching-entry__date { order: 2; }
   .teaching-entry__campus { order: 3; }
 
-  .honour-entry { flex-direction: column; gap: 2px; }
+  .honour-entry__header { flex-direction: column; gap: 2px; }
   .honour-entry__meta { margin-left: 0; }
 
   .projects-grid { grid-template-columns: 1fr; }

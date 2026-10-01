@@ -46,16 +46,23 @@ window.__SITE_CONTENT__ = {
         "location": "Toronto, Canada",
         "date": "Sep 2025 – Dec 2026",
         "subtitle": "MSc in Applied Computing (MScAC), Computer Science",
-        "details": ["Database System Technology, Compilers and Interpreters, Data Structures in the Wild, Apps for Mobile Devices.", "CGPA: 4.0/4.0"],
+        "details": ["Relevant courses: Database System Technology, Research Topics in Database Management, Compilers and Interpreters, Data Structures in the Wild, Applications for Mobile Devices.", "CGPA: 4.0/4.0"],
         "logo": "./assets/images/work/uoft.png"
       },
       {
         "title": "University of Toronto",
         "location": "Toronto, Canada",
         "date": "Sep 2021 – Apr 2025",
-        "subtitle": "Honours B.Sc., Computer Science and Math",
-        "details": ["Algorithm Design, Operating Systems, Computer Security, Databases, Machine Learning, Web Programming, Systems Programming.", "CGPA: 3.92/4.0"],
+        "subtitle": "Honours Bachelor of Science (B.Sc.), Computer Science and Mathematical Sciences",
+        "details": ["Relevant courses: Algorithm Design, Analysis & Complexity, Data Structures and Analysis, Operating Systems, Computer Security, Image Understanding, Databases, Machine Learning, Web Programming, Systems Programming.", "CGPA: 3.92/4.0"],
         "logo": "./assets/images/work/uoft.png"
+      },
+      {
+        "title": "New Millennium School",
+        "location": "Bahrain",
+        "date": "2007 – 2021",
+        "subtitle": "High School Diploma",
+        "details": ["Class 12: Physics, Chemistry, Mathematics, Computer Science, English. CBSE Class 12 — 97%.", "Class 10: Science, Social Science, Mathematics, French, English. CBSE Class 10 — 95.2%."]
       }
     ],
     "work": [
@@ -73,13 +80,15 @@ window.__SITE_CONTENT__ = {
       },
       {
         "title": "Software Engineer (Full-Stack)",
-        "company": "dAItaflow Technologies",
+        "company": "dAItaflow Technologies (Early-stage startup)",
         "date": "Jul 2025 – Apr 2026",
         "location": "Toronto, Canada",
         "logo": "./assets/images/work/daitaflow.png",
         "bullets": [
-          "Built a Procore-integrated construction automation platform with async Django REST APIs, OAuth2, and a React frontend, enabling bulk CSV imports of 5,000+ records per upload.",
-          "Eliminated Procore rate-limit failures during bulk syncs by adding bounded concurrency, Redis caching, and Cloud SQL connection pooling, and streamed live change logs via Server-Sent Events."
+          "Built and shipped an MVP Procore-integrated construction automation platform using async Django/ADRF REST APIs, OAuth2, and a React frontend, enabling bulk CSV imports of 5,000+ records per upload.",
+          "Improved platform reliability with correlation-ID tracing, structured logging, Redis caching, Cloud SQL connection pooling, and OpenAPI documentation.",
+          "Eliminated Procore rate-limit failures during bulk syncs by adding bounded concurrency and streamed live change logs via Server-Sent Events.",
+          "Dockerized services with GitHub Actions CI/CD to Cloud Run and deployed the React frontend to Firebase Hosting."
         ]
       },
       {
@@ -89,8 +98,9 @@ window.__SITE_CONTENT__ = {
         "location": "Manama, Bahrain",
         "logo": "./assets/images/work/bbk.png",
         "bullets": [
-          "Automated system configuration updates via Lansweeper, mitigating 1,500+ security risks and deploying software updates across 4,000+ assets.",
-          "Leveraged Trend Micro Vision One to identify and assess vulnerable assets, prioritizing remediation strategies."
+          "Used Trend Micro Vision One to identify and assess vulnerable assets across the enterprise, prioritizing remediation strategies based on risk severity.",
+          "Deployed packages with Lansweeper to automate system configuration changes, mitigate 1,500+ security risks, and update software across 4,000+ assets.",
+          "Hardened Ubuntu 22 servers toward STIG compliance; updated Group Policy Objects and firewall rules to strengthen network security posture."
         ]
       },
       {
@@ -100,16 +110,17 @@ window.__SITE_CONTENT__ = {
         "location": "Toronto, Canada",
         "logo": "./assets/images/work/metrolinx.png",
         "bullets": [
-          "Built real-time Grafana/Prometheus dashboards tracking GO Train and Bus data feeds for observability.",
-          "Integrated custom IoT metrics into C# and Node.js services, streamlining application monitoring across several APIs.",
-          "Cut incident detection time by 75% using automated alerts that took mean time to detection from hours to minutes."
+          "Built real-time Grafana and Prometheus dashboards for GO Train and Bus data feeds, providing transit telemetry observability.",
+          "Integrated custom IoT metrics into C# and Node.js services, streamlining application monitoring across multiple APIs.",
+          "Created automated alerts that cut mean time to detection (MTTD) by over 75%, reducing incident detection from hours to minutes.",
+          "Contributed to Real-Time Information (RTI) enhancements including Schedule Manager and HTTPS updates for transit services."
         ]
       }
     ],
     "honours": [
-      { "title": "Dean's List Scholar", "org": "University of Toronto", "date": "2021 – 2025" },
-      { "title": "Renewable Entrance Scholarship", "org": "University of Toronto", "date": "2021 – 2024" },
-      { "title": "Scholars Award", "org": "University of Toronto", "date": "2021" }
+      { "title": "Dean's List Scholar", "org": "University of Toronto", "date": "Winter 2022, 2023, 2024 & 2025", "description": "For UTM degree students with CGPA ≥ 3.50 at the end of the session when the 5th, 10th, 15th, or 20th credit is passed." },
+      { "title": "Renewable Entrance Scholarship", "org": "University of Toronto", "date": "Sep 2021 – 2024", "description": "$3,000/year for 95%+ high school average and maintaining 3.7+ CGPA in university." },
+      { "title": "Scholars Award", "org": "University of Toronto", "date": "Sep 2021", "description": "Recognition for outstanding students at admission; approximately 900 domestic and international students considered automatically from admission average." }
     ]
   },
   "teaching": {
@@ -184,12 +195,52 @@ window.__SITE_CONTENT__ = {
         "image": "./assets/images/projects/bookcover.jpg"
       },
       {
+        "title": "Customer Support AI",
+        "tech": "Python, Gemini API",
+        "date": "2024",
+        "description": "Gemini-powered support assistant that drafts empathetic replies while extracting structured ticket metadata for triage and analytics.",
+        "href": "https://github.com/Dev301203/customer-support-ai",
+        "image": "./assets/images/projects/customer-support-ai.png"
+      },
+      {
+        "title": "Appointify",
+        "tech": "Full-stack web app",
+        "date": "2024",
+        "description": "Appointment scheduling dashboard with authentication, calendars, contacts, and event management.",
+        "href": "https://github.com/Dev301203/Appointify",
+        "image": "./assets/images/projects/appointify.png"
+      },
+      {
         "title": "CLI Social Network",
         "tech": "C",
         "date": "2023",
-        "description": "Socket-based social network server with async messaging, profiles, and friend management.",
+        "description": "Socket-based C social network server where users can list profiles, make friends, and post messages asynchronously.",
         "href": "https://github.com/Dev301203/Social-Media-App",
         "image": "./assets/images/projects/socialmedia.jpg"
+      },
+      {
+        "title": "Company Management System",
+        "tech": "Java, JavaFX",
+        "date": "2023",
+        "description": "JavaFX company operations manager for departments, teams, employees, budgets, and expenses.",
+        "href": "https://github.com/Dev301203/company-management-system",
+        "image": "./assets/images/projects/cms.jpg"
+      },
+      {
+        "title": "Brick Breaker",
+        "tech": "Assembly (MIPS)",
+        "date": "2022",
+        "description": "Assembly brick breaker game with paddle controls, ball physics, score tracking, lives, and sound effects.",
+        "href": "https://github.com/Dev301203/Brick-Breaker",
+        "image": "./assets/images/projects/brickbreaker.jpg"
+      },
+      {
+        "title": "Braille Translator",
+        "tech": "Python",
+        "date": "2022",
+        "description": "Command-line translator that automatically converts between English text and six-dot Braille notation.",
+        "href": "https://github.com/Dev301203/Braille-Translator",
+        "image": "./assets/images/projects/braille.jpg"
       }
     ]
   },

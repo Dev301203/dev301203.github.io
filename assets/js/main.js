@@ -93,8 +93,14 @@
   exp.honours.forEach(function (h) {
     var row = document.createElement('div');
     row.className = 'honour-entry';
-    row.appendChild(el('span', 'honour-entry__title', h.title));
-    row.appendChild(el('span', 'honour-entry__meta', h.org + ', ' + h.date));
+    var header = document.createElement('div');
+    header.className = 'honour-entry__header';
+    header.appendChild(el('span', 'honour-entry__title', h.title));
+    header.appendChild(el('span', 'honour-entry__meta', h.org + ', ' + h.date));
+    row.appendChild(header);
+    if (h.description) {
+      row.appendChild(el('div', 'honour-entry__desc', h.description));
+    }
     honoursList.appendChild(row);
   });
 
