@@ -1,979 +1,277 @@
 (function () {
-  "use strict";
+  'use strict';
 
-  var CONTENT_URL = "./assets/data/content.json";
+  var data = window.__SITE_CONTENT__;
+  if (!data) return;
 
-  var prefersReduced =
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var animeOk = typeof anime !== "undefined" && !prefersReduced;
+  // ── Hero ───────────────────────────────────
+  var hero = data.hero;
+  setText('hero-name', hero.name);
+  setText('hero-role', hero.role);
+  setText('hero-degree', hero.degree + ' · ' + hero.school);
+  setText('hero-seal', hero.gpa);
 
-  var siteData = null;
-  var fullTagline = "";
-
-  function escapeAttr(s) {
-    if (s == null) return "";
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/"/g, "&quot;")
-      .replace(/</g, "&lt;");
-  }
-
-  function escapeHtml(s) {
-    if (s == null) return "";
-    var d = document.createElement("div");
-    d.textContent = s;
-    return d.innerHTML;
-  }
-
-  function applyMeta(meta) {
-    if (!meta) return;
-    if (meta.title) document.title = meta.title;
-    var desc = document.querySelector('meta[name="description"]');
-    if (desc && meta.description) desc.setAttribute("content", meta.description);
-    var icon = document.querySelector('link[rel="shortcut icon"], link[rel="icon"]');
-    if (icon && meta.favicon) icon.setAttribute("href", meta.favicon);
-  }
-
-  function renderHeader(h) {
-    if (!h) return;
-    var logoMount = document.getElementById("mount-logo");
-    var navMenu = document.getElementById("nav-menu");
-    if (logoMount && h.logoMark) {
-      logoMount.innerHTML =
-        '<a href="' +
-        escapeAttr(h.logoHref || "#hero") +
-        '" class="logo-mark">' +
-        escapeHtml(h.logoMark.text || "") +
-        "<span>" +
-        escapeHtml(h.logoMark.accent || "") +
-        "</span></a>";
-    }
-    if (navMenu && h.nav && h.nav.length) {
-      navMenu.innerHTML = h.nav
-        .map(function (item) {
-          return (
-            "<li><a href=\"" +
-            escapeAttr(item.href) +
-            '">' +
-            escapeHtml(item.label) +
-            "</a></li>"
-          );
-        })
-        .join("");
-    }
-  }
-
-  function renderHero(hero) {
-    var mount = document.getElementById("mount-hero");
-    if (!hero || !mount) return;
-    fullTagline = hero.tagline || "";
-    mount.innerHTML =
-      '<p class="hero-badge" data-hero-badge>' +
-      escapeHtml(hero.badge || "") +
-      "</p>" +
-      '<h1 class="hero-title" id="hero-name">' +
-      escapeHtml(hero.name || "") +
-      "</h1>" +
-      '<p class="hero-tagline" id="hero-tagline"></p>' +
-      '<button type="button" class="hero-cta" data-scroll-to="' +
-      escapeAttr(hero.ctaTarget || "#about") +
-      '">' +
-      escapeHtml(hero.ctaLabel || "") +
-      "</button>";
-  }
-
-  function renderAbout(a) {
-    var el = document.getElementById("mount-about");
-    if (!a || !el) return;
-    var paras = (a.paragraphs || [])
-      .map(function (p) {
-        return "<p>" + p + "</p>";
-      })
-      .join("");
-    var logos = (a.logos || [])
-      .map(function (logo) {
-        var matte = logo.matte ? " logo-slot--matte" : "";
-        var w = logo.width != null ? logo.width : 280;
-        var h = logo.height != null ? logo.height : 120;
-        return (
-          '<div class="logo-slot' +
-          matte +
-          '"><img src="' +
-          escapeAttr(logo.src) +
-          '" alt="' +
-          escapeAttr(logo.alt) +
-          '" width="' +
-          w +
-          '" height="' +
-          h +
-          '" data-animate="logo" /></div>'
-        );
-      })
-      .join("");
-    el.innerHTML =
-      '<header class="section-header">' +
-      '<p class="section-kicker">' +
-      escapeHtml(a.kicker || "") +
-      "</p>" +
-      '<h2 class="section-title">' +
-      escapeHtml(a.title || "") +
-      "</h2>" +
-      '<span class="section-slash"></span></header>' +
-      '<div class="about-grid">' +
-      '<div class="about-portrait" data-animate="about-left">' +
-      '<img src="' +
-      escapeAttr(a.portrait && a.portrait.src) +
-      '" alt="' +
-      escapeAttr(a.portrait && a.portrait.alt) +
-      '" width="320" height="320" />' +
-      "</div>" +
-      '<div class="about-copy" data-animate="about-right">' +
-      paras +
-      '<div class="worked-with">' +
-      "<h3>" +
-      escapeHtml(a.workedWithTitle || "Worked with") +
-      "</h3>" +
-      '<div class="logo-row">' +
-      logos +
-      "</div></div></div></div>";
-  }
-
-  function renderSkills(sk) {
-    var el = document.getElementById("mount-skills");
-    if (!sk || !el) return;
-    var groups = (sk.groups || [])
-      .map(function (g) {
-        var chips = (g.items || [])
-          .map(function (item) {
-            return '<span class="skill-chip" data-skill>' + escapeHtml(item) + "</span>";
-          })
-          .join("");
-        return (
-          '<div class="skill-group">' +
-          "<h3>" +
-          escapeHtml(g.title || "") +
-          "</h3>" +
-          '<div class="skill-chips">' +
-          chips +
-          "</div></div>"
-        );
-      })
-      .join("");
-    el.innerHTML =
-      '<header class="section-header">' +
-      '<p class="section-kicker">' +
-      escapeHtml(sk.kicker || "") +
-      "</p>" +
-      '<h2 class="section-title">' +
-      escapeHtml(sk.title || "") +
-      "</h2>" +
-      '<span class="section-slash"></span></header>' +
-      groups;
-  }
-
-  function timelineCardHtml(entry) {
-    var h = '<div class="timeline-card">';
-    h += "<h4>" + escapeHtml(entry.title || "") + "</h4>";
-    if (entry.location) {
-      h += '<p class="timeline-loc">' + escapeHtml(entry.location) + "</p>";
-    }
-    if (entry.date) {
-      h += '<p class="timeline-date">' + escapeHtml(entry.date) + "</p>";
-    }
-    if (entry.subtitle) {
-      h += '<p class="timeline-subtitle">' + escapeHtml(entry.subtitle) + "</p>";
-    }
-    (entry.paragraphs || []).forEach(function (p) {
-      h += "<p>" + p + "</p>";
+  // ── Nav ────────────────────────────────────
+  var sections = ['about', 'experience', 'skills', 'projects', 'teaching', 'contact'];
+  var navLinksEl = document.getElementById('nav-links');
+  sections.forEach(function (id) {
+    var btn = document.createElement('button');
+    btn.className = 'nav-link';
+    btn.textContent = id.charAt(0).toUpperCase() + id.slice(1);
+    btn.setAttribute('data-section', id);
+    btn.addEventListener('click', function () {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
     });
-    h += "</div>";
-    return h;
-  }
-
-  function renderTimelineEntries(entries) {
-    return (entries || [])
-      .map(function (entry, i) {
-        var side = i % 2 === 0 ? "left" : "right";
-        return (
-          '<article class="timeline-block timeline-block--' +
-          side +
-          '" data-timeline>' +
-          timelineCardHtml(entry) +
-          "</article>"
-        );
-      })
-      .join("");
-  }
-
-  function renderHonours(entries) {
-    return (entries || [])
-      .map(function (entry, index) {
-        var body = (entry.paragraphs || [])
-          .map(function (p) {
-            return "<p>" + p + "</p>";
-          })
-          .join("");
-        return (
-          '<article class="award-card" data-award-card>' +
-          '<div class="award-card__mark">' +
-          String(index + 1).padStart(2, "0") +
-          "</div>" +
-          '<div class="award-card__body">' +
-          "<h4>" +
-          escapeHtml(entry.title || "") +
-          "</h4>" +
-          '<p class="award-card__issuer">' +
-          escapeHtml(entry.location || "") +
-          "</p>" +
-          '<p class="award-card__date">' +
-          escapeHtml(entry.date || "") +
-          "</p>" +
-          body +
-          "</div>" +
-          "</article>"
-        );
-      })
-      .join("");
-  }
-
-  function renderExperience(ex) {
-    var el = document.getElementById("mount-experience");
-    if (!ex || !el) return;
-    var resume = ex.resume || {};
-    el.innerHTML =
-      '<header class="section-header">' +
-      '<p class="section-kicker">' +
-      escapeHtml(ex.kicker || "") +
-      "</p>" +
-      '<h2 class="section-title">' +
-      escapeHtml(ex.title || "") +
-      "</h2>" +
-      '<span class="section-slash"></span></header>' +
-      '<div class="resume-cta" data-animate="resume-cta">' +
-      '<ion-icon name="document-text-outline" aria-hidden="true"></ion-icon>' +
-      "<div>" +
-      '<p style="margin: 0 0 0.35rem; color: var(--text-muted); font-size: 0.9rem">' +
-      escapeHtml(resume.description || "") +
-      "</p>" +
-      '<a href="' +
-      escapeAttr(resume.url) +
-      '" target="_blank" rel="noopener noreferrer">' +
-      escapeHtml(resume.linkText || "") +
-      "</a></div></div>" +
-      '<h3 class="section-kicker" style="margin-bottom: 1.5rem">' +
-      escapeHtml(ex.educationTitle || "Education") +
-      "</h3>" +
-      '<div class="timeline">' +
-      renderTimelineEntries(ex.education) +
-      "</div>" +
-      '<h3 class="section-kicker" style="margin: 3rem 0 1.5rem">' +
-      escapeHtml(ex.workTitle || "Experience") +
-      "</h3>" +
-      '<div class="timeline">' +
-      renderTimelineEntries(ex.work) +
-      "</div>" +
-      '<h3 class="section-kicker" style="margin: 3rem 0 1.5rem">' +
-      escapeHtml(ex.honoursTitle || "Honours & awards") +
-      "</h3>" +
-      '<div class="award-grid">' +
-      renderHonours(ex.honours) +
-      "</div>";
-  }
-
-  function renderTeaching(t) {
-    var el = document.getElementById("mount-teaching");
-    if (!t || !el) return;
-    var cards = (t.items || [])
-      .map(function (item) {
-        var instructor = item.instructor
-          ? '<p class="teaching-card__instructor">Taught by ' +
-            escapeHtml(item.instructor) +
-            "</p>"
-          : "";
-        return (
-          '<article class="teaching-card" data-teaching-card>' +
-          '<div class="teaching-card__main">' +
-          "<h3>" +
-          escapeHtml(item.course || "") +
-          "</h3>" +
-          '<p class="teaching-card__school">' +
-          escapeHtml(item.institution || "") +
-          "</p>" +
-          instructor +
-          "</div>" +
-          '<div class="teaching-card__meta">' +
-          '<span class="teaching-card__role">' +
-          escapeHtml(item.role || "") +
-          "</span>" +
-          '<span class="teaching-card__date">' +
-          escapeHtml(item.date || "") +
-          "</span>" +
-          "</div>" +
-          "</article>"
-        );
-      })
-      .join("");
-    el.innerHTML =
-      '<header class="section-header">' +
-      '<p class="section-kicker">' +
-      escapeHtml(t.kicker || "") +
-      "</p>" +
-      '<h2 class="section-title">' +
-      escapeHtml(t.title || "") +
-      "</h2>" +
-      '<span class="section-slash"></span></header>' +
-      '<div class="teaching-grid">' +
-      cards +
-      "</div>";
-  }
-
-  function renderProjects(p) {
-    var el = document.getElementById("mount-projects");
-    if (!p || !el) return;
-    var filters = (p.filters || [])
-      .map(function (f) {
-        var active = f.value === "all" ? " is-active" : "";
-        return (
-          '<button type="button" class="filter-btn' +
-          active +
-          '" data-filter="' +
-          escapeAttr(f.value) +
-          '">' +
-          escapeHtml(f.label) +
-          "</button>"
-        );
-      })
-      .join("");
-    var cards = (p.items || [])
-      .map(function (item) {
-        var media = item.image
-          ? '<div class="project-card__media">' +
-            '<img src="' +
-            escapeAttr(item.image) +
-            '" alt="' +
-            escapeAttr(item.alt) +
-            '" width="640" height="400" />' +
-            "</div>"
-          : '<div class="project-card__media project-card__media--generated" aria-hidden="true"><span>' +
-            escapeHtml(item.mark || (item.title || "?").slice(0, 2)) +
-            "</span></div>";
-        var description = item.description
-          ? '<p class="project-card__desc">' + escapeHtml(item.description) + "</p>"
-          : "";
-        return (
-          '<article class="project-card" data-category="' +
-          escapeAttr(item.category) +
-          '" data-project-card>' +
-          '<a class="project-card__link" href="' +
-          escapeAttr(item.href) +
-          '" target="_blank" rel="noopener noreferrer">' +
-          media +
-          '<div class="project-card__body">' +
-          '<p class="project-card__cat">' +
-          escapeHtml(item.category) +
-          "</p>" +
-          '<h3 class="project-card__title">' +
-          escapeHtml(item.title) +
-          "</h3>" +
-          description +
-          "</div></a></article>"
-        );
-      })
-      .join("");
-    el.innerHTML =
-      '<header class="section-header">' +
-      '<p class="section-kicker">' +
-      escapeHtml(p.kicker || "") +
-      "</p>" +
-      '<h2 class="section-title">' +
-      escapeHtml(p.title || "") +
-      "</h2>" +
-      '<span class="section-slash"></span></header>' +
-      '<div class="filter-bar" role="group" aria-label="Filter projects">' +
-      filters +
-      "</div>" +
-      '<div class="project-grid" id="project-grid">' +
-      cards +
-      "</div>";
-  }
-
-  function renderContact(c) {
-    var el = document.getElementById("mount-contact");
-    if (!c || !el) return;
-    var links = (c.links || [])
-      .map(function (link) {
-        var ext = link.external ? ' target="_blank" rel="noopener noreferrer"' : "";
-        return (
-          '<a class="contact-pill" href="' +
-          escapeAttr(link.href) +
-          '" data-contact-link' +
-          ext +
-          "><ion-icon name=\"" +
-          escapeAttr(link.icon) +
-          '"></ion-icon>' +
-          escapeHtml(link.label) +
-          "</a>"
-        );
-      })
-      .join("");
-    el.innerHTML =
-      '<header class="section-header">' +
-      '<p class="section-kicker">' +
-      escapeHtml(c.kicker || "") +
-      "</p>" +
-      '<h2 class="section-title">' +
-      escapeHtml(c.title || "") +
-      "</h2>" +
-      '<span class="section-slash"></span></header>' +
-      '<p class="contact-lead" data-contact-lead>' +
-      escapeHtml(c.lead || "") +
-      "</p>" +
-      '<div class="contact-links">' +
-      links +
-      "</div>";
-  }
-
-  function renderFooter(f) {
-    var el = document.getElementById("mount-footer");
-    if (!el) return;
-    var name = f && f.name ? f.name : "";
-    var note = f && f.note ? f.note : "";
-    el.innerHTML =
-      "<p>© <span id=\"year\"></span> " + escapeHtml(name) + ". " + escapeHtml(note) + "</p>";
-  }
-
-  /* ---------- Hero animation ---------- */
-  function splitHeroName() {
-    var heroName = document.getElementById("hero-name");
-    if (!heroName) return;
-    var text = heroName.textContent.trim();
-    heroName.textContent = "";
-    text.split("").forEach(function (ch) {
-      var span = document.createElement("span");
-      span.className = "hero-char" + (ch === " " ? " hero-char-space" : "");
-      span.textContent = ch === " " ? "\u00a0" : ch;
-      heroName.appendChild(span);
-    });
-  }
-
-  function runTypewriter() {
-    var taglineEl = document.getElementById("hero-tagline");
-    if (!taglineEl) return;
-    var i = 0;
-    function tick() {
-      if (i <= fullTagline.length) {
-        taglineEl.textContent = fullTagline.slice(0, i);
-        i += 1;
-        setTimeout(tick, prefersReduced ? 0 : 28);
-      } else if (animeOk) {
-        anime({
-          targets: taglineEl,
-          skewX: [0, -3, 3, 0],
-          duration: 280,
-          easing: "easeInOutQuad",
-        });
-      }
-    }
-    setTimeout(tick, prefersReduced ? 0 : 900);
-  }
-
-  function initHero() {
-    var heroName = document.getElementById("hero-name");
-    splitHeroName();
-
-    if (!animeOk) {
-      if (heroName && siteData && siteData.hero) {
-        var chars = heroName.querySelectorAll(".hero-char");
-        if (chars.length) {
-          heroName.textContent = siteData.hero.name || "";
-        }
-      }
-      var taglineEl = document.getElementById("hero-tagline");
-      if (taglineEl) taglineEl.textContent = fullTagline;
-      document.querySelectorAll(".hero-badge, .hero-tagline, .hero-cta, .scroll-cue").forEach(function (el) {
-        el.style.opacity = "1";
-        el.style.transform = "none";
-      });
-      return;
-    }
-
-    anime.set(".hero-char", {
-      opacity: 0,
-      translateY: 56,
-      rotate: -14,
-    });
-
-    anime({
-      targets: ".hero-char",
-      opacity: 1,
-      translateY: 0,
-      rotate: 0,
-      delay: anime.stagger(42, { start: 220 }),
-      duration: 720,
-      easing: "easeOutElastic(1, .6)",
-    });
-
-    anime({
-      targets: "[data-hero-badge]",
-      opacity: 1,
-      scale: [0.85, 1],
-      duration: 500,
-      delay: 80,
-      easing: "easeOutBack(1.4)",
-    });
-
-    anime({
-      targets: ".hero-tagline",
-      opacity: 1,
-      duration: 400,
-      delay: 600,
-      easing: "easeOutQuad",
-    });
-    runTypewriter();
-
-    anime({
-      targets: ".hero-cta",
-      opacity: 1,
-      scale: [0.88, 1],
-      duration: 560,
-      delay: 1400,
-      easing: "easeOutBack(1.25)",
-    });
-
-    anime({
-      targets: ".scroll-cue",
-      opacity: 1,
-      duration: 500,
-      delay: 2000,
-      easing: "easeOutQuad",
-    });
-
-    anime({
-      targets: ".scroll-cue ion-icon",
-      translateY: [0, 12, 0],
-      loop: true,
-      duration: 1400,
-      easing: "easeInOutSine",
-      delay: 2200,
-    });
-  }
-
-  function observeSection(selector, onEnter) {
-    var el = document.querySelector(selector);
-    if (!el) return;
-    var done = false;
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting || done) return;
-          done = true;
-          onEnter();
-          io.disconnect();
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    );
-    io.observe(el);
-  }
-
-  function setupScrollAnimations() {
-    observeSection("#about", function () {
-      var portrait = document.querySelector(".about-portrait");
-      var copy = document.querySelector(".about-copy");
-      var logos = document.querySelectorAll(".logo-row img[data-animate='logo']");
-
-      if (animeOk) {
-        if (portrait) {
-          anime.set(portrait, { opacity: 0, translateX: -70 });
-          anime({
-            targets: portrait,
-            opacity: 1,
-            translateX: 0,
-            duration: 800,
-            easing: "easeOutCubic",
-          });
-        }
-        if (copy) {
-          anime.set(copy, { opacity: 0, translateX: 70 });
-          anime({
-            targets: copy,
-            opacity: 1,
-            translateX: 0,
-            duration: 800,
-            delay: 120,
-            easing: "easeOutCubic",
-          });
-        }
-        if (logos.length) {
-          anime.set(logos, { opacity: 0, scale: 0.85, rotate: -4 });
-          anime({
-            targets: logos,
-            opacity: 1,
-            scale: 1,
-            rotate: 0,
-            delay: anime.stagger(100, { start: 280 }),
-            duration: 600,
-            easing: "easeOutBack(1.1)",
-          });
-        }
-      } else {
-        if (portrait) portrait.style.opacity = "1";
-        if (copy) copy.style.opacity = "1";
-        logos.forEach(function (img) {
-          img.style.opacity = "1";
-        });
-      }
-    });
-
-    observeSection("#skills", function () {
-      var chips = document.querySelectorAll("[data-skill]");
-      if (animeOk && chips.length) {
-        anime.set(chips, { opacity: 0, scale: 0.65, rotate: -6 });
-        anime({
-          targets: chips,
-          opacity: 1,
-          scale: 1,
-          rotate: 0,
-          delay: anime.stagger(28, { start: 100 }),
-          duration: 520,
-          easing: "easeOutElastic(1, .7)",
-        });
-      } else {
-        chips.forEach(function (c) {
-          c.style.opacity = "1";
-        });
-      }
-    });
-
-    observeSection("#experience", function () {
-      var resumeCta = document.querySelector("[data-animate='resume-cta']");
-      var blocks = document.querySelectorAll("[data-timeline]");
-      var awards = document.querySelectorAll("[data-award-card]");
-
-      if (animeOk) {
-        if (resumeCta) {
-          anime.set(resumeCta, { opacity: 0, translateY: 36 });
-          anime({
-            targets: resumeCta,
-            opacity: 1,
-            translateY: 0,
-            duration: 600,
-            easing: "easeOutCubic",
-          });
-        }
-        blocks.forEach(function (block, index) {
-          var fromLeft = block.classList.contains("timeline-block--left");
-          anime.set(block, {
-            opacity: 0,
-            translateX: fromLeft ? -80 : 80,
-          });
-          anime({
-            targets: block,
-            opacity: 1,
-            translateX: 0,
-            duration: 750,
-            delay: index * 90,
-            easing: "easeOutCubic",
-          });
-        });
-        if (awards.length) {
-          anime.set(awards, { opacity: 0, translateY: 38, scale: 0.96 });
-          anime({
-            targets: awards,
-            opacity: 1,
-            translateY: 0,
-            scale: 1,
-            duration: 620,
-            delay: anime.stagger(90, { start: blocks.length * 90 + 160 }),
-            easing: "easeOutCubic",
-          });
-        }
-      } else {
-        if (resumeCta) resumeCta.style.opacity = "1";
-        blocks.forEach(function (b) {
-          b.style.opacity = "1";
-        });
-        awards.forEach(function (award) {
-          award.style.opacity = "1";
-        });
-      }
-    });
-
-    observeSection("#teaching", function () {
-      var cards = document.querySelectorAll("[data-teaching-card]");
-      if (animeOk && cards.length) {
-        anime.set(cards, { opacity: 0, translateY: 44, scale: 0.96 });
-        anime({
-          targets: cards,
-          opacity: 1,
-          translateY: 0,
-          scale: 1,
-          delay: anime.stagger(70, { start: 80 }),
-          duration: 620,
-          easing: "easeOutCubic",
-        });
-      } else {
-        cards.forEach(function (card) {
-          card.style.opacity = "1";
-        });
-      }
-    });
-
-    observeSection("#projects", function () {
-      animateVisibleProjectCards();
-    });
-
-    observeSection("#contact", function () {
-      var lead = document.querySelector("[data-contact-lead]");
-      var pills = document.querySelectorAll("[data-contact-link]");
-
-      if (animeOk) {
-        if (lead) {
-          anime.set(lead, { opacity: 0, translateY: 24 });
-          anime({
-            targets: lead,
-            opacity: 1,
-            translateY: 0,
-            duration: 550,
-            easing: "easeOutCubic",
-          });
-        }
-        if (pills.length) {
-          anime.set(pills, { opacity: 0, scale: 0.9 });
-          anime({
-            targets: pills,
-            opacity: 1,
-            scale: 1,
-            delay: anime.stagger(120, { start: 200 }),
-            duration: 550,
-            easing: "easeOutBack(1.15)",
-          });
-        }
-      } else {
-        if (lead) lead.style.opacity = "1";
-        pills.forEach(function (p) {
-          p.style.opacity = "1";
-        });
-      }
-    });
-  }
-
-  function animateVisibleProjectCards() {
-    var cards = document.querySelectorAll("[data-project-card]:not(.is-hidden)");
-    if (animeOk && cards.length) {
-      anime.set(cards, { opacity: 0, translateY: 56, scale: 0.94 });
-      anime({
-        targets: cards,
-        opacity: 1,
-        translateY: 0,
-        scale: 1,
-        delay: anime.stagger(85, { start: 80 }),
-        duration: 680,
-        easing: "easeOutElastic(1, .72)",
-      });
-    } else {
-      cards.forEach(function (c) {
-        c.style.opacity = "1";
-      });
-    }
-  }
-
-  function bindProjectFilters() {
-    document.addEventListener("click", function (e) {
-      var btn = e.target.closest(".filter-bar .filter-btn[data-filter]");
-      if (!btn) return;
-
-      var cat = btn.getAttribute("data-filter");
-      var bar = btn.closest(".filter-bar");
-      if (!bar) return;
-
-      bar.querySelectorAll(".filter-btn[data-filter]").forEach(function (b) {
-        b.classList.toggle("is-active", b === btn);
-      });
-
-      var projectCards = document.querySelectorAll("[data-project-card]");
-      projectCards.forEach(function (card) {
-        var show = cat === "all" || card.getAttribute("data-category") === cat;
-
-        if (show) {
-          card.classList.remove("is-hidden");
-          if (animeOk) {
-            anime({
-              targets: card,
-              opacity: [0, 1],
-              scale: [0.9, 1],
-              duration: 480,
-              easing: "easeOutQuad",
-            });
-          } else {
-            card.style.opacity = "1";
-          }
-        } else {
-          if (animeOk) {
-            anime({
-              targets: card,
-              opacity: 0,
-              scale: 0.92,
-              duration: 320,
-              easing: "easeInQuad",
-              complete: function () {
-                card.classList.add("is-hidden");
-              },
-            });
-          } else {
-            card.classList.add("is-hidden");
-          }
-        }
-      });
-    });
-  }
-
-  function bindContactHover() {
-    if (!animeOk) return;
-    document.querySelectorAll("[data-contact-link]").forEach(function (pill) {
-      pill.addEventListener("mouseenter", function () {
-        anime.remove(pill);
-        anime({
-          targets: pill,
-          scale: [1, 1.08, 1.04],
-          duration: 480,
-          easing: "easeOutElastic(1, .6)",
-        });
-      });
-      pill.addEventListener("mouseleave", function () {
-        anime({
-          targets: pill,
-          scale: 1,
-          duration: 380,
-          easing: "easeOutQuad",
-        });
-      });
-    });
-  }
-
-  /* ---------- Mobile nav ---------- */
-  var siteNav = document.getElementById("site-nav");
-  var navToggle = document.getElementById("nav-toggle");
-
-  function setNavOpen(open) {
-    if (!siteNav || !navToggle) return;
-    siteNav.classList.toggle("is-open", open);
-    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
-  }
-
-  if (navToggle && siteNav) {
-    navToggle.addEventListener("click", function () {
-      setNavOpen(!siteNav.classList.contains("is-open"));
-    });
-  }
-
-  document.addEventListener("click", function (e) {
-    if (e.target.closest("#nav-menu a[href^='#']")) {
-      setNavOpen(false);
-    }
-    var scrollBtn = e.target.closest("[data-scroll-to]");
-    if (scrollBtn) {
-      var sel = scrollBtn.getAttribute("data-scroll-to");
-      var scrollEl = sel ? document.querySelector(sel) : null;
-      if (scrollEl) {
-        scrollEl.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth" });
-      }
-    }
+    navLinksEl.appendChild(btn);
   });
 
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") setNavOpen(false);
+  // ── About ──────────────────────────────────
+  var aboutText = document.getElementById('about-text');
+  data.about.paragraphs.forEach(function (text) {
+    var p = document.createElement('p');
+    p.textContent = text;
+    aboutText.appendChild(p);
   });
 
-  /* ---------- Parallax ---------- */
-  var layers = document.querySelectorAll(".parallax-layer");
-  var parallaxTicking = false;
+  // ── Experience ─────────────────────────────
+  var exp = data.experience;
 
-  function updateParallax() {
-    var y = window.scrollY || window.pageYOffset;
-    var i = 0;
-    layers.forEach(function (layer) {
-      var mult = i === 0 ? 0.06 : 0.1;
-      i += 1;
-      if (animeOk) {
-        anime.set(layer, { translateY: y * mult });
-      } else {
-        layer.style.transform = "translateY(" + y * mult + "px)";
-      }
-    });
-    parallaxTicking = false;
-  }
+  // Education
+  var eduList = document.getElementById('education-list');
+  exp.education.forEach(function (edu) {
+    var div = document.createElement('div');
+    div.className = 'edu-entry';
+    div.appendChild(el('div', 'edu-entry__title', edu.title));
+    div.appendChild(el('div', 'edu-entry__subtitle', edu.subtitle + ' · ' + edu.date));
+    if (edu.details && edu.details.length) {
+      div.appendChild(el('div', 'edu-entry__details', edu.details.join(' ')));
+    }
+    eduList.appendChild(div);
+  });
 
-  if (layers.length && !prefersReduced) {
-    window.addEventListener("scroll", function () {
-      if (!parallaxTicking) {
-        window.requestAnimationFrame(updateParallax);
-        parallaxTicking = true;
-      }
-    });
-    updateParallax();
-  }
+  // Work
+  var workList = document.getElementById('work-list');
+  exp.work.forEach(function (job) {
+    var entry = document.createElement('div');
+    var hasLogo = job.logo && job.logo.length > 0;
+    entry.className = 'work-entry' + (hasLogo ? '' : ' work-entry--no-logo');
 
-  function start(data) {
-    siteData = data;
-    applyMeta(data.meta);
-    renderHeader(data.header);
-    renderHero(data.hero);
-    renderAbout(data.about);
-    renderSkills(data.skills);
-    renderExperience(data.experience);
-    renderTeaching(data.teaching);
-    renderProjects(data.projects);
-    renderContact(data.contact);
-    renderFooter(data.footer);
-
-    var yearEl = document.getElementById("year");
-    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-    initHero();
-    setupScrollAnimations();
-    bindContactHover();
-  }
-
-  bindProjectFilters();
-
-  function embeddedContent() {
-    return typeof window.__SITE_CONTENT__ !== "undefined" ? window.__SITE_CONTENT__ : null;
-  }
-
-  function loadContent() {
-    var fallback = embeddedContent();
-    var isHttp = /^https?:$/i.test(window.location.protocol);
-
-    if (isHttp) {
-      return fetch(CONTENT_URL, { cache: "no-store" })
-        .then(function (r) {
-          if (!r.ok) throw new Error("Content fetch failed: " + r.status);
-          return r.json();
-        })
-        .catch(function (err) {
-          console.warn(err);
-          if (fallback) return fallback;
-          throw err;
-        });
+    if (hasLogo) {
+      var logo = document.createElement('img');
+      logo.className = 'work-entry__logo';
+      logo.src = job.logo;
+      logo.alt = job.company + ' logo';
+      logo.width = 44;
+      logo.height = 44;
+      logo.loading = 'lazy';
+      logo.onerror = function () {
+        this.style.display = 'none';
+        entry.classList.add('work-entry--no-logo');
+      };
+      entry.appendChild(logo);
     }
 
-    if (fallback) return Promise.resolve(fallback);
+    var body = document.createElement('div');
+    body.appendChild(el('div', 'work-entry__title', job.title));
+    body.appendChild(el('div', 'work-entry__meta', job.company + ' · ' + job.location + ' · ' + job.date));
 
-    return Promise.reject(
-      new Error("No embedded data. Run: node tools/sync-site-data.js")
-    );
+    if (job.bullets && job.bullets.length) {
+      var ul = document.createElement('ul');
+      ul.className = 'work-entry__bullets';
+      job.bullets.forEach(function (b) {
+        var li = document.createElement('li');
+        li.textContent = b;
+        ul.appendChild(li);
+      });
+      body.appendChild(ul);
+    }
+    entry.appendChild(body);
+    workList.appendChild(entry);
+  });
+
+  // Honours
+  var honoursList = document.getElementById('honours-list');
+  exp.honours.forEach(function (h) {
+    var row = document.createElement('div');
+    row.className = 'honour-entry';
+    row.appendChild(el('span', 'honour-entry__title', h.title));
+    row.appendChild(el('span', 'honour-entry__meta', h.org + ', ' + h.date));
+    honoursList.appendChild(row);
+  });
+
+  // Resume link
+  if (exp.resume && exp.resume.url) {
+    var mount = document.getElementById('resume-mount');
+    var a = document.createElement('a');
+    a.className = 'resume-link';
+    a.href = exp.resume.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = exp.resume.linkText || 'Resume';
+    mount.appendChild(a);
   }
 
-  loadContent()
-    .then(start)
-    .catch(function (err) {
-      console.error(err);
-      var main = document.querySelector("main");
-      if (main) {
-        main.innerHTML =
-          '<section class="section"><div class="container"><p style="color:var(--text-muted)">Could not load site content. Ensure <code>assets/data/site-data.js</code> exists (run <code>node tools/sync-site-data.js</code> after editing <code>content.json</code>) or open the site over HTTP.</p></div></section>';
+  // ── Skills ─────────────────────────────────
+  var skillsGrid = document.getElementById('skills-grid');
+  data.skills.groups.forEach(function (group) {
+    var div = document.createElement('div');
+    div.appendChild(el('div', 'skill-group__title', group.title));
+    var items = document.createElement('div');
+    items.className = 'skill-group__items';
+    group.items.forEach(function (skill) {
+      items.appendChild(el('span', 'skill-tag', skill));
+    });
+    div.appendChild(items);
+    skillsGrid.appendChild(div);
+  });
+
+  // ── Projects ───────────────────────────────
+  var projGrid = document.getElementById('projects-grid');
+  data.projects.items.forEach(function (proj) {
+    var card = document.createElement('a');
+    card.className = 'project-card';
+    card.href = proj.href;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+
+    if (proj.image) {
+      var img = document.createElement('img');
+      img.className = 'project-card__img';
+      img.src = proj.image;
+      img.alt = proj.title;
+      img.loading = 'lazy';
+      img.onerror = function () { this.style.display = 'none'; };
+      card.appendChild(img);
+    }
+
+    var cardBody = document.createElement('div');
+    cardBody.className = 'project-card__body';
+    cardBody.appendChild(el('div', 'project-card__title', proj.title));
+    cardBody.appendChild(el('div', 'project-card__meta', proj.tech + ' · ' + proj.date));
+    cardBody.appendChild(el('div', 'project-card__desc', proj.description));
+    card.appendChild(cardBody);
+    projGrid.appendChild(card);
+  });
+
+  // ── Teaching ───────────────────────────────
+  var teachList = document.getElementById('teaching-list');
+  data.teaching.items.forEach(function (t) {
+    var row = document.createElement('div');
+    row.className = 'teaching-entry';
+    row.appendChild(el('span', 'teaching-entry__date', t.date));
+    row.appendChild(el('span', 'teaching-entry__course', t.course));
+    row.appendChild(el('span', 'teaching-entry__campus', t.campus));
+    teachList.appendChild(row);
+  });
+
+  // ── Contact ────────────────────────────────
+  var contactEl = document.getElementById('contact-links');
+  var contact = data.contact;
+  var contactItems = [
+    { label: 'email', text: contact.email, href: 'mailto:' + contact.email },
+    { label: 'email', text: contact.email2, href: 'mailto:' + contact.email2 },
+    { label: 'github', text: 'Dev301203', href: contact.github },
+    { label: 'linkedin', text: 'devanshu-singhvi', href: contact.linkedin }
+  ];
+  contactItems.forEach(function (item) {
+    var link = document.createElement('a');
+    link.className = 'contact-link';
+    link.href = item.href;
+    if (!item.href.startsWith('mailto:')) {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    }
+    link.appendChild(el('span', 'contact-link__label', item.label));
+    link.appendChild(document.createTextNode(item.text));
+    contactEl.appendChild(link);
+  });
+
+  // ── Footer year ────────────────────────────
+  setText('footer-year', new Date().getFullYear().toString());
+
+  // ── Nav scroll behaviour ───────────────────
+  var nav = document.getElementById('nav');
+  var scrollHint = document.getElementById('scroll-hint');
+  var heroContent = document.getElementById('hero-content');
+  var heroLandscape = document.getElementById('hero-landscape');
+  var ticking = false;
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(function () {
+        var y = window.scrollY;
+        nav.classList.toggle('scrolled', y > 80);
+        if (scrollHint) scrollHint.classList.toggle('hidden', y > 200);
+
+        var vh = window.innerHeight;
+        if (y < vh) {
+          var ratio = y / vh;
+          heroContent.style.opacity = Math.max(0, 1 - ratio * 1.8);
+          heroLandscape.style.transform = 'translateY(' + (y * 0.35) + 'px)';
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ── IntersectionObserver for active nav ────
+  var navBtns = document.querySelectorAll('.nav-link');
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        navBtns.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-section') === entry.target.id);
+        });
       }
     });
+  }, { rootMargin: '-40% 0px -60% 0px' });
+
+  sections.forEach(function (id) {
+    var sec = document.getElementById(id);
+    if (sec) observer.observe(sec);
+  });
+
+  // ── Generate landscape ─────────────────────
+  if (window.InkScape) {
+    var container = document.getElementById('hero-landscape');
+    var seed = Math.floor(Math.random() * 999999);
+    window.InkScape.generate(container, window.innerWidth, window.innerHeight, seed);
+  }
+
+  // ── Paper texture ──────────────────────────
+  if (window.InkScape && window.InkScape.paperTexture) {
+    var tex = window.InkScape.paperTexture(512, 512);
+    document.body.style.backgroundImage = 'url(' + tex + ')';
+    document.body.style.backgroundRepeat = 'repeat';
+  }
+
+  // ── Render vignettes ───────────────────────
+  if (window.InkVignettes) {
+    var holders = document.querySelectorAll('[data-vignette]');
+    holders.forEach(function (holder) {
+      var type = holder.getAttribute('data-vignette');
+      var fn = window.InkVignettes[toCamel(type)];
+      if (fn) holder.innerHTML = fn();
+    });
+  }
+
+  // ── Helpers ────────────────────────────────
+  function setText(id, text) {
+    var e = document.getElementById(id);
+    if (e) e.textContent = text;
+  }
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text) e.textContent = text;
+    return e;
+  }
+
+  function toCamel(str) {
+    return str.replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); });
+  }
 })();

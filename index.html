@@ -2,105 +2,119 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="" />
-    <title>Portfolio</title>
+    <meta name="description" content="Devanshu Singhvi — systems, security, data lineage. AI engineer building infrastructure-grade tools." />
+    <meta property="og:title" content="Devanshu Singhvi" />
+    <meta property="og:description" content="Systems, security, and data lineage." />
+    <meta property="og:type" content="website" />
+    <title>Devanshu Singhvi</title>
     <link rel="shortcut icon" href="./assets/images/berserk.jpg" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
   <body>
-    <div class="speed-lines" aria-hidden="true">
-      <svg class="layer-a parallax-layer" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="currentColor" stroke-width="1.5" fill="none">
-          <line x1="380" y1="0" x2="20" y2="600" />
-          <line x1="360" y1="0" x2="0" y2="580" />
-          <line x1="340" y1="40" x2="0" y2="620" />
-          <line x1="400" y1="80" x2="40" y2="620" />
-          <line x1="320" y1="0" x2="0" y2="520" />
-        </g>
-      </svg>
-      <svg class="layer-b parallax-layer" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="currentColor" stroke-width="1.2" fill="none">
-          <line x1="0" y1="0" x2="400" y2="600" />
-          <line x1="40" y1="0" x2="400" y2="560" />
-          <line x1="0" y1="100" x2="360" y2="600" />
-          <line x1="80" y1="0" x2="400" y2="520" />
-        </g>
-      </svg>
-    </div>
+    <a href="#main-content" class="sr-only">Skip to content</a>
 
-    <div class="page-wrap">
-      <header class="site-header">
-        <div class="container">
-          <span id="mount-logo"></span>
-          <nav class="site-nav" id="site-nav" aria-label="Primary">
-            <button
-              type="button"
-              class="nav-toggle"
-              id="nav-toggle"
-              aria-expanded="false"
-              aria-controls="nav-menu"
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-            <ul class="nav-list" id="nav-menu"></ul>
-          </nav>
-        </div>
-      </header>
+    <nav class="nav" id="nav" aria-label="Primary">
+      <span class="nav-brand">DS</span>
+      <div class="nav-links" id="nav-links"></div>
+    </nav>
 
-      <main>
-        <section class="section section--hero" id="hero">
-          <div class="container hero-inner" id="mount-hero"></div>
-          <div class="scroll-cue" aria-hidden="true">
-            <span>Scroll</span>
-            <ion-icon name="chevron-down-outline"></ion-icon>
+    <header class="hero" id="hero">
+      <div class="hero-landscape" id="hero-landscape" aria-hidden="true"></div>
+      <div class="hero-content" id="hero-content">
+        <h1 class="hero-name" id="hero-name"></h1>
+        <p class="hero-role" id="hero-role"></p>
+        <p class="hero-degree" id="hero-degree"></p>
+        <div class="hero-seal" id="hero-seal"></div>
+      </div>
+      <div class="hero-scroll-hint" id="scroll-hint">
+        <span>scroll</span>
+        <svg class="scroll-arrow" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <line x1="8" y1="2" x2="8" y2="13" />
+          <polyline points="3,9 8,14 13,9" />
+        </svg>
+      </div>
+    </header>
+
+    <main id="main-content">
+
+      <section class="section" id="about">
+        <div class="section-inner">
+          <div class="vignette" data-vignette="mountain-cluster"></div>
+          <h2 class="section-title">About</h2>
+          <div class="about-grid">
+            <div class="about-portrait">
+              <img src="./assets/images/portrait.png" alt="Portrait of Devanshu Singhvi" width="280" height="280" />
+            </div>
+            <div class="about-text" id="about-text"></div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="section" id="about">
-          <div class="container" id="mount-about"></div>
-        </section>
+      <section class="section" id="experience">
+        <div class="section-inner">
+          <div class="vignette" data-vignette="lone-pine"></div>
+          <h2 class="section-title">Experience</h2>
+          <div class="subsection">
+            <h3 class="subsection-title">Education</h3>
+            <div id="education-list"></div>
+          </div>
+          <div class="subsection">
+            <h3 class="subsection-title">Work</h3>
+            <div id="work-list"></div>
+          </div>
+          <div class="subsection">
+            <h3 class="subsection-title">Honours</h3>
+            <div id="honours-list"></div>
+          </div>
+          <div id="resume-mount"></div>
+        </div>
+      </section>
 
-        <section class="section" id="skills">
-          <div class="container" id="mount-skills"></div>
-        </section>
+      <section class="section" id="skills">
+        <div class="section-inner">
+          <div class="vignette" data-vignette="water-ripples"></div>
+          <h2 class="section-title">Skills</h2>
+          <div class="skills-grid" id="skills-grid"></div>
+        </div>
+      </section>
 
-        <section class="section" id="experience">
-          <div class="container" id="mount-experience"></div>
-        </section>
+      <section class="section" id="projects">
+        <div class="section-inner section-inner--wide">
+          <div class="vignette" data-vignette="bamboo"></div>
+          <h2 class="section-title">Projects</h2>
+          <div class="projects-grid" id="projects-grid"></div>
+        </div>
+      </section>
 
-        <section class="section" id="teaching">
-          <div class="container" id="mount-teaching"></div>
-        </section>
+      <section class="section" id="teaching">
+        <div class="section-inner">
+          <div class="vignette" data-vignette="cloud-wisp"></div>
+          <h2 class="section-title">Teaching</h2>
+          <div class="teaching-list" id="teaching-list"></div>
+        </div>
+      </section>
 
-        <section class="section" id="projects">
-          <div class="container" id="mount-projects"></div>
-        </section>
+      <section class="section" id="contact">
+        <div class="section-inner">
+          <div class="vignette" data-vignette="mountain-cluster"></div>
+          <h2 class="section-title">Contact</h2>
+          <div class="contact-links" id="contact-links"></div>
+        </div>
+      </section>
 
-        <section class="section contact-section" id="contact">
-          <div class="container" id="mount-contact"></div>
-        </section>
-      </main>
+    </main>
 
-      <footer class="site-footer">
-        <div class="container" id="mount-footer"></div>
-      </footer>
-    </div>
+    <footer class="footer">
+      <p>&copy; <span id="footer-year"></span> Devanshu Singhvi</p>
+    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
-    <!-- file:// preview: assigns window.__SITE_CONTENT__. Regenerate after editing content.json. -->
     <script src="./assets/data/site-data.js"></script>
+    <script src="./assets/js/ink-landscape.js"></script>
+    <script src="./assets/js/ink-vignettes.js"></script>
     <script src="./assets/js/main.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   </body>
 </html>

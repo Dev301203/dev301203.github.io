@@ -1,484 +1,202 @@
 {
   "meta": {
-    "title": "Devanshu Singhvi | Portfolio",
-    "description": "Devanshu Singhvi - student and developer. Computer science, systems, and security.",
+    "title": "Devanshu Singhvi",
+    "description": "Devanshu Singhvi — systems, security, data lineage. AI engineer building infrastructure-grade tools.",
     "favicon": "./assets/images/berserk.jpg"
   },
-  "header": {
-    "logoHref": "#hero",
-    "logoMark": {
-      "text": "Dev",
-      "accent": "301203"
-    },
-    "nav": [
-      {
-        "href": "#about",
-        "label": "About"
-      },
-      {
-        "href": "#skills",
-        "label": "Skills"
-      },
-      {
-        "href": "#experience",
-        "label": "Experience"
-      },
-      {
-        "href": "#teaching",
-        "label": "Teaching"
-      },
-      {
-        "href": "#projects",
-        "label": "Projects"
-      },
-      {
-        "href": "#contact",
-        "label": "Contact"
-      }
-    ]
-  },
   "hero": {
-    "badge": "Level up",
     "name": "Devanshu Singhvi",
-    "tagline": "Student & developer - systems, security and real-world problems.",
-    "ctaLabel": "Enter the story",
-    "ctaTarget": "#about"
+    "role": "SHIFT AI Engineer @ Next Pathway",
+    "degree": "MScAC, Computer Science",
+    "school": "University of Toronto",
+    "gpa": "4.0/4.0"
   },
   "about": {
-    "kicker": "Episode 01",
-    "title": "Origin story",
-    "portrait": {
-      "src": "./assets/images/portrait.png",
-      "alt": "Portrait of Devanshu Singhvi"
-    },
     "paragraphs": [
-      "I'm <strong>Devanshu Singhvi</strong> - a student and developer with an Honours B.Sc. in <strong>Computer Science</strong> and <strong>Mathematical Sciences</strong> from the University of Toronto. I care about <strong>systems</strong>, <strong>security</strong>, and problems that matter in the real world.",
-      "I've interned in <strong>IT Security</strong> at the Bank of Bahrain and Kuwait and in <strong>I&amp;IT Transit</strong> at Metrolinx. I've been a teaching assistant for <strong>CSC347</strong> (Information Security) and <strong>CSC427</strong> (Computer Security).",
-      "I'm currently pursuing an <strong>MScAC</strong> (Master of Science in Applied Computing) at the University of Toronto."
-    ],
-    "workedWithTitle": "Worked with",
-    "logos": [
-      {
-        "src": "./assets/images/work/uoft.png",
-        "alt": "University of Toronto",
-        "width": 280,
-        "height": 120,
-        "matte": false
-      },
-      {
-        "src": "./assets/images/work/bbk.png",
-        "alt": "Bank of Bahrain and Kuwait",
-        "width": 280,
-        "height": 120,
-        "matte": false
-      },
-      {
-        "src": "./assets/images/work/metrolinx.png",
-        "alt": "Metrolinx",
-        "width": 280,
-        "height": 120,
-        "matte": false
-      },
-      {
-        "src": "./assets/images/work/daitaflow.png",
-        "alt": "dAItaflow",
-        "width": 280,
-        "height": 120,
-        "matte": false
-      }
+      "Graduate student and engineer with an Honours B.Sc. in Computer Science and Mathematical Sciences from the University of Toronto. I build systems that process, trace, and secure data at scale.",
+      "Currently pursuing an MScAC at UofT while working as a SHIFT AI Engineer at Next Pathway, building AI-driven data lineage extraction and migration tools across 370+ enterprise data sources.",
+      "Previously: full-stack engineering at dAItaflow, IT security at Bank of Bahrain and Kuwait, transit I&IT at Metrolinx. Teaching assistant for 9 courses including Operating Systems, Computer Security, and Systems Programming."
     ]
   },
   "skills": {
-    "kicker": "Power tree",
-    "title": "Skills & tools",
     "groups": [
       {
         "title": "Languages",
-        "items": [
-          "Python",
-          "C",
-          "C++",
-          "Assembly",
-          "Java",
-          "JavaScript",
-          "R",
-          "HTML5",
-          "CSS3",
-          "LaTeX",
-          "PowerShell",
-          "Shell"
-        ]
+        "items": ["Python", "Rust", "C", "C++", "C#", "Java", "JavaScript", "SQL", "Bash"]
       },
       {
-        "title": "Frameworks",
-        "items": [
-          ".NET",
-          "Bootstrap",
-          "Tailwind",
-          "Django",
-          "React"
-        ]
+        "title": "Frameworks & Libraries",
+        "items": ["Django", "React", "Node.js", "dbt", "SQLGlot", "LangGraph", "Hugging Face", "OpenAI API", "pandas", "NumPy"]
       },
       {
-        "title": "Tools",
-        "items": [
-          "Vercel",
-          "GitHub Pages",
-          "npm",
-          "OpenCV",
-          "Postgres",
-          "MySQL",
-          "MongoDB",
-          "SQLite",
-          "Blender",
-          "Matplotlib",
-          "NumPy",
-          "Pandas",
-          "TensorFlow",
-          "scikit-learn",
-          "Git",
-          "GitHub",
-          "Postman",
-          "Prometheus",
-          "Grafana"
-        ]
+        "title": "Cloud & Data",
+        "items": ["GCP", "Docker", "GitHub Actions", "Git", "Grafana", "Prometheus", "PostgreSQL", "Redis", "Neo4j"]
       }
     ]
   },
   "experience": {
-    "kicker": "Quest log",
-    "title": "Experience & resume",
     "resume": {
-      "description": "Full PDF resume",
       "linkText": "Open resume",
       "url": "https://drive.google.com/file/d/1eB3Upi9rR1_bf-CPjYCtO9YMcvMYYGWi/view?usp=sharing"
     },
-    "educationTitle": "Education",
     "education": [
       {
         "title": "University of Toronto",
         "location": "Toronto, Canada",
-        "date": "Sept 2025 - Dec 2026",
+        "date": "Sep 2025 – Dec 2026",
         "subtitle": "MSc in Applied Computing (MScAC), Computer Science",
-        "paragraphs": [
-          "Relevant courses: Database System Technology, Research Topics in Database Management, Compilers and Interpreters, Applications for Mobile Devices.",
-          "<strong>cGPA: 4.0/4.0</strong>"
-        ]
+        "details": ["Database System Technology, Compilers and Interpreters, Data Structures in the Wild, Apps for Mobile Devices.", "CGPA: 4.0/4.0"],
+        "logo": "./assets/images/work/uoft.png"
       },
       {
         "title": "University of Toronto",
         "location": "Toronto, Canada",
-        "date": "Sep 2021 - Jun 2025",
-        "subtitle": "Honours Bachelor of Science (B.Sc.), Computer Science and Math",
-        "paragraphs": [
-          "Relevant courses: Algorithm Design, Analysis &amp; Complexity, Data Structures and Analysis, Operating Systems, Computer Security, Image Understanding, Databases, Machine Learning, Web Programming, Systems Programming.",
-          "<strong>cGPA: 3.92/4.0</strong>"
-        ]
-      },
-      {
-        "title": "New Millennium School",
-        "location": "Bahrain",
-        "date": "2007 - 2021",
-        "subtitle": "High School Diploma",
-        "paragraphs": [
-          "Class 12: Physics, Chemistry, Mathematics, Computer Science, English. CBSE Class 12 - <strong>97%</strong>.",
-          "Class 10: Science, Social Science, Mathematics, French, English. CBSE Class 10 - <strong>95.2%</strong>."
-        ]
+        "date": "Sep 2021 – Apr 2025",
+        "subtitle": "Honours B.Sc., Computer Science and Math",
+        "details": ["Algorithm Design, Operating Systems, Computer Security, Databases, Machine Learning, Web Programming, Systems Programming.", "CGPA: 3.92/4.0"],
+        "logo": "./assets/images/work/uoft.png"
       }
     ],
-    "workTitle": "Experience",
     "work": [
       {
-        "title": "AI Engineer",
-        "location": "Next Pathway",
+        "title": "SHIFT AI Engineer",
+        "company": "Next Pathway",
         "date": "May 2026 – Present",
-        "paragraphs": []
+        "location": "Toronto, Canada",
+        "logo": "./assets/images/work/next-pathway.png",
+        "bullets": [
+          "Reduced legacy Qlik-to-dbt migration effort from weeks to a single pipeline run by building an AI-driven lineage extraction and dbt model generation system across 370+ data sources.",
+          "Automated table- and column-level lineage extraction across enterprise SQL codebases by building a dialect-agnostic crawler on SQLGlot abstract syntax trees.",
+          "Resolved lineage for templated and schema-incomplete SQL by pairing LLM-based query interpretation with deterministic alias resolution and source-grounded dependency validation."
+        ]
       },
       {
         "title": "Software Engineer (Full-Stack)",
-        "location": "dAItaflow Technologies (Early-stage startup)",
-        "date": "July 2025 – April 2026",
-        "paragraphs": [
-          "» Built and shipped an MVP Procore-integrated automation platform using async Django/ADRF APIs and OAuth2.",
-          "» Improved reliability with correlation-ID tracing, structured logging, Redis caching, and OpenAPI documentation.",
-          "» Dockerized services with GitHub Actions CI/CD to Cloud Run and deployed the React frontend to Firebase Hosting."
+        "company": "dAItaflow Technologies",
+        "date": "Jul 2025 – Apr 2026",
+        "location": "Toronto, Canada",
+        "logo": "./assets/images/work/daitaflow.png",
+        "bullets": [
+          "Built a Procore-integrated construction automation platform with async Django REST APIs, OAuth2, and a React frontend, enabling bulk CSV imports of 5,000+ records per upload.",
+          "Eliminated Procore rate-limit failures during bulk syncs by adding bounded concurrency, Redis caching, and Cloud SQL connection pooling, and streamed live change logs via Server-Sent Events."
         ]
       },
       {
         "title": "IT Security Intern",
-        "location": "Bank of Bahrain and Kuwait, Bahrain",
-        "date": "Jun 2024 - Aug 2024",
-        "paragraphs": [
-          "» Used Trend Micro Vision One to identify and assess vulnerable assets and prioritize remediation.",
-          "» Deployed packages with Lansweeper to automate configuration changes, mitigate 1500+ security risks, and update software across 4000+ assets.",
-          "» Hardened Ubuntu 22 servers toward STIG compliance; updated GPOs and firewall rules for network security."
+        "company": "Bank of Bahrain and Kuwait",
+        "date": "Jun 2024 – Aug 2024",
+        "location": "Manama, Bahrain",
+        "logo": "./assets/images/work/bbk.png",
+        "bullets": [
+          "Automated system configuration updates via Lansweeper, mitigating 1,500+ security risks and deploying software updates across 4,000+ assets.",
+          "Leveraged Trend Micro Vision One to identify and assess vulnerable assets, prioritizing remediation strategies."
         ]
       },
       {
         "title": "I&IT Transit Summer Student",
-        "location": "Metrolinx, Toronto",
-        "date": "May 2023 - Aug 2023",
-        "paragraphs": [
-          "» Built Grafana and Prometheus dashboards for real-time GO Train and Bus insights from transit telemetry.",
-          "» Added custom IoT metrics to C# and Node.js services; monitoring for multiple apps and APIs.",
-          "» Created alerts that cut MTTD by over 75%; contributed to RTI enhancements including Schedule Manager and HTTPS updates."
+        "company": "Metrolinx",
+        "date": "May 2023 – Aug 2023",
+        "location": "Toronto, Canada",
+        "logo": "./assets/images/work/metrolinx.png",
+        "bullets": [
+          "Built real-time Grafana/Prometheus dashboards tracking GO Train and Bus data feeds for observability.",
+          "Integrated custom IoT metrics into C# and Node.js services, streamlining application monitoring across several APIs.",
+          "Cut incident detection time by 75% using automated alerts that took mean time to detection from hours to minutes."
         ]
       }
     ],
-    "honoursTitle": "Honours & awards",
     "honours": [
-      {
-        "title": "UofT Dean's List Scholar",
-        "location": "University of Toronto",
-        "date": "Winter 2022, 2023, 2024 & 2025",
-        "paragraphs": [
-          "For UTM degree students with CGPA ≥ 3.50 at the end of the session when the 5th, 10th, 15th, or 20th credit is passed."
-        ]
-      },
-      {
-        "title": "UofT Renewable Entrance Scholarship",
-        "location": "University of Toronto",
-        "date": "Sep 2021 - 2024",
-        "paragraphs": [
-          "$3,000/year for 95%+ high school average and maintaining 3.7+ CGPA in university."
-        ]
-      },
-      {
-        "title": "UofT Scholars Award",
-        "location": "University of Toronto",
-        "date": "Sep 2021",
-        "paragraphs": [
-          "Recognition for outstanding students at admission; ~900 domestic and international students considered automatically from admission average."
-        ]
-      }
+      { "title": "Dean's List Scholar", "org": "University of Toronto", "date": "2021 – 2025" },
+      { "title": "Renewable Entrance Scholarship", "org": "University of Toronto", "date": "2021 – 2024" },
+      { "title": "Scholars Award", "org": "University of Toronto", "date": "2021" }
     ]
   },
   "teaching": {
-    "kicker": "Instructor log",
-    "title": "Teaching Experience",
     "items": [
-      {
-        "course": "CSC148H1S: Introduction to Computer Science",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Jan 2026 - Apr 2026"
-      },
-      {
-        "course": "CSC148H5S: Introduction to Computer Science",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Jan 2026 - Apr 2026"
-      },
-      {
-        "course": "CSC209H5S: Software Tools and Systems Programming",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Jan 2026 - Apr 2026"
-      },
-      {
-        "course": "CSC207H5F: Software Design",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Sep 2025 - Dec 2025"
-      },
-      {
-        "course": "CSC309H1F: Programming on the Web",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Sep 2025 - Dec 2025"
-      },
-      {
-        "course": "CSC347H5F: Introduction to Information Security",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Sep 2025 - Dec 2025"
-      },
-      {
-        "course": "CSC369H5F: Operating Systems",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Sep 2025 - Dec 2025"
-      },
-      {
-        "course": "CSC427H5S: Computer Security",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Jan 2025 - Apr 2025"
-      },
-      {
-        "course": "CSC347H5F: Introduction to Information Security",
-        "institution": "University of Toronto",
-        "instructor": "",
-        "role": "Teaching Assistant",
-        "date": "Sep 2024 - Dec 2024"
-      }
+      { "course": "CSC148: Intro to Computer Science", "campus": "St. George", "date": "Jan–Apr 2026" },
+      { "course": "CSC148: Intro to Computer Science", "campus": "UTM", "date": "Jan–Apr 2026" },
+      { "course": "CSC209: Software Tools and Systems Programming", "campus": "UTM", "date": "Jan–Apr 2026" },
+      { "course": "CSC207: Software Design", "campus": "UTM", "date": "Sep–Dec 2025" },
+      { "course": "CSC309: Programming on the Web", "campus": "St. George", "date": "Sep–Dec 2025" },
+      { "course": "CSC347: Intro to Information Security", "campus": "UTM", "date": "Sep–Dec 2025" },
+      { "course": "CSC369: Operating Systems", "campus": "UTM", "date": "Sep–Dec 2025" },
+      { "course": "CSC427: Computer Security", "campus": "UTM", "date": "Jan–Apr 2025" },
+      { "course": "CSC347: Intro to Information Security", "campus": "UTM", "date": "Sep–Dec 2024" }
     ]
   },
   "projects": {
-    "kicker": "Battle records",
-    "title": "Projects",
-    "filters": [
-      {
-        "value": "all",
-        "label": "All"
-      },
-      {
-        "value": "Applications",
-        "label": "Applications"
-      },
-      {
-        "value": "Web app",
-        "label": "Web app"
-      },
-      {
-        "value": "Systems",
-        "label": "Systems"
-      },
-      {
-        "value": "AI",
-        "label": "AI"
-      }
-    ],
     "items": [
       {
-        "title": "Better Leveled MPHF",
-        "category": "Systems",
-        "image": "./assets/images/projects/mphf.png",
-        "alt": "Better Leveled minimal perfect hash function",
-        "description": "Rust minimal perfect hash function that maps fixed key sets to collision-free indices using leveled bitsets.",
-        "href": "https://github.com/Dev301203/better-leveledmphf"
+        "title": "Leveled Minimal Perfect Hash Function",
+        "tech": "Rust, Python",
+        "date": "Jan–Apr 2026",
+        "description": "Hardware-aware BBHash-style MPHF with cache-aligned rank bitsets. Outperformed boomphf and C++ BBHash on 48/54 lookup and 45/54 build configs.",
+        "href": "https://github.com/Dev301203/better-leveledmphf",
+        "image": "./assets/images/projects/mphf.png"
+      },
+      {
+        "title": "Advisory Tutor",
+        "tech": "FastAPI, React, Neo4j, GPT-4, Docker",
+        "date": "Jan–Apr 2025",
+        "description": "GraphRAG tutoring system achieving 92% top-5 retrieval accuracy. Knowledge graph with 15k+ nodes and 60k+ relationships from 200+ documents.",
+        "href": "https://github.com/CSC392-CSC492-Building-AI-ML-systems/personalAITutor",
+        "image": "./assets/images/projects/customer-support-ai.png"
       },
       {
         "title": "LegalEase",
-        "category": "AI",
-        "image": "./assets/images/projects/legal-ease.png",
-        "alt": "LegalEase AI-powered divorce negotiation simulator",
-        "description": "AI negotiation simulator that helps family lawyers practice realistic, emotionally aware divorce-case dialogues.",
-        "href": "https://github.com/Dev301203/legal-ease"
-      },
-      {
-        "title": "Ticket Priority MLOps",
-        "category": "AI",
-        "image": "./assets/images/projects/tp.png",
-        "alt": "Ticket Priority MLOps platform",
-        "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
-        "href": "https://github.com/Dev301203/ticket-priority-mlops"
-      },
-      {
-        "title": "Customer Support AI",
-        "category": "AI",
-        "image": "./assets/images/projects/customer-support-ai.png",
-        "alt": "Customer support AI reply drafting app",
-        "description": "Gemini-powered support assistant that drafts empathetic replies while extracting structured ticket metadata.",
-        "href": "https://github.com/Dev301203/customer-support-ai"
+        "tech": "Python, AI",
+        "date": "2024",
+        "description": "AI negotiation simulator for family lawyers to practice realistic, emotionally aware divorce-case dialogues.",
+        "href": "https://github.com/Dev301203/legal-ease",
+        "image": "./assets/images/projects/legal-ease.png"
       },
       {
         "title": "LSM Key-Value Store",
-        "category": "Systems",
-        "image": "./assets/images/projects/lsm.png",
-        "alt": "LSM key-value store",
-        "description": "Persistent C++ LSM-tree key-value store with AVL memtables, B-tree SSTs, Bloom filters, and benchmarked lookup paths.",
-        "href": "https://github.com/mnkhoi/kv-database"
+        "tech": "C++",
+        "date": "Sep–Dec 2025",
+        "description": "Persistent LSM-tree KV store with AVL memtables, B-tree SSTs, Bloom filters, and benchmarked lookup paths up to 67M entries.",
+        "href": "https://github.com/mnkhoi/kv-database",
+        "image": "./assets/images/projects/lsm.png"
+      },
+      {
+        "title": "Ticket Priority MLOps",
+        "tech": "AWS, SageMaker, Python",
+        "date": "2024",
+        "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
+        "href": "https://github.com/Dev301203/ticket-priority-mlops",
+        "image": "./assets/images/projects/tp.png"
       },
       {
         "title": "Advisory",
-        "category": "AI",
-        "image": "./assets/images/projects/advsry.png",
-        "alt": "Advisory web app",
-        "description": "Academic advising web app for exploring degree planning and course decisions with a cleaner student workflow.",
-        "href": "https://advsry.utm.utoronto.ca"
-      },
-      {
-        "title": "Appointify",
-        "category": "Web app",
-        "image": "./assets/images/projects/appointify.png",
-        "alt": "Appointify",
-        "description": "Appointment scheduling dashboard with authentication, calendars, contacts, and event management.",
-        "href": "https://github.com/Dev301203/Appointify"
+        "tech": "Full-stack web app",
+        "date": "2024",
+        "description": "Academic advising web app for degree planning and course decisions at UofT.",
+        "href": "https://advsry.utm.utoronto.ca",
+        "image": "./assets/images/projects/advsry.png"
       },
       {
         "title": "Book Cover Identification",
-        "category": "Applications",
-        "image": "./assets/images/projects/bookcover.jpg",
-        "alt": "Book cover identification",
-        "description": "Computer vision system that identifies oblique book covers using SIFT features and a hierarchical vocabulary tree.",
-        "href": "https://github.com/Dev301203/Book-Cover-Via-Vocabulary-Tree"
+        "tech": "Python, OpenCV",
+        "date": "2024",
+        "description": "Computer vision system using SIFT features and hierarchical vocabulary tree for oblique book cover recognition.",
+        "href": "https://github.com/Dev301203/Book-Cover-Via-Vocabulary-Tree",
+        "image": "./assets/images/projects/bookcover.jpg"
       },
       {
-        "title": "CLI social network",
-        "category": "Systems",
-        "image": "./assets/images/projects/socialmedia.jpg",
-        "alt": "CLI social network",
-        "description": "Socket-based C social network server where users can list profiles, make friends, and post messages asynchronously.",
-        "href": "https://github.com/Dev301203/Social-Media-App"
-      },
-      {
-        "title": "Company Management System",
-        "category": "Applications",
-        "image": "./assets/images/projects/cms.jpg",
-        "alt": "Company management system",
-        "description": "JavaFX company operations manager for departments, teams, employees, budgets, and expenses.",
-        "href": "https://github.com/Dev301203/company-management-system"
-      },
-      {
-        "title": "Brick Breaker",
-        "category": "Applications",
-        "image": "./assets/images/projects/brickbreaker.jpg",
-        "alt": "Brick Breaker",
-        "description": "Assembly brick breaker game with paddle controls, ball physics, score tracking, lives, and sound effects.",
-        "href": "https://github.com/Dev301203/Brick-Breaker"
-      },
-      {
-        "title": "Braille Translator",
-        "category": "Applications",
-        "image": "./assets/images/projects/braille.jpg",
-        "alt": "Braille Translator",
-        "description": "Command-line translator that automatically converts between English text and six-dot Braille notation.",
-        "href": "https://github.com/Dev301203/Braille-Translator"
+        "title": "CLI Social Network",
+        "tech": "C",
+        "date": "2023",
+        "description": "Socket-based social network server with async messaging, profiles, and friend management.",
+        "href": "https://github.com/Dev301203/Social-Media-App",
+        "image": "./assets/images/projects/socialmedia.jpg"
       }
     ]
   },
   "contact": {
-    "kicker": "Side quest",
-    "title": "Contact",
-    "lead": "Want to collaborate or chat about systems and security? Reach out - I'm always up for a good technical fight scene.",
-    "links": [
-      {
-        "href": "mailto:dev.singhvi@utoronto.ca",
-        "label": "dev.singhvi@utoronto.ca",
-        "icon": "mail-outline",
-        "external": false
-      },
-      {
-        "href": "mailto:devanshu301203@gmail.com",
-        "label": "devanshu301203@gmail.com",
-        "icon": "mail-unread-outline",
-        "external": false
-      },
-      {
-        "href": "https://github.com/Dev301203/",
-        "label": "GitHub",
-        "icon": "logo-github",
-        "external": true
-      },
-      {
-        "href": "https://www.linkedin.com/in/devanshu-singhvi/",
-        "label": "LinkedIn",
-        "icon": "logo-linkedin",
-        "external": true
-      }
-    ]
-  },
-  "footer": {
-    "name": "Devanshu Singhvi",
-    "note": "Built for GitHub Pages."
+    "email": "dev.singhvi@utoronto.ca",
+    "email2": "devanshu301203@gmail.com",
+    "github": "https://github.com/Dev301203",
+    "linkedin": "https://www.linkedin.com/in/devanshu-singhvi/",
+    "website": "https://dev301203.github.io"
   }
 }
