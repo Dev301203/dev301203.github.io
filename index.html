@@ -46,8 +46,11 @@
         <p class="caption" id="hero-degree">MScAC, Computer Science, University of Toronto</p>
       </div>
 
+      <p class="caption draw-hint" id="draw-hint" hidden>Drag to add a stream. Close a loop to make a pond.</p>
       <div class="controls">
         <button id="theme" type="button" aria-pressed="false">Night</button>
+        <button id="undo" type="button" hidden>Undo</button>
+        <button id="draw" type="button" aria-pressed="false">Draw</button>
         <button id="redraw" type="button">Redraw</button>
       </div>
     </section>
@@ -67,16 +70,10 @@
       <section class="sec sec--experience" id="experience">
         <div class="lane" aria-hidden="true"></div>
         <h2 class="slab">Experience</h2>
-        <div class="jobs" id="work-list"></div>
-        <div class="card ledger ledger--edu" data-reveal>
-          <h3 class="tab">Education</h3>
-          <div id="education-list"></div>
-        </div>
-        <div class="card ledger ledger--honours" data-reveal>
-          <h3 class="tab">Honours</h3>
-          <div id="honours-list"></div>
-          <div id="resume-mount"></div>
-        </div>
+        <div class="resume-mount" id="resume-mount"></div>
+        <p class="bank bank--edu">Education</p>
+        <p class="bank bank--work">Work</p>
+        <div class="timeline" id="timeline"></div>
       </section>
 
       <section class="sec sec--projects" id="projects">

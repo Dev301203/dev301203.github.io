@@ -12,6 +12,8 @@ Single-page personal portfolio drawn as a river in manga ink: a generated river 
 - **anime.js 4.5.0**, vendored at `assets/js/vendor/anime.umd.min.js`
 - **Google Fonts** (Archivo, JetBrains Mono)
 
+**Draw** in the hero lets a visitor add streams (drag) and ponds (close a loop) to the river. Drawings are stored in that browser's `localStorage` with the river's seed, and **Redraw** clears them.
+
 Projects marked `"featured": true` in `content.json` get the large panels. Add `?static` to the URL to load without animation.
 
 ## Run locally

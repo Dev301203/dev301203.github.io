@@ -63,6 +63,7 @@ img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; }
 button { font: inherit; color: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
 
 :focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 
@@ -202,8 +203,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
   line-height: 1;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
-.controls button:hover { background: var(--ink); color: var(--paper); }
+.controls button:hover, #draw[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
 .controls button:active { transform: translateY(1px); }
+
+/* Draw mode: dragging on the hero draws instead of scrolling or selecting text. */
+.hero.is-drawing { touch-action: none; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+.draw-hint {
+  position: absolute;
+  z-index: var(--z-content);
+  right: var(--pad);
+  bottom: calc(var(--pad) + 46px);
+  max-width: min(300px, calc(100% - 2 * var(--pad)));
+}
 
 /* ── Page flow ─────────────────────────────── */
 .flow { position: relative; display: flow-root; }
@@ -211,6 +222,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .river-layer { position: absolute; inset: 0; z-index: var(--z-art); pointer-events: none; }
 .river-layer svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
 .river-layer .water, .river-layer .hatch { fill: var(--ink); }
+.river-layer .isles { fill: var(--paper); }
 .river-layer .lines { fill: none; stroke: var(--ink); stroke-width: 0.95; stroke-linecap: round; }
 .river-layer .current { fill: none; stroke: var(--paper); stroke-width: 1.4; stroke-linecap: round; }
 
@@ -304,11 +316,34 @@ button { font: inherit; color: inherit; cursor: pointer; }
   column-gap: clamp(14px, 2vw, 28px);
 }
 .sec--experience .lane { left: calc(50% - var(--lane) / 2); }
-.sec--experience > .slab { grid-column: 1; }
-.jobs { display: contents; }
+.sec--experience > .slab { grid-column: 1; grid-row: 1; }
+.resume-mount { grid-column: 3; grid-row: 1; justify-self: end; align-self: end; }
+.timeline { display: contents; }
 
-.job { grid-column: 1; }
-.job:nth-child(even) { grid-column: 3; margin-top: clamp(60px, 9vw, 130px); }
+/* Education runs down the left bank, work down the right. */
+.bank {
+  grid-row: 2;
+  justify-self: start;
+  padding: 6px 12px 5px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.bank--edu { grid-column: 1; }
+.bank--work { grid-column: 3; }
+
+.job { grid-row: var(--row); }
+.job--work { grid-column: 3; }
+.job--edu { grid-column: 1; align-self: center; }
+.job--line .job__body { padding-block: 12px; }
+.job--line .job__company { margin-top: 0; font-size: 1.05rem; }
+.job--line .more { margin-top: 10px; }
 
 /* First row: logo on the left, when and where on the right. */
 .job__top {
@@ -367,18 +402,45 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .more li { padding-left: 16px; position: relative; font-size: 0.975rem; }
 .more li::before { content: ''; position: absolute; left: 0; top: 0.68em; width: 8px; height: 2px; background: var(--ink); }
 
-.ledger { padding-bottom: 6px; }
-.ledger--edu { grid-column: 1; }
-.ledger--honours { grid-column: 3; }
-.entry { padding: 14px clamp(16px, 2vw, 24px); }
-.entry + .entry { border-top: 2px solid var(--ink); }
-.entry__title { font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
-.entry__sub { line-height: 1.4; margin-top: 2px; }
-.entry__body { margin-top: 6px; font-size: 0.92rem; line-height: 1.5; color: var(--muted); }
+.job__stat {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 9px;
+  border: 2px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Honours: red seals on the school that awarded them; click one for its details. */
+.honours { margin-top: 18px; padding-top: 16px; border-top: 2px solid var(--ink); }
+.honours__row { display: flex; flex-wrap: wrap; gap: 12px 14px; }
+.honour {
+  max-width: 190px;
+  padding: 9px 12px 8px;
+  border: 0;
+  background: var(--red);
+  color: var(--on-red);
+  font-family: var(--font-display);
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 0.98rem;
+  letter-spacing: 0.02em;
+  line-height: 1.08;
+  text-align: left;
+  text-transform: uppercase;
+  rotate: var(--tilt, -2deg);
+  transition: rotate 0.2s ease, translate 0.2s ease;
+}
+.honour:hover, .honour[aria-pressed='true'] { rotate: 0deg; translate: 0 -2px; }
+.honour:active { translate: 0 1px; }
+.honour[aria-pressed='true'] { outline: 3px solid var(--ink); outline-offset: 2px; }
+.honours__detail { margin-top: 14px; font-size: 0.92rem; line-height: 1.5; }
+.honours__detail p { margin-top: 4px; }
 
 .resume {
   display: inline-block;
-  margin: 8px clamp(16px, 2vw, 24px) 16px;
   padding: 11px 16px 10px;
   background: var(--red);
   color: var(--on-red);
@@ -551,6 +613,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .nav a { padding: 9px 11px; font-size: 0.72rem; }
 
   .title { bottom: calc(var(--pad) + 52px); }
+  .draw-hint { top: calc(var(--pad) + 60px); bottom: auto; left: var(--pad); right: auto; }
+  .controls button { padding-inline: 11px; }
   .name { font-size: clamp(3rem, 20vw, 7rem); }
   .caption + .caption { margin-left: 0; }
 
@@ -560,7 +624,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
     padding-inline: 0 var(--pad);
   }
   .sec .lane { left: 0; right: auto; }
-  .sec > *:not(.lane), .job, .job:nth-child(even) { grid-column: 2; grid-row: auto; margin-top: 0; }
+  .sec > *:not(.lane), .job { grid-column: 2; grid-row: auto; margin-top: 0; }
+  .bank { display: none; }
+  .resume-mount { justify-self: start; }
 
   .job__top { flex-direction: column; border-bottom: 0; }
   .job__logo {
