@@ -39,7 +39,7 @@
     var head = el('div', 'job__head');
     if (job.logo) {
       var logo = el('img', 'job__logo');
-      logo.src = job.logo; logo.alt = ''; logo.width = 46; logo.height = 46; logo.loading = 'lazy';
+      logo.src = job.logo; logo.alt = ''; logo.width = 132; logo.height = 70; logo.loading = 'lazy';
       logo.onerror = function () { this.remove(); };
       head.appendChild(logo);
     }
