@@ -177,14 +177,14 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Backchannel",
         "tech": "JavaScript, TypeScript, WebSockets, Postgres, Redis",
-        "date": "Jul-Aug 2026",
+        "date": "Jul–Aug 2026",
         "description": "A public chat room for every website: a browser extension and realtime backend with page and site rooms, threads, reactions and moderation.",
         "href": "https://github.com/Dev301203/Backchannel"
       },
       {
         "title": "Ticket Priority MLOps",
         "tech": "AWS, SageMaker, Python",
-        "date": "Sept–Dec 2025",
+        "date": "Sep–Dec 2025",
         "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
         "href": "https://github.com/Dev301203/ticket-priority-mlops",
         "image": "./assets/images/projects/tp.png"
