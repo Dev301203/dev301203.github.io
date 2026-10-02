@@ -126,10 +126,11 @@
   // ── Scene generation ───────────────────────
   // avoid: rectangles [left, top, right, bottom] the scenery should stay out of.
   function buildScene(seed, W, H, avoid) {
+    avoid = avoid || [];
     var rng = mulberry32(seed);
     var noise = makeNoise(rng);
     var S = Math.max(0.55, Math.min(1.25, Math.sqrt(W * H) / 1140));
-    var mouthW = Math.max(36, Math.min(116, W * 0.075));
+    var mouthW = Math.max(54, Math.min(210, W * 0.135));
 
     var cell = 32, grid = {};
     function gridAdd(x, y, id, i, r) {
@@ -138,9 +139,15 @@
     }
 
     function hits(x, y, spec, xs, ys) {
+      // Side streams stop short of the name and the buttons; only the main river may pass.
+      if (spec.parent >= 0) {
+        for (var q = 0; q < avoid.length; q++) {
+          if (x > avoid[q][0] && x < avoid[q][2] && y > avoid[q][1] && y < avoid[q][3]) return true;
+        }
+      }
       var cx = Math.floor(x / cell), cy = Math.floor(y / cell), dx, dy, list, k, e, ddx, ddy;
-      for (dx = -3; dx <= 3; dx++) {
-        for (dy = -3; dy <= 3; dy++) {
+      for (dx = -5; dx <= 5; dx++) {
+        for (dy = -5; dy <= 5; dy++) {
           list = grid[(cx + dx) + ':' + (cy + dy)];
           if (!list) continue;
           for (k = 0; k < list.length; k++) {
@@ -167,7 +174,8 @@
         xs.push(x); ys.push(y);
         k += (rng() - 0.5) * 2 * spec.wobble;
         k *= 0.94;
-        h += k + spec.mA * Math.sin(len / spec.mL * TAU + spec.mP) + (spec.target - h) * 0.014;
+        var aim = spec.late && len < spec.late ? spec.early : spec.target;
+        h += k + spec.mA * Math.sin(len / spec.mL * TAU + spec.mP) + (aim - h) * (spec.steer || 0.014);
         if (h > -0.14) h = -0.14;
         if (h < -Math.PI + 0.14) h = -Math.PI + 0.14;
         x += Math.cos(h) * STEP; y += Math.sin(h) * STEP; len += STEP;
@@ -187,12 +195,15 @@
       return b;
     }
 
-    var mouthX = W * (0.6 + 0.14 * rng());
+    // The main river leaves the frame at the bottom right, clear of the name. Followed
+    // upstream it climbs past the name, then swings across to the upper left.
+    var mouthX = W * (0.66 + 0.18 * rng());
     var trunkSpec = {
-      x: mouthX, y: H + 30, heading: -Math.PI / 2 + (rng() - 0.5) * 0.3,
-      target: -Math.PI / 2 - 0.1 - rng() * 0.16, wobble: 0.008,
+      x: mouthX, y: H + 30, heading: -Math.PI / 2 + (rng() - 0.5) * 0.24,
+      early: -Math.PI / 2 + (rng() - 0.5) * 0.2, late: H * (0.34 + 0.1 * rng()),
+      target: -Math.PI / 2 - 0.8 - rng() * 0.45, steer: 0.06, wobble: 0.008,
       mA: 0.046, mL: (360 + rng() * 180) * S, mP: rng() * TAU,
-      maxLen: (H + 120) * 1.8, parent: -1, attach: 0, ignore: 0
+      maxLen: (H + W) * 1.6, parent: -1, attach: 0, ignore: 0
     };
     var trunk = addBranch(grow(trunkSpec), trunkSpec, 0);
     var i;
@@ -202,7 +213,7 @@
 
     var maxDepth = 3;
     var gapMin = [55, 50, 45], gapVar = [80, 80, 60];
-    var lenMin = [0, 260, 110, 50], lenVar = [0, 600, 260, 130];
+    var lenMin = [0, 280, 110, 50], lenVar = [0, 760, 260, 130];
     var meanA = [0, 0.05, 0.06, 0.06], meanL = [0, 170, 110, 90], meanV = [0, 130, 80, 60];
     var queue = [trunk];
     while (queue.length) {
@@ -221,7 +232,7 @@
           wobble: d === 1 ? 0.02 : 0.025,
           mA: meanA[d], mL: (meanL[d] + rng() * meanV[d]) * S, mP: rng() * TAU,
           maxLen: (lenMin[d] + rng() * lenVar[d]) * S,
-          parent: b.id, attach: at, ignore: b.depth === 0 ? 40 : 16
+          parent: b.id, attach: at, ignore: b.depth === 0 ? Math.round((mouthW * 0.5 + 18 * S) / STEP / 0.45) : 16
         };
         var g = grow(spec);
         if (g.n * STEP >= 44 * S) {
@@ -439,7 +450,6 @@
 
     // Scenery: map symbols on the land, chosen by terrain. Pines and rocks on the hatched
     // uplands, reeds and grass on the dotted lowlands, round trees and bushes in between.
-    avoid = avoid || [];
     var props = [], glyphs = makeGlyphs(rng), wetCell = 52, wetGrid = {};
     branches.forEach(function (b) {
       for (var q = 0; q < b.n; q += 2) {
