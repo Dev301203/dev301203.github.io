@@ -88,7 +88,7 @@
     // What the work involved stays folded away until asked for.
     if (job.bullets && job.bullets.length) body.appendChild(folded(job.bullets));
     card.appendChild(body);
-    return { el: card, when: period(job.date) };
+    return { el: card, when: period(job.date), label: job.title + ', ' + job.company, text: (job.bullets || []).join(' ') };
   });
 
   var schools = exp.education.map(function (edu) {
@@ -195,6 +195,8 @@
   }
 
   // ── Projects ───────────────────────────────
+  // Everything a skill can point at: the jobs, then the projects.
+  var work = jobs.map(function (j) { return { el: j.el, label: j.label, text: j.text }; });
   var big = byId('projects-big'), small = byId('projects-small');
   data.projects.items.forEach(function (proj) {
     // A project without a public link is a plain panel.
@@ -215,7 +217,105 @@
     if (proj.award) body.appendChild(el('div', 'proj__award', proj.award));
     card.appendChild(body);
     (proj.featured ? big : small).appendChild(card);
+    work.push({ el: card, label: proj.title, text: proj.tech || '' });
   });
+
+  // ── Skills ─────────────────────────────────
+  // A map key: skills grouped by how much I use them, each led by a map symbol. A skill is
+  // matched against the tech line of every project and the text of every job, and picking
+  // one shows where it was used.
+  var keyEl = byId('skills-key'), detail = byId('skills-detail');
+  if (keyEl && detail && data.skills && data.skills.groups) {
+    var K = window.InkRiver;
+    var glyphs = K && K.glyphs ? K.glyphs(K.mulberry32(5)) : null;
+    var SVG = 'http://www.w3.org/2000/svg';
+    var REST = 'Pick a skill to see where I used it.';
+    var chosen = null, lit = [];
+
+    var mentions = function (text, term) {
+      var safe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Whole terms only, so "C" does not match "C++" or "C#", nor "Java" match "JavaScript".
+      return new RegExp('(^|[^A-Za-z0-9+#.])' + safe + '($|[^A-Za-z0-9+#])', term.length > 2 ? 'i' : '').test(text);
+    };
+
+    var select = function (entry) {
+      lit.forEach(function (node) { node.classList.remove('is-lit'); });
+      lit = [];
+      if (chosen) chosen.button.setAttribute('aria-pressed', 'false');
+      chosen = entry;
+      detail.textContent = '';
+      if (!entry) { detail.appendChild(el('span', 'key__rest', REST)); return; }
+      entry.button.setAttribute('aria-pressed', 'true');
+      detail.appendChild(el('span', 'key__name', entry.name));
+      if (!entry.uses.length) {
+        detail.appendChild(el('span', 'key__rest', 'Nothing on this page uses it yet.'));
+      } else {
+        detail.appendChild(el('span', 'key__rest', 'used in'));
+        entry.uses.forEach(function (use) {
+          use.el.classList.add('is-lit');
+          lit.push(use.el);
+          var go = el('button', 'key__use', use.label);
+          go.type = 'button';
+          go.addEventListener('click', function () {
+            use.el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+          });
+          detail.appendChild(go);
+        });
+      }
+      var clear = el('button', 'key__clear', 'Clear');
+      clear.type = 'button';
+      clear.addEventListener('click', function () { select(null); });
+      detail.appendChild(clear);
+    };
+
+    data.skills.groups.forEach(function (group) {
+      var row = el('div', 'key__row');
+      var label = el('div', 'key__label');
+      if (glyphs && glyphs[group.symbol]) {
+        var icon = document.createElementNS(SVG, 'svg');
+        icon.setAttribute('viewBox', '0 0 40 40');
+        icon.setAttribute('aria-hidden', 'true');
+        var parts = glyphs[group.symbol](20, 37, group.symbol === 'bush' ? 30 : 34);
+        ['under', 'body', 'solid', 'over'].forEach(function (part) {
+          if (!parts[part]) return;
+          var path = document.createElementNS(SVG, 'path');
+          path.setAttribute('d', parts[part]);
+          if (part === 'body' || part === 'solid') path.setAttribute('class', part);
+          icon.appendChild(path);
+        });
+        label.appendChild(icon);
+      }
+      label.appendChild(el('span', '', group.title));
+      row.appendChild(label);
+
+      var items = el('div', 'key__items');
+      (group.items || []).forEach(function (item) {
+        var name = typeof item === 'string' ? item : item.name;
+        var terms = [name].concat((item && item.also) || []);
+        var uses = work.filter(function (w) {
+          return terms.some(function (term) { return mentions(w.text, term); });
+        });
+        var button = el('button', 'skill' + (uses.length ? ' skill--used' : ''));
+        button.type = 'button';
+        button.setAttribute('aria-pressed', 'false');
+        button.appendChild(el('span', '', name));
+        if (uses.length) button.appendChild(el('sup', '', String(uses.length)));
+        var entry = { name: name, uses: uses, button: button };
+        // Chosen by click or keyboard focus only: hover would change the choice as the page
+        // scrolls under a resting cursor.
+        ['click', 'focus'].forEach(function (type) {
+          button.addEventListener(type, function () { if (chosen !== entry) select(entry); });
+        });
+        items.appendChild(button);
+      });
+      row.appendChild(items);
+      keyEl.appendChild(row);
+    });
+
+    var hint = byId('skills-hint');
+    if (hint) hint.textContent = data.skills.hint || '';
+    select(null);
+  }
 
   // ── Teaching ───────────────────────────────
   // One seal per course; repeat offerings are listed under the same seal.
@@ -292,7 +392,7 @@
       });
     });
   }, { rootMargin: '-40% 0px -55% 0px' });
-  ['hero', 'about', 'experience', 'projects', 'teaching', 'contact'].forEach(function (id) {
+  ['hero', 'about', 'experience', 'skills', 'projects', 'teaching', 'contact'].forEach(function (id) {
     var s = byId(id);
     if (s) navObserver.observe(s);
   });

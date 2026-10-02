@@ -19,18 +19,34 @@
     ]
   },
   "skills": {
+    "hint": "Underlined skills link to the work where I used them. Pick one.",
     "groups": [
       {
-        "title": "Languages",
-        "items": ["Python", "Rust", "C", "C++", "C#", "Java", "JavaScript", "SQL", "Bash"]
+        "title": "Use most",
+        "symbol": "pine",
+        "items": [
+          "Python", "C", "C++", "Rust", "SQL", "JavaScript", "Django", "React", "FastAPI",
+          { "name": "PostgreSQL", "also": ["Postgres", "Cloud SQL"] },
+          { "name": "Docker", "also": ["Dockerized"] }
+        ]
       },
       {
-        "title": "Frameworks & Libraries",
-        "items": ["Django", "React", "Node.js", "dbt", "SQLGlot", "LangGraph", "Hugging Face", "OpenAI API", "pandas", "NumPy"]
+        "title": "Comfortable with",
+        "symbol": "tree",
+        "items": [
+          "Java", "C#", "TypeScript", "Bash", "Node.js", "Redis", "Neo4j",
+          { "name": "GCP", "also": ["Cloud Run", "Cloud SQL", "Firebase"] },
+          "GitHub Actions", "dbt", "SQLGlot", "Grafana", "Prometheus"
+        ]
       },
       {
-        "title": "Cloud & Data",
-        "items": ["GCP", "Docker", "GitHub Actions", "Git", "Grafana", "Prometheus", "PostgreSQL", "Redis", "Neo4j"]
+        "title": "Have used",
+        "symbol": "bush",
+        "items": [
+          "LangGraph", "pandas", "NumPy", "OpenCV", "TensorFlow", "scikit-learn",
+          { "name": "AWS SageMaker", "also": ["SageMaker"] },
+          "MongoDB", "Assembly (MIPS)"
+        ]
       }
     ]
   },
