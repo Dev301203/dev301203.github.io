@@ -475,25 +475,23 @@
     // Visitor drawings join the picture once the river itself has finished inking in.
     if (T >= 1) {
       user.streams.forEach(fillBranch);
+      // All the pond water first, then the ripple marks, so overlapping ponds read as one.
       user.ponds.forEach(function (pond) {
-        var q;
         ctx.beginPath();
         ctx.moveTo(pond.poly[0], pond.poly[1]);
-        for (q = 2; q < pond.poly.length; q += 2) ctx.lineTo(pond.poly[q], pond.poly[q + 1]);
+        for (var q = 2; q < pond.poly.length; q += 2) ctx.lineTo(pond.poly[q], pond.poly[q + 1]);
         ctx.closePath();
-        ctx.fillStyle = colors.ink; ctx.fill();
-        ctx.strokeStyle = colors.paper; ctx.lineWidth = Math.max(1.1, 1.4 * scene.S); ctx.lineCap = 'round';
-        ctx.setLineDash([16 * scene.S, 11 * scene.S]);
-        pond.rings.forEach(function (ring, ri) {
-          ctx.lineDashOffset = ri * 9;
-          ctx.beginPath();
-          ctx.moveTo(ring[0], ring[1]);
-          for (q = 2; q < ring.length; q += 2) ctx.lineTo(ring[q], ring[q + 1]);
-          ctx.closePath();
-          ctx.stroke();
-        });
-        ctx.setLineDash([]);
+        ctx.fill();
       });
+      ctx.strokeStyle = colors.paper; ctx.lineWidth = Math.max(1.1, 1.3 * scene.S); ctx.lineCap = 'round';
+      ctx.beginPath();
+      user.ponds.forEach(function (pond) {
+        pond.marks.forEach(function (m) {
+          ctx.moveTo(m[0], m[1]);
+          ctx.quadraticCurveTo((m[0] + m[2]) / 2, m[1] + m[3], m[2], m[1]);
+        });
+      });
+      ctx.stroke();
     }
     ctx.fillStyle = colors.paper;
     scene.islands.forEach(function (isl) {
@@ -579,7 +577,7 @@
       carry = seg - (d - STEP);
     }
     var n = x.length;
-    for (var pass = 0; pass < (closed ? 3 : 9); pass++) {
+    for (var pass = 0; pass < 9; pass++) {
       var sx = x.slice(), sy = y.slice();
       for (i = 0; i < n; i++) {
         if (!closed && (i === 0 || i === n - 1)) continue;
@@ -601,17 +599,41 @@
     });
     if (!channelsOnly) {
       user.ponds.forEach(function (p) {
-        var gap = hyp(p.cx - x, p.cy - y) - p.reach;
+        var gap = inPoly(p.poly, x, y) ? -1 : hyp.apply(null, shoreOffset(p, x, y));
         if (gap < bestGap) { bestGap = gap; best = { pond: p, gap: gap }; }
       });
     }
     return best;
   }
 
-  // Where a stream meets that water: the middle of the pond, or the channel's centreline.
-  // A stream flowing in is carried a little way downstream first, the way tributaries join.
-  function meetingPoint(hit, flowingIn) {
-    if (hit.pond) return [hit.pond.cx, hit.pond.cy];
+  function inPoly(poly, x, y) {
+    var inside = false;
+    for (var i = 0, j = poly.length - 2; i < poly.length; j = i, i += 2) {
+      if ((poly[i + 1] > y) !== (poly[j + 1] > y) &&
+          x < (poly[j] - poly[i]) * (y - poly[i + 1]) / (poly[j + 1] - poly[i + 1]) + poly[i]) inside = !inside;
+    }
+    return inside;
+  }
+
+  // From a point to the nearest spot on a pond's shore.
+  function shoreOffset(pond, x, y) {
+    var best = Infinity, bx = 0, by = 0;
+    for (var i = 0; i < pond.poly.length; i += 2) {
+      var d = hyp(pond.poly[i] - x, pond.poly[i + 1] - y);
+      if (d < best) { best = d; bx = pond.poly[i] - x; by = pond.poly[i + 1] - y; }
+    }
+    return [bx, by];
+  }
+
+  // Where a stream reaching (x, y) meets that water: just inside a pond's shore, so nothing
+  // is drawn across the pond, or on a channel's centreline. A stream flowing into a channel
+  // is carried a little way downstream first, the way tributaries join.
+  function meetingPoint(hit, flowingIn, x, y) {
+    if (hit.pond) {
+      var off = shoreOffset(hit.pond, x, y), sx = x + off[0], sy = y + off[1];
+      var inward = hyp(hit.pond.cx - sx, hit.pond.cy - sy) || 1, step = Math.min(8 * scene.S, inward * 0.5);
+      return [sx + (hit.pond.cx - sx) / inward * step, sy + (hit.pond.cy - sy) / inward * step];
+    }
     var b = hit.b, i = hit.i;
     if (flowingIn) i = Math.max(0, i - Math.round((b.hw[i] * 1.6 + 8) / STEP));
     return [b.x[i], b.y[i]];
@@ -619,7 +641,7 @@
 
   // A gently bowed run from a point to that water, listed downstream end first.
   function runTo(hit, x, y) {
-    var to = meetingPoint(hit, true), at = meetingPoint(hit, false);
+    var to = meetingPoint(hit, true, x, y), at = meetingPoint(hit, false, x, y);
     var ux = x - at[0], uy = y - at[1], ul = hyp(ux, uy) || 1;
     var bow = (scene.rng() - 0.5) * Math.min(60 * scene.S, ul * 0.35);
     return [
@@ -631,11 +653,11 @@
 
   // Index 0 is the downstream end, as for the generated streams. The channel widens toward
   // it. An end that meets water opens into it; a loose end runs to a point.
-  function makeStream(pts, meetsDown, meetsUp, k) {
+  function makeStream(pts, meetsDown, meetsUp, k, minTop) {
     var c = tidy(pts, false), n = c.x.length;
     if (n < 6) return null;
     var S = scene.S, noise = scene.noise;
-    var top = Math.max(2.6, Math.min(10, (n - 1) * STEP / 38)) * S;
+    var top = Math.max(minTop || 2.6, Math.min(10, (n - 1) * STEP / 38)) * S;
     var b = {
       id: 500 + k, depth: 2, d0: 0, n: n, x: c.x, y: c.y, maxhw: 0,
       nx: new Array(n), ny: new Array(n), hw: new Array(n), hl: new Array(n), hr: new Array(n), t: new Array(n)
@@ -667,7 +689,7 @@
     var cx = 0, cy = 0, reach = 0;
     for (i = 0; i < n; i++) { cx += c.x[i]; cy += c.y[i]; }
     cx /= n; cy /= n;
-    var poly = [], inner = [[], []], halo = [];
+    var poly = [], halo = [], minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (i = 0; i < n; i++) {
       var ragged = 1 + 0.07 * (noise.n2(i * 0.09, k * 5.1) - 0.5);
       var px = cx + (c.x[i] - cx) * ragged, py = cy + (c.y[i] - cy) * ragged;
@@ -675,8 +697,7 @@
       poly.push(px, py);
       reach += radius / n;
       halo.push(px + (px - cx) / radius * 5 * S, py + (py - cy) / radius * 5 * S);
-      inner[0].push(cx + (px - cx) * 0.66, cy + (py - cy) * 0.66);
-      inner[1].push(cx + (px - cx) * 0.34, cy + (py - cy) * 0.34);
+      minX = Math.min(minX, px); maxX = Math.max(maxX, px); minY = Math.min(minY, py); maxY = Math.max(maxY, py);
 
       // Shore hachures on the shaded side, as on the river banks.
       var p = (i - 1 + n) % n, q = (i + 1) % n;
@@ -709,10 +730,19 @@
       }
       if (run && run.length >= 6) user.strokes.push({ k: 2, t: 0, p: run });
     }
-    var rings = [];
-    if (reach > 26) rings.push(inner[0]);
-    if (reach > 60) rings.push(inner[1]);
-    return { poly: poly, rings: rings, halo: halo, cx: cx, cy: cy, reach: reach };
+    // Ripple marks: short strokes scattered over the water, kept clear of the shore and of
+    // each other. They work for any outline, however knotted the stroke was.
+    var marks = [], want = Math.max(1, Math.min(60, Math.round((maxX - minX) * (maxY - minY) / (2600 * S * S))));
+    for (var tries = 0; tries < want * 14 && marks.length < want; tries++) {
+      var mx = minX + rng() * (maxX - minX), my = minY + rng() * (maxY - minY), half = (6 + rng() * 11) * S;
+      var clear = inPoly(poly, mx, my) && inPoly(poly, mx - half - 6 * S, my) && inPoly(poly, mx + half + 6 * S, my) &&
+        inPoly(poly, mx, my - 7 * S) && inPoly(poly, mx, my + 7 * S);
+      for (var e = 0; clear && e < marks.length; e++) {
+        if (Math.abs(marks[e][1] - my) < 9 * S && Math.abs((marks[e][0] + marks[e][2]) / 2 - mx) < half * 2 + 10 * S) clear = false;
+      }
+      if (clear) marks.push([mx - half, my, mx + half, (rng() - 0.5) * 5 * S]);
+    }
+    return { poly: poly, marks: marks, halo: halo, cx: cx, cy: cy, reach: reach };
   }
 
   function addStream(b) {
@@ -733,14 +763,20 @@
       if (shape.k === 'p') {
         var pond = makePond(pts, k);
         // A pond near a channel drains into it.
+        // A pond near a channel drains into it, from the shore nearest that channel. One drawn
+        // over a channel or over another pond is already part of that water.
         var drain = nearWater(pond.cx, pond.cy, pond.reach + 230 * S, true);
+        var joined = user.ponds.some(function (other) { return hyp(other.cx - pond.cx, other.cy - pond.cy) < other.reach + pond.reach; });
         user.ponds.push(pond);
-        if (drain) addStream(makeStream(runTo(drain, pond.cx, pond.cy).concat([pond.cx, pond.cy]), true, true, k + 0.5));
+        if (drain && !joined && drain.gap > pond.reach * 0.8) {
+          var out = meetingPoint({ pond: pond }, false, drain.b.x[drain.i], drain.b.y[drain.i]);
+          addStream(makeStream(runTo(drain, out[0], out[1]).concat(out), true, true, k + 0.5, 5));
+        }
         return;
       }
       var down = nearWater(pts[0], pts[1], 44 * S), up = nearWater(pts[last], pts[last + 1], 44 * S);
-      if (up) pts = pts.concat(meetingPoint(up, false));
-      if (down) pts = meetingPoint(down, true).concat(pts);
+      if (up) pts = pts.concat(meetingPoint(up, false, pts[last], pts[last + 1]));
+      if (down) pts = meetingPoint(down, true, pts[0], pts[1]).concat(pts);
       if (!down && !up) {
         // A stroke left in open land runs on to the nearest water, from whichever end is closer.
         var a = nearWater(pts[0], pts[1], 300 * S), z = nearWater(pts[last], pts[last + 1], 300 * S);

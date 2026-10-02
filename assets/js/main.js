@@ -210,6 +210,7 @@
     body.appendChild(el('h3', 'proj__title', proj.title));
     body.appendChild(meta([proj.tech, proj.date]));
     body.appendChild(el('p', 'proj__desc', proj.description));
+    if (proj.award) body.appendChild(el('div', 'proj__award', proj.award));
     card.appendChild(body);
     (proj.featured ? big : small).appendChild(card);
   });

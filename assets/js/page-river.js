@@ -24,8 +24,12 @@
     return p;
   }
   var pHatch = addPath('hatch'), pLines = addPath('lines'), pWater = addPath('water'), pLakes = addPath('water'), pIsles = addPath('isles');
+  var gProps = document.createElementNS(NS, 'g');
+  svg.appendChild(gProps);
   var gCurrent = document.createElementNS(NS, 'g');
   svg.appendChild(gCurrent);
+  var props = [], shown = 0;
+  layer.classList.toggle('anim', canAnimate);
   layer.appendChild(svg);
 
   function f1(n) { return n.toFixed(1); }
@@ -135,7 +139,7 @@
       hr[i] = hw[i] * (1 + 0.34 * (noise.n2(i * STEP * 0.012, 61.7) - 0.5));
     }
 
-    var water = '', hatch = '', lines = '';
+    var water = '', hatch = '', lines = '', wet = [];
 
     // Main channel, opening out to the full width where it meets the sea.
     var left = [], right = [];
@@ -217,6 +221,7 @@
       }
       water += 'M' + l2.join('L') + 'L' + r2.reverse().join('L') + 'Z';
       hachures(X, Y, NX, NY, TX, TY, HW, HW, HW, cnt + 1, Infinity, shadeScale);
+      for (a = 0; a <= cnt; a += 3) wet.push([X[a], Y[a], HW[a] + 16]);
       return { x: X, y: Y, n: cnt + 1 };
     }
 
@@ -286,6 +291,7 @@
         }
       }
       lakes += 'M' + shore.join('L') + 'Z';
+      wet.push([cx, cy, rx * 1.2 + 20]);
       for (var ring = 1; ring <= (d.lake ? 2 : 1); ring++) {
         var run = [], keep = 0;
         for (a = 0; a <= turns; a++) {
@@ -356,6 +362,189 @@
       currentLine(pts, 52);
     });
 
+    // ── Scenery ──────────────────────────────
+    // Small map symbols on the open ground: each section has its own mix, so the land
+    // changes down the page. Nothing is placed under a panel or on water.
+    while (gProps.firstChild) gProps.removeChild(gProps.firstChild);
+    props = [];
+    var unit = small ? 0.9 : 1.25;
+    var blocks = Array.prototype.map.call(
+      main.querySelectorAll('.slab, .card, .proj, .stamp, .bank, .resume, .about'),
+      function (node) {
+        var r = node.getBoundingClientRect();
+        return [r.left - mr.left - 14, r.top - mr.top - 14, r.right - mr.left + 14, r.bottom - mr.top + 14];
+      });
+
+    function riverGap(x, y) {
+      var lo = 0, hi = n - 1;
+      while (lo < hi) { var mid = (lo + hi) >> 1; if (py[mid] < y) lo = mid + 1; else hi = mid; }
+      var gap = Infinity;
+      for (var q = Math.max(0, lo - 14); q <= Math.min(n - 1, lo + 14); q += 2) {
+        gap = Math.min(gap, Math.sqrt((px[q] - x) * (px[q] - x) + (py[q] - y) * (py[q] - y)) - hw[q]);
+      }
+      return gap;
+    }
+
+    // (x, y) is where the symbol stands; it rises s above that point.
+    function clearGround(x, y, s, nearWater) {
+      var cy = y - s * 0.5, r = s * 0.5, q;
+      if (x < r + 4 || x > W - r - 4 || y - s < 24 || y > seaTop - flare - 20) return false;
+      for (q = 0; q < blocks.length; q++) {
+        if (x + r > blocks[q][0] && x - r < blocks[q][2] && y > blocks[q][1] && y - s < blocks[q][3]) return false;
+      }
+      if (!nearWater && riverGap(x, cy) < 24 + r) return false;
+      for (q = 0; q < wet.length; q++) {
+        var dx = wet[q][0] - x, dy = wet[q][1] - cy;
+        if (dx * dx + dy * dy < (wet[q][2] + r) * (wet[q][2] + r)) return false;
+      }
+      for (q = 0; q < props.length; q++) {
+        var ex = props[q].x - x, ey = props[q].y - y, keep = (props[q].s + s) * 0.34;
+        if (ex * ex + ey * ey < keep * keep) return false;
+      }
+      return true;
+    }
+
+    function jit(v) { return v + (rng() - 0.5) * 0.06; }
+    function spot(x, y, s, u, v) { return f1(x + u * s) + ' ' + f1(y + v * s); }
+
+    var draw = {
+      pine: function (x, y, s) {
+        var L = [[0.17, 0.66], [0.07, 0.66], [0.28, 0.36], [0.11, 0.36], [0.39, 0.07], [0.06, 0.07]].map(function (p) {
+          return [jit(p[0]), jit(p[1])];
+        });
+        var left = L.map(function (p) { return spot(x, y, s, -p[0], -p[1]); });
+        var right = L.map(function (p) { return spot(x, y, s, p[0], -p[1]); });
+        var top = spot(x, y, s, 0, -1), foot = spot(x, y, s, -0.06, 0) + 'L' + spot(x, y, s, 0.06, 0);
+        return {
+          body: 'M' + top + 'L' + left.join('L') + 'L' + foot + 'L' + right.slice().reverse().join('L') + 'Z',
+          solid: 'M' + top + 'L' + right.join('L') + 'L' + spot(x, y, s, 0.06, 0) + 'L' + spot(x, y, s, 0, 0) + 'Z'
+        };
+      },
+      tree: function (x, y, s) {
+        var r = 0.36, cy = -0.62, lobes = 7 + ((rng() * 3) | 0), turn = rng() * 6.28, d = '', q;
+        for (q = 0; q <= lobes; q++) {
+          var a = turn + q / lobes * 6.2832, b = a - 3.1416 / lobes, rr = r * (0.94 + rng() * 0.14);
+          var here = spot(x, y, s, Math.cos(a) * rr, cy + Math.sin(a) * rr);
+          d += q ? 'Q' + spot(x, y, s, Math.cos(b) * r * 1.3, cy + Math.sin(b) * r * 1.3) + ' ' + here : 'M' + here;
+        }
+        var over = '';
+        [[0, 0.72], [0.22, 0.78], [0.46, 0.66], [0.28, 0.42]].forEach(function (h) {
+          over += 'M' + spot(x, y, s, r * h[0], cy + r * h[1]) + 'L' + spot(x, y, s, r * (h[0] + 0.2), cy + r * (h[1] - 0.2));
+        });
+        return {
+          under: 'M' + spot(x, y, s, -0.045, -0.34) + 'L' + spot(x, y, s, -0.055, 0) + 'M' + spot(x, y, s, 0.045, -0.34) + 'L' + spot(x, y, s, 0.055, 0),
+          body: d + 'Z', over: over
+        };
+      },
+      bush: function (x, y, s) {
+        var lobes = 4 + ((rng() * 2) | 0), d = 'M' + spot(x, y, s, -0.5, 0), q;
+        for (q = 1; q <= lobes; q++) {
+          var a = 3.1416 * (1 - q / lobes), b = 3.1416 * (1 - (q - 0.5) / lobes);
+          d += 'Q' + spot(x, y, s, Math.cos(b) * 0.66, -Math.sin(b) * 0.92) + ' ' + spot(x, y, s, Math.cos(a) * 0.5, -Math.sin(a) * 0.62);
+        }
+        return {
+          body: d + 'Z',
+          over: 'M' + spot(x, y, s, 0.1, -0.12) + 'L' + spot(x, y, s, 0.24, -0.3) + 'M' + spot(x, y, s, 0.24, -0.08) + 'L' + spot(x, y, s, 0.36, -0.24)
+        };
+      },
+      rock: function (x, y, s) {
+        var p = [[-0.5, 0], [-0.44, -0.3], [-0.16, -0.58], [0.2, -0.5], [0.46, -0.24], [0.5, 0]].map(function (v) {
+          return [jit(v[0]), v[1] ? jit(v[1]) : 0];
+        });
+        var over = 'M' + spot(x, y, s, p[2][0], p[2][1]) + 'L' + spot(x, y, s, 0.04, -0.2) + 'L' + spot(x, y, s, 0.1, 0);
+        for (var q = 0; q < 4; q++) {
+          over += 'M' + spot(x, y, s, 0.16 + 0.08 * q, -0.03) + 'L' + spot(x, y, s, 0.22 + 0.07 * q, -0.34 + 0.07 * q);
+        }
+        return { body: 'M' + p.map(function (v) { return spot(x, y, s, v[0], v[1]); }).join('L') + 'Z', over: over };
+      },
+      grass: function (x, y, s) {
+        var blades = 3 + ((rng() * 3) | 0), over = '';
+        for (var q = 0; q < blades; q++) {
+          var from = (q / (blades - 1) - 0.5) * 0.5, lean = from * 1.5 + (rng() - 0.5) * 0.3, h = 0.6 + rng() * 0.4;
+          over += 'M' + spot(x, y, s, from, 0) + 'Q' + spot(x, y, s, from + lean * 0.25, -h * 0.6) + ' ' + spot(x, y, s, from + lean, -h);
+        }
+        return { over: over };
+      },
+      reeds: function (x, y, s) {
+        var stems = 3 + ((rng() * 3) | 0), over = '', heads = '';
+        for (var q = 0; q < stems; q++) {
+          var from = (q / (stems - 1) - 0.5) * 0.55, lean = (rng() - 0.5) * 0.22, h = 0.62 + rng() * 0.38;
+          over += 'M' + spot(x, y, s, from, 0) + 'L' + spot(x, y, s, from + lean, -h);
+          heads += 'M' + spot(x, y, s, from + lean * 0.78, -h * 0.78) + 'L' + spot(x, y, s, from + lean, -h);
+        }
+        return { over: over, heads: heads };
+      }
+    };
+
+    function plant(kind, x, y, s, nearWater) {
+      if (!clearGround(x, y, s, nearWater)) return false;
+      props.push({ kind: kind, x: x, y: y, s: s });
+      return true;
+    }
+
+    // What grows where: [kind, smallest, largest, relative share].
+    var BIOMES = [
+      [['grass', 8, 13, 5], ['tree', 26, 38, 2], ['bush', 13, 19, 2]],
+      [['pine', 24, 42, 6], ['rock', 12, 20, 1], ['grass', 8, 12, 2]],
+      [['rock', 13, 28, 5], ['grass', 8, 12, 3], ['pine', 22, 32, 1]],
+      [['tree', 26, 40, 5], ['bush', 13, 20, 3], ['grass', 8, 12, 2]]
+    ];
+    var bands = Array.prototype.map.call(main.querySelectorAll('.sec'), function (sec) {
+      return [sec.offsetTop, sec.offsetTop + sec.offsetHeight];
+    });
+    bands.forEach(function (band, bi) {
+      var mix = BIOMES[bi % BIOMES.length], share = 0;
+      mix.forEach(function (m) { share += m[3]; });
+      var from = bi ? (bands[bi - 1][1] + band[0]) / 2 : 20;
+      var to = bi < bands.length - 1 ? (band[1] + bands[bi + 1][0]) / 2 : band[1] + 160;
+      var groves = Math.round((to - from) / (small ? 120 : 62) * Math.max(0.7, Math.min(1.6, W / 1300)));
+      for (var g = 0; g < groves; g++) {
+        var pick = rng() * share, kind = mix[0];
+        for (var m = 0; m < mix.length; m++) { pick -= mix[m][3]; if (pick <= 0) { kind = mix[m]; break; } }
+        var gx = 0, gy = 0, found = false;
+        for (var t = 0; t < 40 && !found; t++) {
+          gx = rng() * W; gy = from + rng() * (to - from);
+          found = clearGround(gx, gy, kind[2] * unit, false);
+        }
+        if (!found) continue;
+        var members = kind[0] === 'grass' ? 4 + ((rng() * 6) | 0) : kind[0] === 'rock' ? 2 + ((rng() * 4) | 0) : 3 + ((rng() * 7) | 0);
+        var spread = kind[2] * unit * (1.2 + rng() * 1.4);
+        for (var k = 0; k < members; k++) {
+          var ang = rng() * 6.2832, far = Math.sqrt(rng()) * spread;
+          plant(kind[0], gx + Math.cos(ang) * far * 1.5, gy + Math.sin(ang) * far * 0.8,
+            (kind[1] + rng() * (kind[2] - kind[1])) * unit, false);
+        }
+      }
+    });
+
+    // Reeds along the banks of the main channel.
+    var reedAt = Math.round((120 + rng() * 200) / STEP);
+    while (reedAt < n) {
+      if (py[reedAt] > seaTop - flare - 60) break;
+      var bank = rng() < 0.5 ? 1 : -1, clump = 1 + ((rng() * 3) | 0);
+      for (var rc = 0; rc < clump; rc++) {
+        var ri = Math.min(n - 1, reedAt + rc * 3), out = hw[ri] * 1.12 + 7 + rng() * 6;
+        plant('reeds', px[ri] + nx[ri] * bank * out, py[ri] + ny[ri] * bank * out + 5, (15 + rng() * 9) * unit, true);
+      }
+      reedAt += Math.round((170 + rng() * 330) / STEP);
+    }
+
+    // Lower symbols overlap the ones behind them.
+    props.sort(function (a, b) { return a.y - b.y; });
+    props.forEach(function (p) {
+      var shape = draw[p.kind](p.x, p.y, p.s);
+      var g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'prop' + ((p.kind === 'tree' || p.kind === 'reeds') && rng() < 0.6 ? ' prop--sway' : ''));
+      g.style.transformOrigin = f1(p.x) + 'px ' + f1(p.y) + 'px';
+      g.style.setProperty('--sway', (2.6 + rng() * 2.4).toFixed(2) + 's');
+      [['under', ''], ['body', 'body'], ['solid', 'solid'], ['over', ''], ['heads', 'heads']].forEach(function (part) {
+        if (shape[part[0]]) addPath(part[1], g).setAttribute('d', shape[part[0]]);
+      });
+      gProps.appendChild(g);
+      p.el = g;
+    });
+    shown = 0;
+
     pLakes.setAttribute('d', lakes);
     svg.setAttribute('width', W);
     svg.setAttribute('height', H);
@@ -372,8 +561,13 @@
   // Everything above the ink front is shown; the channel itself runs on a little
   // further and tapers to a point, like the end of a brush stroke.
   var TIP = 120;
+  function showProps(above) {
+    while (shown < props.length && props[shown].y < above) props[shown++].el.classList.add('in');
+  }
+
   function applyReveal() {
-    if (!canAnimate || !centre || inked >= height - 2) { layer.style.clipPath = ''; return; }
+    if (!canAnimate || !centre || inked >= height - 2) { layer.style.clipPath = ''; showProps(Infinity); return; }
+    showProps(inked - TIP - 6);
     var lo = 0, hi = centre.y.length - 1;
     while (lo < hi) { var mid = (lo + hi) >> 1; if (centre.y[mid] < inked) lo = mid + 1; else hi = mid; }
     var cx = centre.x[lo], reach = centre.hw[lo] + 14, y = inked.toFixed(0), y1 = (inked - TIP).toFixed(0);
@@ -402,6 +596,7 @@
       });
     } catch (err) {
       canAnimate = false;
+      layer.classList.remove('anim');
       applyReveal();
     }
   }
