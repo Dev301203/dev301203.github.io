@@ -23,7 +23,7 @@
     (parent || svg).appendChild(p);
     return p;
   }
-  var pHatch = addPath('hatch'), pLines = addPath('lines'), pWater = addPath('water'), pIsles = addPath('isles');
+  var pHatch = addPath('hatch'), pLines = addPath('lines'), pWater = addPath('water'), pLakes = addPath('water'), pIsles = addPath('isles');
   var gCurrent = document.createElementNS(NS, 'g');
   svg.appendChild(gCurrent);
   layer.appendChild(svg);
@@ -50,6 +50,24 @@
     var startX = artRect.left - mr.left + (K.mouth ? K.mouth.x : W * 0.6);
     var startHw = K.mouth ? K.mouth.hw : baseHw;
 
+    while (gCurrent.firstChild) gCurrent.removeChild(gCurrent.firstChild);
+
+    // Panels with their own water (see Sources below). Their tributaries join the channel in
+    // page order, each below its source and below the one before, so none of them cross.
+    var docks = [], lastJoin = -Infinity, gainTotal = 0;
+    Array.prototype.forEach.call(main.querySelectorAll('[data-dock]'), function (dock) {
+      var x0 = 0, y0 = 0, node = dock;
+      while (node && node !== main) { x0 += node.offsetLeft; y0 += node.offsetTop; node = node.offsetParent; }
+      if (!node) return;
+      var d = { x: x0, y: y0, w: dock.offsetWidth, h: dock.offsetHeight, lake: dock.classList.contains('job--edu') };
+      d.sy = d.y + (d.lake ? d.h * 0.5 : Math.min(d.h * 0.5, 64));
+      d.joinY = Math.max(d.sy + (small ? 36 : 84) + rng() * (small ? 20 : 80), lastJoin + (small ? 30 : 58));
+      d.gain = d.lake ? 1.5 : 1;
+      lastJoin = d.joinY;
+      gainTotal += d.gain;
+      docks.push(d);
+    });
+
     // Centreline: straight down each lane, S-bends across the gaps between sections.
     var raw = [[startX, 0]], spans = [], joins = [];
     function bend(x0, y0, x1, y1) {
@@ -71,7 +89,11 @@
       bend(cur.x, cur.y, cx, top + ease);
       for (var y = top + ease + STEP; y <= bot - ease; y += STEP) raw.push([cx, y]);
       cur = { x: cx, y: bot - ease };
-      spans.push({ y0: top, y1: bot, amp: Math.max(0, r.width / 2 - baseHw - 8) });
+      // In a wide lane the channel keeps to the middle, leaving the edges for the sources.
+      spans.push({
+        y0: top, y1: bot, amp: Math.max(0, Math.min(r.width / 2 - baseHw - 8, r.width * 0.23)),
+        wave: (small ? 42 : 80) * (0.7 + rng() * 0.7), phase: rng() * 6.283
+      });
     });
     bend(cur.x, cur.y, W / 2, seaTop + 6);
 
@@ -84,13 +106,14 @@
       while (d <= seg) { px.push(lerp(ax, bx, d / seg)); py.push(lerp(ay, by, d / seg)); d += STEP; }
       carry = seg - (d - STEP);
     }
-    var n = px.length, wave = (small ? 42 : 80) * (0.75 + rng() * 0.6), phase = rng() * 6.283;
+    var n = px.length;
     for (i = 0; i < n; i++) {
-      var amp = 0;
+      var amp = 0, wave = 80, phase = 0;
       for (var k = 0; k < spans.length; k++) {
         var sp = spans[k];
         if (py[i] > sp.y0 && py[i] < sp.y1) {
           amp = sp.amp * smooth(sp.y0, sp.y0 + 140, py[i]) * (1 - smooth(sp.y1 - 140, sp.y1, py[i]));
+          wave = sp.wave; phase = sp.phase;
         }
       }
       var s = i * STEP;
@@ -103,7 +126,11 @@
       var i0 = Math.max(0, i - 2), i1 = Math.min(n - 1, i + 2);
       var dx = px[i1] - px[i0], dy = py[i1] - py[i0], dl = Math.sqrt(dx * dx + dy * dy) || 1;
       tx[i] = dx / dl; ty[i] = dy / dl; nx[i] = -ty[i]; ny[i] = tx[i];
-      hw[i] = lerp(startHw, baseHw, smooth(0, 320, i * STEP));
+      // The channel starts lean and takes on width below each tributary.
+      var fed = 0;
+      for (var dk = 0; dk < docks.length; dk++) fed += docks[dk].gain * smooth(docks[dk].joinY - 10, docks[dk].joinY + 120, py[i]);
+      var full = docks.length ? baseHw * (0.66 + 0.42 * fed / gainTotal) : baseHw;
+      hw[i] = lerp(startHw, full, smooth(0, 320, i * STEP));
       hl[i] = hw[i] * (1 + 0.34 * (noise.n2(i * STEP * 0.012, 1.7) - 0.5));
       hr[i] = hw[i] * (1 + 0.34 * (noise.n2(i * STEP * 0.012, 61.7) - 0.5));
     }
@@ -166,7 +193,7 @@
     }
 
     // Side streams: a tapering channel along a curve that ends on the main channel's centreline.
-    function stream(c, w0, w1, wiggle, shadeScale) {
+    function stream(c, w0, w1, wiggle, shadeScale, mouth) {
       var cnt = Math.max(12, Math.round((Math.abs(c[6] - c[0]) + Math.abs(c[7] - c[1])) / STEP));
       var X = [], Y = [], NX = [], NY = [], TX = [], TY = [], HW = [], a;
       var wig = rng() * 10;
@@ -180,7 +207,8 @@
         var a0 = Math.max(0, a - 1), a1 = Math.min(cnt, a + 1);
         var ddx = X[a1] - X[a0], ddy = Y[a1] - Y[a0], ddl = Math.sqrt(ddx * ddx + ddy * ddy) || 1;
         TX.push(ddx / ddl); TY.push(ddy / ddl); NX.push(-ddy / ddl); NY.push(ddx / ddl);
-        HW.push(lerp(w0, w1, Math.pow(a / cnt, 0.8)) * (1 + 0.3 * (noise.n2(a * 0.2, wig + 5) - 0.5)));
+        HW.push(lerp(w0, w1, Math.pow(a / cnt, 0.8)) * (1 + 0.3 * (noise.n2(a * 0.2, wig + 5) - 0.5)) *
+          (1 + (mouth || 0) * smooth(0.72, 0.96, a / cnt)));
       }
       var l2 = [], r2 = [];
       for (a = 0; a <= cnt; a++) {
@@ -189,6 +217,18 @@
       }
       water += 'M' + l2.join('L') + 'L' + r2.reverse().join('L') + 'Z';
       hachures(X, Y, NX, NY, TX, TY, HW, HW, HW, cnt + 1, Infinity, shadeScale);
+      return { x: X, y: Y, n: cnt + 1 };
+    }
+
+    function currentLine(pts, speed) {
+      if (pts.length < 2) return;
+      var p = addPath('current', gCurrent);
+      p.setAttribute('d', 'M' + pts.join('L'));
+      var dash = [20 + rng() * 50, 70 + rng() * 110, 10 + rng() * 30, 90 + rng() * 120].map(Math.round);
+      var cycle = dash[0] + dash[1] + dash[2] + dash[3];
+      p.setAttribute('stroke-dasharray', dash.join(' '));
+      p.style.setProperty('--cycle', cycle);
+      p.style.setProperty('--dur', (cycle / (speed * (0.8 + rng() * 0.5))).toFixed(2) + 's');
     }
 
     // One runs through each gap between sections and joins the channel.
@@ -200,21 +240,84 @@
         1.2, small ? 3.5 : 8, 22, small ? 0.5 : 0.8);
     });
 
-    // One flows out from under every docked panel (each job and school) into the channel,
-    // so the panels stay tied to the river wherever a redraw sends it.
-    Array.prototype.forEach.call(main.querySelectorAll('[data-dock]'), function (dock) {
-      var x0 = 0, y0 = 0, node = dock;
-      while (node && node !== main) { x0 += node.offsetLeft; y0 += node.offsetTop; node = node.offsetParent; }
-      if (!node) return;
-      var w = dock.offsetWidth, h = dock.offsetHeight;
-      var sy = y0 + Math.min(h * 0.5, 60 + rng() * 30);
-      var j = 0, drop = (small ? 34 : 56) + rng() * (small ? 20 : 44);
-      while (j < n - 1 && py[j] < sy + drop) j++;
-      var fromLeft = x0 + w / 2 < px[j];
-      var sx = fromLeft ? x0 + w - Math.min(60, w * 0.3) : x0 + Math.min(60, w * 0.3);
+    // Sources. Every docked panel has its own water, a lake for a school and a spring for a
+    // job, lying half under the panel's river-side edge, and a tributary from it into the channel.
+    var lakes = '';
+    docks.forEach(function (d, k) {
+      var j = 0;
+      while (j < n - 1 && py[j] < d.joinY) j++;
       var ex = px[j], ey = py[j];
-      stream([sx, sy, lerp(sx, ex, 0.6), sy - 6, lerp(sx, ex, 0.92), lerp(sy, ey, 0.15), ex, ey],
-        1.6, small ? 3 : 6.5, 8, small ? 0.5 : 0.7);
+      var dir = d.x + d.w / 2 < ex ? 1 : -1;
+      var edge = dir > 0 ? d.x + d.w : d.x;
+
+      if (small) {
+        // No room for a lake beside a full-width panel: a short stream from under its edge.
+        var from = edge - dir * Math.min(50, d.w * 0.3);
+        stream([from, d.sy, lerp(from, ex, 0.6), d.sy - 4, lerp(from, ex, 0.92), lerp(d.sy, ey, 0.2), ex, ey],
+          2.4, 4.6, 6, 0.5, 0.5);
+        return;
+      }
+
+      var rx = d.lake ? Math.min(d.h * 0.4, 46 + rng() * 14) : 25 + rng() * 7;
+      var ry = rx * (d.lake ? 0.66 + rng() * 0.14 : 0.8 + rng() * 0.15);
+      var cx = edge + dir * rx * 0.28, cy = d.sy;
+      var shore = [], ripple = [], turns = d.lake ? 44 : 28, seedA = rng() * 40, a;
+      for (a = 0; a < turns; a++) {
+        var th = a / turns * 6.2832, cs = Math.cos(th), sn = Math.sin(th);
+        var rag = 1 + 0.34 * (noise.n2(seedA + cs * 1.3, seedA + sn * 1.3) - 0.5);
+        var sx = cx + cs * rx * rag, sy = cy + sn * ry * rag;
+        shore.push(f1(sx) + ' ' + f1(sy));
+        ripple.push(f1(cx + cs * rx * rag * 0.58) + ' ' + f1(cy + sn * ry * rag * 0.58));
+
+        // Shore hachures on the shaded side, and a broken contour line outside it.
+        var ol = Math.sqrt(cs * cs * ry * ry + sn * sn * rx * rx) || 1, ox = cs * ry / ol, oy = sn * rx / ol;
+        var shade = ox * 0.6 + oy * 0.8;
+        if (shade > -0.15 || rng() < 0.07) {
+          for (var rep = 0; rep < 3; rep++) {
+            var slip = (rng() - 0.5) * 7, lean = (rng() - 0.5) * 0.6;
+            var hx = sx - oy * slip, hy = sy + ox * slip;
+            var dx = ox * Math.cos(lean) - oy * Math.sin(lean), dy = oy * Math.cos(lean) + ox * Math.sin(lean);
+            var len = (5 + 20 * Math.pow(Math.min(1, noise.fbm(hx * 0.009, hy * 0.009) * 1.25), 2.2)) *
+              (0.55 + rng() * 0.7) * (0.4 + 0.8 * Math.max(0, shade));
+            var w = (0.9 + rng() * 0.9) * 0.5;
+            hatch += 'M' + f1(hx - dy * w) + ' ' + f1(hy + dx * w) + 'L' + f1(hx + dx * len) + ' ' + f1(hy + dy * len) +
+              'L' + f1(hx + dy * w) + ' ' + f1(hy - dx * w) + 'Z';
+          }
+        }
+      }
+      lakes += 'M' + shore.join('L') + 'Z';
+      for (var ring = 1; ring <= (d.lake ? 2 : 1); ring++) {
+        var run = [], keep = 0;
+        for (a = 0; a <= turns; a++) {
+          if (keep <= 0) {
+            if (run.length >= 3) lines += 'M' + run.join('L');
+            run = [];
+            a += 1 + ((rng() * 3) | 0);
+            keep = 4 + ((rng() * 12) | 0);
+          }
+          keep--;
+          var th2 = a / turns * 6.2832;
+          run.push(f1(cx + Math.cos(th2) * (rx + 4 + ring * 6)) + ' ' + f1(cy + Math.sin(th2) * (ry + 4 + ring * 6)));
+        }
+        if (run.length >= 3) lines += 'M' + run.join('L');
+      }
+      if (d.lake) currentLine(ripple.concat(ripple[0]), 14);
+
+      // The tributary leaves the lake toward the river and arrives leaning downstream.
+      var tw = baseHw * (d.lake ? 0.3 : 0.22);
+      var ox0 = cx + dir * rx * 0.7, oy0 = cy + ry * 0.25;
+      var path = stream([
+        ox0, oy0,
+        lerp(ox0, ex, 0.5), oy0 + (ey - oy0) * 0.1,
+        ex - dir * (hw[j] * 2.2 + 18), ey - Math.min(80, (ey - oy0) * 0.6),
+        ex, ey
+      ], tw * 0.7, tw, 26, 0.75, 0.7);
+      var mid = [];
+      for (a = 2; a < path.n; a++) {
+        if (Math.abs(path.x[a] - ex) < hw[j] + 6 && Math.abs(path.y[a] - ey) < hw[j] * 2) break;
+        mid.push(f1(path.x[a]) + ' ' + f1(path.y[a]));
+      }
+      currentLine(mid, 34);
     });
 
     // Islands in the lanes, where there is room for them.
@@ -243,7 +346,6 @@
     }
 
     // Current lines: dashed lanes that drift downstream.
-    while (gCurrent.firstChild) gCurrent.removeChild(gCurrent.firstChild);
     (small ? [-0.4, 0.35] : [-0.58, -0.28, 0.02, 0.33, 0.62]).forEach(function (frac, li) {
       var pts = [];
       for (var j = 0; j < n; j++) {
@@ -251,16 +353,10 @@
         var o = frac * hw[j] + Math.sin(j * STEP * 0.03 + li * 1.7) * 1.4;
         pts.push(f1(px[j] + nx[j] * o) + ' ' + f1(py[j] + ny[j] * o));
       }
-      if (pts.length < 2) return;
-      var p = addPath('current', gCurrent);
-      p.setAttribute('d', 'M' + pts.join('L'));
-      var dash = [20 + rng() * 50, 70 + rng() * 110, 10 + rng() * 30, 90 + rng() * 120].map(Math.round);
-      var cycle = dash[0] + dash[1] + dash[2] + dash[3];
-      p.setAttribute('stroke-dasharray', dash.join(' '));
-      p.style.setProperty('--cycle', cycle);
-      p.style.setProperty('--dur', (cycle / (46 + rng() * 30)).toFixed(2) + 's');
+      currentLine(pts, 52);
     });
 
+    pLakes.setAttribute('d', lakes);
     svg.setAttribute('width', W);
     svg.setAttribute('height', H);
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);

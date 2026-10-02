@@ -338,7 +338,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .bank--edu { grid-column: 1; }
 .bank--work { grid-column: 3; }
 
-.job { grid-row: var(--row); }
+/* The river gets a wide corridor here: room to roam, and for each panel's own water. */
+@media (min-width: 900px) {
+  .sec--experience { --lane: clamp(280px, 31vw, 420px); }
+}
+
+.job { grid-row: var(--row); container-type: inline-size; }
 .job--work { grid-column: 3; }
 .job--edu { grid-column: 1; align-self: center; }
 .job--line .job__body { padding-block: 12px; }
@@ -374,6 +379,21 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .job__when span { white-space: nowrap; }
 .job__body { padding: clamp(14px, 1.8vw, 22px); }
+
+/* Narrower panels shrink the first row; the narrowest put the dates under the logo. */
+@container (max-width: 400px) {
+  .job__logo { height: 72px; max-width: 52%; }
+  .job__when { padding: 8px 12px; font-size: 0.72rem; }
+}
+@container (max-width: 330px) {
+  .job__top { display: block; border-bottom: 0; }
+  .job__logo { height: 76px; max-width: 100%; border-bottom: var(--rule) solid var(--ink); }
+  .job__when {
+    flex-direction: row; justify-content: flex-start; align-items: baseline; text-align: left;
+    padding: 12px clamp(14px, 1.8vw, 22px) 0; font-size: 0.78rem;
+  }
+  .job__body { padding-top: 6px; }
+}
 .job__title {
   font-family: var(--font-display);
   font-stretch: 75%;
@@ -628,17 +648,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .bank { display: none; }
   .resume-mount { justify-self: start; }
 
-  .job__top { flex-direction: column; border-bottom: 0; }
-  .job__logo {
-    width: 100%; max-width: none; height: 84px;
-    object-position: left center;
-    border-right: 0; border-bottom: var(--rule) solid var(--ink);
-  }
-  .job__when {
-    flex-direction: row; justify-content: flex-start; align-items: baseline; text-align: left;
-    padding: 12px clamp(14px, 1.8vw, 22px) 0;
-  }
-  .job__body { padding-top: 6px; }
   .about { grid-template-columns: 1fr; }
   .about__portrait { max-height: 300px; border-right: 0; border-bottom: var(--rule) solid var(--ink); }
 

@@ -414,6 +414,16 @@
     if (userDirty && T >= 1) {
       userDirty = false;
       userLand.ctx.clearRect(0, 0, W, H);
+      // Drawn water gets a thin margin of bare paper, which also opens the bank where it joins.
+      userLand.ctx.fillStyle = colors.paper;
+      user.streams.concat(user.ponds).forEach(function (shape) {
+        var h = shape.halo, c = userLand.ctx;
+        c.beginPath();
+        c.moveTo(h[0], h[1]);
+        for (var q = 2; q < h.length; q += 2) c.lineTo(h[q], h[q + 1]);
+        c.closePath();
+        c.fill();
+      });
       paintStrokes(userLand.ctx, user.strokes, 0, user.strokes.length);
     }
   }
@@ -569,7 +579,7 @@
       carry = seg - (d - STEP);
     }
     var n = x.length;
-    for (var pass = 0; pass < 3; pass++) {
+    for (var pass = 0; pass < (closed ? 3 : 9); pass++) {
       var sx = x.slice(), sy = y.slice();
       for (i = 0; i < n; i++) {
         if (!closed && (i === 0 || i === n - 1)) continue;
@@ -580,9 +590,48 @@
     return { x: x, y: y };
   }
 
-  // Index 0 is the downstream end, as for the generated streams. The channel widens
-  // toward it, and runs to a point there unless that end meets existing water.
-  function makeStream(pts, touch, k) {
+  // The nearest water to a point: a channel whose bank is within reach, or a pond.
+  function nearWater(x, y, reach, channelsOnly) {
+    var best = null, bestGap = reach;
+    scene.branches.concat(user.streams).forEach(function (b) {
+      for (var i = 0; i < b.n; i += 2) {
+        var gap = hyp(b.x[i] - x, b.y[i] - y) - b.hw[i];
+        if (gap < bestGap) { bestGap = gap; best = { b: b, i: i, gap: gap }; }
+      }
+    });
+    if (!channelsOnly) {
+      user.ponds.forEach(function (p) {
+        var gap = hyp(p.cx - x, p.cy - y) - p.reach;
+        if (gap < bestGap) { bestGap = gap; best = { pond: p, gap: gap }; }
+      });
+    }
+    return best;
+  }
+
+  // Where a stream meets that water: the middle of the pond, or the channel's centreline.
+  // A stream flowing in is carried a little way downstream first, the way tributaries join.
+  function meetingPoint(hit, flowingIn) {
+    if (hit.pond) return [hit.pond.cx, hit.pond.cy];
+    var b = hit.b, i = hit.i;
+    if (flowingIn) i = Math.max(0, i - Math.round((b.hw[i] * 1.6 + 8) / STEP));
+    return [b.x[i], b.y[i]];
+  }
+
+  // A gently bowed run from a point to that water, listed downstream end first.
+  function runTo(hit, x, y) {
+    var to = meetingPoint(hit, true), at = meetingPoint(hit, false);
+    var ux = x - at[0], uy = y - at[1], ul = hyp(ux, uy) || 1;
+    var bow = (scene.rng() - 0.5) * Math.min(60 * scene.S, ul * 0.35);
+    return [
+      to[0], to[1],
+      at[0] + ux * 0.3 - uy / ul * bow * 0.6, at[1] + uy * 0.3 + ux / ul * bow * 0.6,
+      at[0] + ux * 0.65 - uy / ul * bow, at[1] + uy * 0.65 + ux / ul * bow
+    ];
+  }
+
+  // Index 0 is the downstream end, as for the generated streams. The channel widens toward
+  // it. An end that meets water opens into it; a loose end runs to a point.
+  function makeStream(pts, meetsDown, meetsUp, k) {
     var c = tidy(pts, false), n = c.x.length;
     if (n < 6) return null;
     var S = scene.S, noise = scene.noise;
@@ -591,19 +640,25 @@
       id: 500 + k, depth: 2, d0: 0, n: n, x: c.x, y: c.y, maxhw: 0,
       nx: new Array(n), ny: new Array(n), hw: new Array(n), hl: new Array(n), hr: new Array(n), t: new Array(n)
     };
+    var halo = [], far = [];
     for (var i = 0; i < n; i++) {
       var i0 = Math.max(0, i - 1), i1 = Math.min(n - 1, i + 1);
       var tx = c.x[i1] - c.x[i0], ty = c.y[i1] - c.y[i0], tl = hyp(tx, ty) || 1;
       b.nx[i] = -ty / tl; b.ny[i] = tx / tl;
-      var w = top * (0.16 + 0.84 * Math.pow(1 - i / (n - 1), 0.75));
-      if (!touch) w *= Math.min(1, (i + 1) / 7);
+      var thin = meetsUp ? 0.5 : 0.16;
+      var w = top * (thin + (1 - thin) * Math.pow(1 - i / (n - 1), 0.75));
+      if (meetsDown) w *= 1 + 0.6 * Math.max(0, 1 - i / 12);
+      else w *= Math.min(1, (i + 1) / 7);
       w = Math.max(0.45, w);
       b.hw[i] = w;
       b.hl[i] = w * (1 + 0.4 * (noise.n2(i * STEP * 0.022, b.id * 3.7) - 0.5));
       b.hr[i] = w * (1 + 0.4 * (noise.n2(i * STEP * 0.022, b.id * 3.7 + 50) - 0.5));
       b.t[i] = 1;
       b.maxhw = Math.max(b.maxhw, w);
+      halo.push(c.x[i] + b.nx[i] * (b.hl[i] + 5 * S), c.y[i] + b.ny[i] * (b.hl[i] + 5 * S));
+      far.unshift(c.x[i] - b.nx[i] * (b.hr[i] + 5 * S), c.y[i] - b.ny[i] * (b.hr[i] + 5 * S));
     }
+    b.halo = halo.concat(far);
     return b;
   }
 
@@ -612,12 +667,14 @@
     var cx = 0, cy = 0, reach = 0;
     for (i = 0; i < n; i++) { cx += c.x[i]; cy += c.y[i]; }
     cx /= n; cy /= n;
-    var poly = [], inner = [[], []];
+    var poly = [], inner = [[], []], halo = [];
     for (i = 0; i < n; i++) {
       var ragged = 1 + 0.07 * (noise.n2(i * 0.09, k * 5.1) - 0.5);
       var px = cx + (c.x[i] - cx) * ragged, py = cy + (c.y[i] - cy) * ragged;
+      var radius = hyp(px - cx, py - cy) || 1;
       poly.push(px, py);
-      reach += hyp(px - cx, py - cy) / n;
+      reach += radius / n;
+      halo.push(px + (px - cx) / radius * 5 * S, py + (py - cy) / radius * 5 * S);
       inner[0].push(cx + (px - cx) * 0.66, cy + (py - cy) * 0.66);
       inner[1].push(cx + (px - cx) * 0.34, cy + (py - cy) * 0.34);
 
@@ -655,19 +712,46 @@
     var rings = [];
     if (reach > 26) rings.push(inner[0]);
     if (reach > 60) rings.push(inner[1]);
-    return { poly: poly, rings: rings };
+    return { poly: poly, rings: rings, halo: halo, cx: cx, cy: cy, reach: reach };
   }
 
+  function addStream(b) {
+    if (!b) return;
+    user.streams.push(b);
+    scene.bankInk(b, user.strokes);
+    scene.laneDashes(b, user.dashes);
+  }
+
+  // Drawings are stored as bare strokes and joined to the water afresh on every build, so
+  // they stay attached when the hero is resized.
   function buildUser() {
     user = { streams: [], ponds: [], strokes: [], dashes: [] };
+    var S = scene.S;
     shapes.forEach(function (shape, k) {
       var pts = shape.p.map(function (v, i) { return v * (i % 2 ? H : W); });
-      if (shape.k === 'p') { user.ponds.push(makePond(pts, k)); return; }
-      var b = makeStream(pts, shape.touch, k);
-      if (!b) return;
-      user.streams.push(b);
-      scene.bankInk(b, user.strokes);
-      scene.laneDashes(b, user.dashes);
+      var last = pts.length - 2;
+      if (shape.k === 'p') {
+        var pond = makePond(pts, k);
+        // A pond near a channel drains into it.
+        var drain = nearWater(pond.cx, pond.cy, pond.reach + 230 * S, true);
+        user.ponds.push(pond);
+        if (drain) addStream(makeStream(runTo(drain, pond.cx, pond.cy).concat([pond.cx, pond.cy]), true, true, k + 0.5));
+        return;
+      }
+      var down = nearWater(pts[0], pts[1], 44 * S), up = nearWater(pts[last], pts[last + 1], 44 * S);
+      if (up) pts = pts.concat(meetingPoint(up, false));
+      if (down) pts = meetingPoint(down, true).concat(pts);
+      if (!down && !up) {
+        // A stroke left in open land runs on to the nearest water, from whichever end is closer.
+        var a = nearWater(pts[0], pts[1], 300 * S), z = nearWater(pts[last], pts[last + 1], 300 * S);
+        if (z && (!a || z.gap < a.gap)) {
+          var turned = [];
+          for (var q = last; q >= 0; q -= 2) turned.push(pts[q], pts[q + 1]);
+          pts = turned; a = z;
+        }
+        if (a) { pts = runTo(a, pts[0], pts[1]).concat(pts); down = a; }
+      }
+      addStream(makeStream(pts, !!down, !!up, k));
     });
     flowDashes = scene.dashes.concat(user.dashes);
     userDirty = true; waterT = -1;
@@ -679,28 +763,6 @@
       if (shapes.length) localStorage.setItem(STORE, JSON.stringify({ seed: seed, shapes: shapes }));
       else localStorage.removeItem(STORE);
     } catch (e) {}
-  }
-
-  function onWater(x, y) {
-    var spots = [0, 0, 5, 0, -5, 0, 0, 5, 0, -5];
-    for (var i = 0; i < spots.length; i += 2) {
-      var px = Math.round((x + spots[i]) * dpr), py = Math.round((y + spots[i + 1]) * dpr);
-      if (px < 0 || py < 0 || px >= water.el.width || py >= water.el.height) continue;
-      if (water.ctx.getImageData(px, py, 1, 1).data[3] > 100) return true;
-    }
-    return false;
-  }
-
-  // A stroke that stops just short of water is carried on into it.
-  function snapToWater(x, y) {
-    if (onWater(x, y)) return [x, y];
-    for (var r = 8; r <= 32; r += 8) {
-      for (var a = 0; a < 12; a++) {
-        var dx = Math.cos(a * TAU / 12), dy = Math.sin(a * TAU / 12);
-        if (onWater(x + dx * r, y + dy * r)) return [x + dx * (r + 8), y + dy * (r + 8)];
-      }
-    }
-    return null;
   }
 
   function finishStroke() {
@@ -721,18 +783,14 @@
       shape = { k: 'p' };
     } else {
       // The end that meets water is downstream; failing that, the lower end.
-      var startSnap = snapToWater(pts[0], pts[1]), endSnap = snapToWater(pts[last], pts[last + 1]);
-      var startWet = !!startSnap, endWet = !!endSnap;
-      if (endSnap) pts.push(endSnap[0], endSnap[1]);
-      if (startSnap) pts.unshift(startSnap[0], startSnap[1]);
-      count = pts.length / 2; last = pts.length - 2;
+      var startWet = !!nearWater(pts[0], pts[1], 44 * scene.S), endWet = !!nearWater(pts[last], pts[last + 1], 44 * scene.S);
       var endIsDown = startWet === endWet ? pts[last + 1] > pts[1] : endWet;
       if (endIsDown) {
         var flipped = [];
         for (i = count - 1; i >= 0; i--) flipped.push(pts[i * 2], pts[i * 2 + 1]);
         pts = flipped;
       }
-      shape = { k: 's', touch: startWet || endWet };
+      shape = { k: 's' };
     }
     var every = Math.ceil(count / 400);
     shape.p = [];
