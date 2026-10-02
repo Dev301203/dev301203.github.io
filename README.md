@@ -28,4 +28,6 @@ This repo is set up as a **user site** (`username.github.io`). Push to the defau
 
 ## License
 
-See [LICENSE](LICENSE).
+The site's code is under the MIT license; see [LICENSE](LICENSE). That covers the code only, not the written content, portrait, project screenshots or company logos.
+
+Third-party code: [anime.js](https://animejs.com/) by Julian Garnier (MIT), vendored in `assets/js/vendor/` with its license header.
