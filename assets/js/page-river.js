@@ -23,7 +23,7 @@
     (parent || svg).appendChild(p);
     return p;
   }
-  var pHatch = addPath('hatch'), pLines = addPath('lines'), pWater = addPath('water');
+  var pHatch = addPath('hatch'), pLines = addPath('lines'), pWater = addPath('water'), pIsles = addPath('isles');
   var gCurrent = document.createElementNS(NS, 'g');
   svg.appendChild(gCurrent);
   layer.appendChild(svg);
@@ -44,7 +44,7 @@
     var small = W < 880;
     var sea = main.querySelector('.sea');
     var seaTop = sea ? sea.offsetTop : H;
-    var baseHw = small ? 10 : Math.max(26, Math.min(38, W * 0.027));
+    var baseHw = (small ? 10 : Math.max(26, Math.min(38, W * 0.027))) * (0.85 + rng() * 0.3);
     var flare = small ? 170 : 290;
     var artRect = K.art.getBoundingClientRect();
     var startX = artRect.left - mr.left + (K.mouth ? K.mouth.x : W * 0.6);
@@ -84,7 +84,7 @@
       while (d <= seg) { px.push(lerp(ax, bx, d / seg)); py.push(lerp(ay, by, d / seg)); d += STEP; }
       carry = seg - (d - STEP);
     }
-    var n = px.length, wave = small ? 42 : 80, phase = rng() * 6.283;
+    var n = px.length, wave = (small ? 42 : 80) * (0.75 + rng() * 0.6), phase = rng() * 6.283;
     for (i = 0; i < n; i++) {
       var amp = 0;
       for (var k = 0; k < spans.length; k++) {
@@ -165,28 +165,22 @@
       }
     }
 
-    // A side stream runs through each gap between sections and joins the channel.
-    joins.forEach(function (jy) {
-      var j = 0;
-      while (j < n - 1 && py[j] < jy) j++;
-      var fromLeft = px[j] > W / 2;
-      var sx = fromLeft ? -30 : W + 30, sy = py[j] - (30 + rng() * 50), ex = px[j], ey = py[j];
-      var c0x = lerp(sx, ex, 0.45), c0y = sy - 14, c1x = lerp(sx, ex, 0.8), c1y = ey - 70;
-      var cnt = Math.max(12, Math.round(Math.abs(ex - sx) / STEP));
-      var X = [], Y = [], NX = [], NY = [], TX = [], TY = [], HL = [], HR = [], HW = [], a;
+    // Side streams: a tapering channel along a curve that ends on the main channel's centreline.
+    function stream(c, w0, w1, wiggle, shadeScale) {
+      var cnt = Math.max(12, Math.round((Math.abs(c[6] - c[0]) + Math.abs(c[7] - c[1])) / STEP));
+      var X = [], Y = [], NX = [], NY = [], TX = [], TY = [], HW = [], a;
       var wig = rng() * 10;
       for (a = 0; a <= cnt; a++) {
         var t = a / cnt, u = 1 - t;
-        X.push(u * u * u * sx + 3 * u * u * t * c0x + 3 * u * t * t * c1x + t * t * t * ex);
-        Y.push(u * u * u * sy + 3 * u * u * t * c0y + 3 * u * t * t * c1y + t * t * t * ey +
-          (noise.n2(t * 9, wig) - 0.5) * 22 * Math.sin(t * Math.PI));
+        X.push(u * u * u * c[0] + 3 * u * u * t * c[2] + 3 * u * t * t * c[4] + t * t * t * c[6]);
+        Y.push(u * u * u * c[1] + 3 * u * u * t * c[3] + 3 * u * t * t * c[5] + t * t * t * c[7] +
+          (noise.n2(t * 9, wig) - 0.5) * wiggle * Math.sin(t * Math.PI));
       }
       for (a = 0; a <= cnt; a++) {
         var a0 = Math.max(0, a - 1), a1 = Math.min(cnt, a + 1);
         var ddx = X[a1] - X[a0], ddy = Y[a1] - Y[a0], ddl = Math.sqrt(ddx * ddx + ddy * ddy) || 1;
         TX.push(ddx / ddl); TY.push(ddy / ddl); NX.push(-ddy / ddl); NY.push(ddx / ddl);
-        var half = lerp(1.2, small ? 3.5 : 8, Math.pow(a / cnt, 0.8)) * (1 + 0.3 * (noise.n2(a * 0.2, wig + 5) - 0.5));
-        HW.push(half); HL.push(half); HR.push(half);
+        HW.push(lerp(w0, w1, Math.pow(a / cnt, 0.8)) * (1 + 0.3 * (noise.n2(a * 0.2, wig + 5) - 0.5)));
       }
       var l2 = [], r2 = [];
       for (a = 0; a <= cnt; a++) {
@@ -194,8 +188,59 @@
         r2.push(f1(X[a] - NX[a] * HW[a]) + ' ' + f1(Y[a] - NY[a] * HW[a]));
       }
       water += 'M' + l2.join('L') + 'L' + r2.reverse().join('L') + 'Z';
-      hachures(X, Y, NX, NY, TX, TY, HL, HR, HW, cnt + 1, Infinity, small ? 0.5 : 0.8);
+      hachures(X, Y, NX, NY, TX, TY, HW, HW, HW, cnt + 1, Infinity, shadeScale);
+    }
+
+    // One runs through each gap between sections and joins the channel.
+    joins.forEach(function (jy) {
+      var j = 0;
+      while (j < n - 1 && py[j] < jy) j++;
+      var sx = px[j] > W / 2 ? -30 : W + 30, sy = py[j] - (30 + rng() * 50), ex = px[j], ey = py[j];
+      stream([sx, sy, lerp(sx, ex, 0.45), sy - 14, lerp(sx, ex, 0.8), ey - 70, ex, ey],
+        1.2, small ? 3.5 : 8, 22, small ? 0.5 : 0.8);
     });
+
+    // One flows out from under every docked panel (each job and school) into the channel,
+    // so the panels stay tied to the river wherever a redraw sends it.
+    Array.prototype.forEach.call(main.querySelectorAll('[data-dock]'), function (dock) {
+      var x0 = 0, y0 = 0, node = dock;
+      while (node && node !== main) { x0 += node.offsetLeft; y0 += node.offsetTop; node = node.offsetParent; }
+      if (!node) return;
+      var w = dock.offsetWidth, h = dock.offsetHeight;
+      var sy = y0 + Math.min(h * 0.5, 60 + rng() * 30);
+      var j = 0, drop = (small ? 34 : 56) + rng() * (small ? 20 : 44);
+      while (j < n - 1 && py[j] < sy + drop) j++;
+      var fromLeft = x0 + w / 2 < px[j];
+      var sx = fromLeft ? x0 + w - Math.min(60, w * 0.3) : x0 + Math.min(60, w * 0.3);
+      var ex = px[j], ey = py[j];
+      stream([sx, sy, lerp(sx, ex, 0.6), sy - 6, lerp(sx, ex, 0.92), lerp(sy, ey, 0.15), ex, ey],
+        1.6, small ? 3 : 6.5, 8, small ? 0.5 : 0.7);
+    });
+
+    // Islands in the lanes, where there is room for them.
+    var isles = '';
+    if (!small) {
+      var at = Math.round((260 + rng() * 300) / STEP);
+      while (at < n - 40) {
+        var room = false;
+        for (var si = 0; si < spans.length; si++) {
+          if (py[at] > spans[si].y0 + 160 && py[at] < spans[si].y1 - 160) room = true;
+        }
+        if (room && py[at] < seaTop - flare - 120 && hw[at] >= 20) {
+          var halfLen = Math.round(hw[at] * (1.3 + rng() * 1.3) / STEP);
+          var q0 = Math.max(1, at - halfLen), q1 = Math.min(n - 2, at + halfLen);
+          var lean = (rng() - 0.5) * 0.8, girth = hw[at] * (0.16 + rng() * 0.1), il = [], ir = [];
+          for (var q = q0; q <= q1; q++) {
+            var prof = Math.pow(Math.sin((q - q0) / (q1 - q0) * Math.PI), 0.7) * girth * (0.8 + 0.4 * noise.n2(q * 0.3, at));
+            var mx = px[q] + nx[q] * lean * hw[q] * 0.5, my = py[q] + ny[q] * lean * hw[q] * 0.5;
+            il.push(f1(mx + nx[q] * prof) + ' ' + f1(my + ny[q] * prof));
+            ir.push(f1(mx - nx[q] * prof) + ' ' + f1(my - ny[q] * prof));
+          }
+          isles += 'M' + il.join('L') + 'L' + ir.reverse().join('L') + 'Z';
+        }
+        at += Math.round((420 + rng() * 620) / STEP);
+      }
+    }
 
     // Current lines: dashed lanes that drift downstream.
     while (gCurrent.firstChild) gCurrent.removeChild(gCurrent.firstChild);
@@ -222,6 +267,7 @@
     pWater.setAttribute('d', water);
     pHatch.setAttribute('d', hatch);
     pLines.setAttribute('d', lines);
+    pIsles.setAttribute('d', isles);
     centre = { x: px, y: py, hw: hw };
     applyReveal();
   }
@@ -240,7 +286,7 @@
   }
 
   if (canAnimate) {
-    var scroll = { p: 0 }, lastP = 0;
+    var scroll = { p: 0 }, lastP = 0, front = 0;
     try {
       A.animate(scroll, {
         p: 1, duration: 1000, ease: 'linear',
@@ -248,8 +294,8 @@
         onUpdate: function () {
           // The ink front sits a little above the bottom of the viewport and never retreats.
           var lead = window.innerHeight * 0.12 * (1 - smooth(0.9, 1, scroll.p));
-          var y = scroll.p * height - lead;
-          if (y > inked) { inked = y; applyReveal(); }
+          front = scroll.p * height - lead;
+          if (front > inked) { inked = front; applyReveal(); }
 
           var delta = scroll.p - lastP;
           lastP = scroll.p;
@@ -325,7 +371,12 @@
     clearTimeout(timer);
     timer = setTimeout(function () { build(); sizeSea(); kickSea(); }, 120);
   }
-  window.addEventListener('ink:scene', refresh);
+  var drawnSeed = K.seed;
+  window.addEventListener('ink:scene', function () {
+    // A redraw gives the whole river a new course, so it inks in again from where the reader is.
+    if (K.seed !== drawnSeed) { drawnSeed = K.seed; inked = Math.min(inked, front || 0); }
+    refresh();
+  });
   window.addEventListener('ink:theme', function () { sizeSea(); kickSea(); });
   if ('ResizeObserver' in window) new ResizeObserver(refresh).observe(main);
   else window.addEventListener('resize', refresh);

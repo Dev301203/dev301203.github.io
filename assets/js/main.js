@@ -31,62 +31,162 @@
   // ── Experience ─────────────────────────────
   var exp = data.experience;
 
-  var workList = byId('work-list');
-  exp.work.forEach(function (job) {
-    var card = el('article', 'card job');
-    card.setAttribute('data-reveal', '');
+  // Work sits on the right bank and education on the left, newest first. Each degree
+  // lines up beside the jobs held during it.
+  var MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  function monthIndex(text, isEnd) {
+    if (/present/i.test(text)) return Infinity;
+    var m = /([A-Za-z]{3})[a-z]*\.?\s+(\d{4})/.exec(text);
+    if (m && MONTHS[m[1].toLowerCase()] !== undefined) return +m[2] * 12 + MONTHS[m[1].toLowerCase()];
+    var y = /(\d{4})/.exec(text);
+    return y ? +y[1] * 12 + (isEnd ? 11 : 0) : NaN;
+  }
+  function period(date) {
+    var parts = String(date || '').split(/\s*[–—]\s*|\s+-\s+/);
+    var start = monthIndex(parts[0], false);
+    return { start: start, end: parts.length > 1 ? monthIndex(parts[1], true) : start };
+  }
 
-    // First row: the logo, with when and where beside it.
+  function folded(items) {
+    var more = el('details', 'more');
+    var summary = el('summary', '', 'More');
+    more.appendChild(summary);
+    var ul = el('ul');
+    items.forEach(function (b) { ul.appendChild(el('li', '', b)); });
+    more.appendChild(ul);
+    more.addEventListener('toggle', function () { summary.textContent = more.open ? 'Less' : 'More'; });
+    return more;
+  }
+
+  // First row of a panel: the logo, with when and where beside it.
+  function topRow(logoSrc, name, date, location) {
     var top = el('div', 'job__top');
-    if (job.logo) {
-      var logo = el('img', 'job__logo');
-      logo.src = job.logo; logo.alt = job.company + ' logo'; logo.loading = 'lazy';
-      logo.onerror = function () { this.remove(); };
-      top.appendChild(logo);
-    }
-    var when = meta([job.date, job.location]);
+    var logo = el('img', 'job__logo');
+    logo.src = logoSrc; logo.alt = name + ' logo'; logo.loading = 'lazy';
+    logo.onerror = function () { this.remove(); };
+    top.appendChild(logo);
+    var when = meta([date, location]);
     when.classList.add('job__when');
     top.appendChild(when);
-    card.appendChild(top);
+    return top;
+  }
 
+  function panel(kind) {
+    var card = el('article', 'card job job--' + kind);
+    card.setAttribute('data-reveal', '');
+    card.setAttribute('data-dock', '');
+    return card;
+  }
+
+  var jobs = exp.work.map(function (job) {
+    var card = panel('work');
+    if (job.logo) card.appendChild(topRow(job.logo, job.company, job.date, job.location));
     var body = el('div', 'job__body');
+    if (!job.logo) body.appendChild(meta([job.date, job.location]));
     body.appendChild(el('h3', 'job__title', job.title));
     body.appendChild(el('div', 'job__company', job.company));
-
     // What the work involved stays folded away until asked for.
-    var bullets = job.bullets || [];
-    if (bullets.length) {
-      var more = el('details', 'more');
-      var summary = el('summary', '', 'More');
-      more.appendChild(summary);
-      var ul = el('ul');
-      bullets.forEach(function (b) { ul.appendChild(el('li', '', b)); });
-      more.appendChild(ul);
-      more.addEventListener('toggle', function () { summary.textContent = more.open ? 'Less' : 'More'; });
-      body.appendChild(more);
-    }
+    if (job.bullets && job.bullets.length) body.appendChild(folded(job.bullets));
     card.appendChild(body);
-    workList.appendChild(card);
+    return { el: card, when: period(job.date) };
   });
 
-  var eduList = byId('education-list');
-  exp.education.forEach(function (edu) {
-    var entry = el('div', 'entry');
-    entry.appendChild(el('div', 'entry__title', edu.title));
-    entry.appendChild(el('div', 'entry__sub', edu.subtitle));
-    entry.appendChild(meta([edu.date, edu.location]));
-    if (edu.details && edu.details.length) entry.appendChild(el('div', 'entry__body', edu.details.join(' ')));
-    eduList.appendChild(entry);
+  var schools = exp.education.map(function (edu) {
+    var card = panel('edu');
+    var details = edu.details || [];
+    var grades = details.filter(function (d) { return /^C?GPA/i.test(d); });
+    var rest = details.filter(function (d) { return !/^C?GPA/i.test(d); });
+    var body = el('div', 'job__body');
+    if (edu.logo) {
+      card.appendChild(topRow(edu.logo, edu.title, edu.date, edu.location));
+      body.appendChild(el('h3', 'job__title', edu.subtitle));
+      body.appendChild(el('div', 'job__company', edu.title));
+      grades.forEach(function (g) { body.appendChild(el('div', 'job__stat', g)); });
+    } else {
+      // No logo: a single-line panel.
+      card.classList.add('job--line');
+      body.appendChild(el('h3', 'job__company', edu.title));
+      body.appendChild(meta([edu.subtitle, edu.date, edu.location]));
+    }
+    if (rest.length) body.appendChild(folded(rest));
+    card.appendChild(body);
+    return { el: card, body: body, when: period(edu.date), title: edu.title };
   });
 
-  var honoursList = byId('honours-list');
-  exp.honours.forEach(function (h) {
-    var entry = el('div', 'entry');
-    entry.appendChild(el('div', 'entry__title', h.title));
-    entry.appendChild(meta([h.org, h.date]));
-    if (h.description) entry.appendChild(el('div', 'entry__body', h.description));
-    honoursList.appendChild(entry);
+  // Honours become seals on the school they were awarded at.
+  var honoursBySchool = [];
+  (exp.honours || []).forEach(function (h) {
+    var at = period(h.date).start;
+    var home = null, nearest = Infinity;
+    schools.forEach(function (s) {
+      if (s.title !== h.org) return;
+      var gap = at >= s.when.start && at <= s.when.end ? 0 : Math.abs(at - s.when.start);
+      if (!home || gap < nearest) { home = s; nearest = gap; }
+    });
+    home = home || schools[0];
+    if (!home) return;
+    var group = null;
+    honoursBySchool.forEach(function (g) { if (g.school === home) group = g; });
+    if (!group) { group = { school: home, items: [] }; honoursBySchool.push(group); }
+    group.items.push(h);
   });
+  honoursBySchool.forEach(function (group) {
+    var wrap = el('div', 'honours');
+    var row = el('div', 'honours__row');
+    var detail = el('div', 'honours__detail');
+    detail.setAttribute('aria-live', 'polite');
+    detail.hidden = true;
+    var buttons = group.items.map(function (h, i) {
+      var b = el('button', 'honour', h.title);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', 'false');
+      b.style.setProperty('--tilt', [-3, 2, -2, 3][i % 4] + 'deg');
+      b.addEventListener('click', function () {
+        var on = b.getAttribute('aria-pressed') !== 'true';
+        buttons.forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', String(on));
+        detail.hidden = !on;
+        detail.textContent = '';
+        if (on) {
+          detail.appendChild(meta([h.org, h.date]));
+          detail.appendChild(el('p', '', h.description || ''));
+        }
+      });
+      row.appendChild(b);
+      return b;
+    });
+    wrap.appendChild(row);
+    wrap.appendChild(detail);
+    group.school.body.appendChild(wrap);
+  });
+
+  // Rows: one per job; a school spans the rows of the jobs it overlaps.
+  var FIRST_ROW = 3;
+  var spans = schools.map(function () { return []; });
+  jobs.forEach(function (job, row) {
+    job.el.style.setProperty('--row', String(FIRST_ROW + row));
+    var best = -1, bestOverlap = 0;
+    schools.forEach(function (s, si) {
+      var overlap = Math.min(job.when.end, s.when.end) - Math.max(job.when.start, s.when.start);
+      if (overlap >= 0 && overlap + 1 > bestOverlap) { bestOverlap = overlap + 1; best = si; }
+    });
+    if (best >= 0) spans[best].push(row);
+  });
+  var spare = FIRST_ROW + jobs.length;
+  schools.forEach(function (s, si) {
+    if (spans[si].length) {
+      var first = Math.min.apply(null, spans[si]), last = Math.max.apply(null, spans[si]);
+      s.el.style.setProperty('--row', (FIRST_ROW + first) + ' / span ' + (last - first + 1));
+    } else {
+      s.el.style.setProperty('--row', String(spare++));
+    }
+  });
+
+  // Document order is plain newest-first, which is what a single column shows.
+  var timeline = byId('timeline');
+  jobs.concat(schools)
+    .sort(function (a, b) { return (b.when.start || 0) - (a.when.start || 0); })
+    .forEach(function (item) { timeline.appendChild(item.el); });
 
   if (exp.resume && exp.resume.url) {
     var resume = el('a', 'resume', 'Resume');
