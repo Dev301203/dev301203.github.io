@@ -45,8 +45,87 @@
     return { n2: n2, fbm: fbm };
   }
 
+  // ── Map symbols ────────────────────────────
+  // Trees, rocks and grass as SVG path data, so the page river can use them directly and
+  // the hero canvas can draw them through Path2D. (x, y) is where a symbol stands; it rises
+  // s above that point. Parts: under and over are ink lines, body is paper-filled, solid is ink.
+  function makeGlyphs(rng) {
+    function f1(v) { return v.toFixed(1); }
+    function jit(v) { return v + (rng() - 0.5) * 0.06; }
+    function spot(x, y, s, u, v) { return f1(x + u * s) + ' ' + f1(y + v * s); }
+    return {
+      pine: function (x, y, s) {
+        var L = [[0.17, 0.66], [0.07, 0.66], [0.28, 0.36], [0.11, 0.36], [0.39, 0.07], [0.06, 0.07]].map(function (p) {
+          return [jit(p[0]), jit(p[1])];
+        });
+        var left = L.map(function (p) { return spot(x, y, s, -p[0], -p[1]); });
+        var right = L.map(function (p) { return spot(x, y, s, p[0], -p[1]); });
+        var top = spot(x, y, s, 0, -1), foot = spot(x, y, s, -0.06, 0) + 'L' + spot(x, y, s, 0.06, 0);
+        return {
+          body: 'M' + top + 'L' + left.join('L') + 'L' + foot + 'L' + right.slice().reverse().join('L') + 'Z',
+          solid: 'M' + top + 'L' + right.join('L') + 'L' + spot(x, y, s, 0.06, 0) + 'L' + spot(x, y, s, 0, 0) + 'Z'
+        };
+      },
+      tree: function (x, y, s) {
+        var r = 0.36, cy = -0.62, lobes = 7 + ((rng() * 3) | 0), turn = rng() * 6.28, d = '', q;
+        for (q = 0; q <= lobes; q++) {
+          var a = turn + q / lobes * 6.2832, b = a - 3.1416 / lobes, rr = r * (0.94 + rng() * 0.14);
+          var here = spot(x, y, s, Math.cos(a) * rr, cy + Math.sin(a) * rr);
+          d += q ? 'Q' + spot(x, y, s, Math.cos(b) * r * 1.3, cy + Math.sin(b) * r * 1.3) + ' ' + here : 'M' + here;
+        }
+        var over = '';
+        [[0, 0.72], [0.22, 0.78], [0.46, 0.66], [0.28, 0.42]].forEach(function (h) {
+          over += 'M' + spot(x, y, s, r * h[0], cy + r * h[1]) + 'L' + spot(x, y, s, r * (h[0] + 0.2), cy + r * (h[1] - 0.2));
+        });
+        return {
+          under: 'M' + spot(x, y, s, -0.045, -0.34) + 'L' + spot(x, y, s, -0.055, 0) + 'M' + spot(x, y, s, 0.045, -0.34) + 'L' + spot(x, y, s, 0.055, 0),
+          body: d + 'Z', over: over
+        };
+      },
+      bush: function (x, y, s) {
+        var lobes = 4 + ((rng() * 2) | 0), d = 'M' + spot(x, y, s, -0.5, 0), q;
+        for (q = 1; q <= lobes; q++) {
+          var a = 3.1416 * (1 - q / lobes), b = 3.1416 * (1 - (q - 0.5) / lobes);
+          d += 'Q' + spot(x, y, s, Math.cos(b) * 0.66, -Math.sin(b) * 0.92) + ' ' + spot(x, y, s, Math.cos(a) * 0.5, -Math.sin(a) * 0.62);
+        }
+        return {
+          body: d + 'Z',
+          over: 'M' + spot(x, y, s, 0.1, -0.12) + 'L' + spot(x, y, s, 0.24, -0.3) + 'M' + spot(x, y, s, 0.24, -0.08) + 'L' + spot(x, y, s, 0.36, -0.24)
+        };
+      },
+      rock: function (x, y, s) {
+        var p = [[-0.5, 0], [-0.44, -0.3], [-0.16, -0.58], [0.2, -0.5], [0.46, -0.24], [0.5, 0]].map(function (v) {
+          return [jit(v[0]), v[1] ? jit(v[1]) : 0];
+        });
+        var over = 'M' + spot(x, y, s, p[2][0], p[2][1]) + 'L' + spot(x, y, s, 0.04, -0.2) + 'L' + spot(x, y, s, 0.1, 0);
+        for (var q = 0; q < 4; q++) {
+          over += 'M' + spot(x, y, s, 0.16 + 0.08 * q, -0.03) + 'L' + spot(x, y, s, 0.22 + 0.07 * q, -0.34 + 0.07 * q);
+        }
+        return { body: 'M' + p.map(function (v) { return spot(x, y, s, v[0], v[1]); }).join('L') + 'Z', over: over };
+      },
+      grass: function (x, y, s) {
+        var blades = 3 + ((rng() * 3) | 0), over = '';
+        for (var q = 0; q < blades; q++) {
+          var from = (q / (blades - 1) - 0.5) * 0.5, lean = from * 1.5 + (rng() - 0.5) * 0.3, h = 0.6 + rng() * 0.4;
+          over += 'M' + spot(x, y, s, from, 0) + 'Q' + spot(x, y, s, from + lean * 0.25, -h * 0.6) + ' ' + spot(x, y, s, from + lean, -h);
+        }
+        return { over: over };
+      },
+      reeds: function (x, y, s) {
+        var stems = 3 + ((rng() * 3) | 0), over = '', heads = '';
+        for (var q = 0; q < stems; q++) {
+          var from = (q / (stems - 1) - 0.5) * 0.55, lean = (rng() - 0.5) * 0.22, h = 0.62 + rng() * 0.38;
+          over += 'M' + spot(x, y, s, from, 0) + 'L' + spot(x, y, s, from + lean, -h);
+          heads += 'M' + spot(x, y, s, from + lean * 0.78, -h * 0.78) + 'L' + spot(x, y, s, from + lean, -h);
+        }
+        return { over: over, heads: heads };
+      }
+    };
+  }
+
   // ── Scene generation ───────────────────────
-  function buildScene(seed, W, H) {
+  // avoid: rectangles [left, top, right, bottom] the scenery should stay out of.
+  function buildScene(seed, W, H, avoid) {
     var rng = mulberry32(seed);
     var noise = makeNoise(rng);
     var S = Math.max(0.55, Math.min(1.25, Math.sqrt(W * H) / 1140));
@@ -358,10 +437,75 @@
     }
     branches.forEach(function (b) { laneDashes(b, dashes); });
 
+    // Scenery: map symbols on the land, chosen by terrain. Pines and rocks on the hatched
+    // uplands, reeds and grass on the dotted lowlands, round trees and bushes in between.
+    avoid = avoid || [];
+    var props = [], glyphs = makeGlyphs(rng), wetCell = 52, wetGrid = {};
+    branches.forEach(function (b) {
+      for (var q = 0; q < b.n; q += 2) {
+        var key = Math.floor(b.x[q] / wetCell) + ':' + Math.floor(b.y[q] / wetCell);
+        (wetGrid[key] || (wetGrid[key] = [])).push(b.x[q], b.y[q], b.hw[q]);
+      }
+    });
+    function openGround(x, y, s) {
+      var r = s * 0.5, my = y - r, q;
+      if (x < r + 6 || x > W - r - 6 || y - s < 6 || y > H - 6) return false;
+      for (q = 0; q < avoid.length; q++) {
+        if (x + r > avoid[q][0] && x - r < avoid[q][2] && y > avoid[q][1] && y - s < avoid[q][3]) return false;
+      }
+      var gx = Math.floor(x / wetCell), gy = Math.floor(my / wetCell);
+      for (var ix = -2; ix <= 2; ix++) {
+        for (var iy = -2; iy <= 2; iy++) {
+          var list = wetGrid[(gx + ix) + ':' + (gy + iy)];
+          if (!list) continue;
+          for (q = 0; q < list.length; q += 3) {
+            var dx = list[q] - x, dy = list[q + 1] - my, keep = list[q + 2] + r + 20 * S;
+            if (dx * dx + dy * dy < keep * keep) return false;
+          }
+        }
+      }
+      for (q = 0; q < props.length; q++) {
+        var ex = props[q].x - x, ey = props[q].y - y, gap = (props[q].s + s) * 0.34;
+        if (ex * ex + ey * ey < gap * gap) return false;
+      }
+      return true;
+    }
+    var MIX = {
+      high: [['pine', 22, 40, 6], ['rock', 12, 24, 2]],
+      mid: [['tree', 24, 38, 4], ['bush', 12, 19, 3], ['grass', 8, 12, 3]],
+      low: [['reeds', 14, 22, 3], ['bush', 12, 18, 2], ['grass', 8, 12, 3]]
+    };
+    for (var grove = Math.round(W * H / 21000); grove > 0; grove--) {
+      var px0 = 0, py0 = 0, found = false;
+      for (var attempt = 0; attempt < 30 && !found; attempt++) {
+        px0 = rng() * W; py0 = rng() * H;
+        found = openGround(px0, py0, 30 * S);
+      }
+      if (!found) continue;
+      var level = field(px0, py0), mix = level > 0.6 ? MIX.high : level < 0.4 ? MIX.low : MIX.mid;
+      var share = 0, kind = mix[0];
+      mix.forEach(function (m) { share += m[3]; });
+      var pick = rng() * share;
+      for (var mk = 0; mk < mix.length; mk++) { pick -= mix[mk][3]; if (pick <= 0) { kind = mix[mk]; break; } }
+      var members = kind[0] === 'grass' ? 4 + ((rng() * 5) | 0) : kind[0] === 'rock' ? 1 + ((rng() * 4) | 0) : 2 + ((rng() * 6) | 0);
+      var spread = kind[2] * S * (1.2 + rng() * 1.4);
+      for (var mb = 0; mb < members; mb++) {
+        var ang = rng() * TAU, far = Math.sqrt(rng()) * spread;
+        var sx = px0 + Math.cos(ang) * far * 1.5, sy = py0 + Math.sin(ang) * far * 0.8;
+        var size = (kind[1] + rng() * (kind[2] - kind[1])) * S;
+        if (!openGround(sx, sy, size)) continue;
+        var parts = glyphs[kind[0]](sx, sy, size), prop = { x: sx, y: sy, s: size, t: 0.42 + 0.5 * sy / H + rng() * 0.03 };
+        for (var part in parts) prop[part] = new Path2D(parts[part]);
+        props.push(prop);
+      }
+    }
+    props.sort(function (p, q) { return p.y - q.y; });
+
     var mi = 0;
     while (mi < trunk.n - 1 && trunk.y[mi] > H) mi++;
 
     return {
+      props: props,
       mouth: { x: trunk.x[mi], hw: trunk.hw[mi] },
       noise: noise, rng: rng, bankInk: bankInk, laneDashes: laneDashes,
       W: W, H: H, S: S, Dmax: Dmax, branches: branches, strokes: strokes,
@@ -375,7 +519,8 @@
     root.appendChild(el);
     return { el: el, ctx: el.getContext('2d') };
   }
-  var land = makeLayer(), userLand = makeLayer(), water = makeLayer(), flow = makeLayer();
+  var land = makeLayer(), scenery = makeLayer(), userLand = makeLayer(), water = makeLayer(), flow = makeLayer();
+  var planted = 0;
   var scene = null, W = 0, H = 0, dpr = 1;
   var colors = { ink: '#131312', paper: '#f1f0ea' };
   var progress = { T: 0 };
@@ -395,7 +540,7 @@
   function sizeLayers() {
     W = root.clientWidth; H = root.clientHeight;
     dpr = Math.min(2, window.devicePixelRatio || 1);
-    [land, userLand, water, flow].forEach(function (l) {
+    [land, scenery, userLand, water, flow].forEach(function (l) {
       l.el.width = Math.round(W * dpr); l.el.height = Math.round(H * dpr);
       l.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     });
@@ -404,16 +549,41 @@
   function resetInk() {
     land.ctx.clearRect(0, 0, W, H);
     userLand.ctx.clearRect(0, 0, W, H);
-    drawn = 0; waterT = -1; userDirty = true;
+    scenery.ctx.clearRect(0, 0, W, H);
+    drawn = 0; planted = 0; waterT = -1; userDirty = true;
   }
 
   function renderLand(T) {
     var st = scene.strokes, from = drawn;
     while (drawn < st.length && st[drawn].t <= T) drawn++;
     if (drawn > from) paintStrokes(land.ctx, st, from, drawn);
+
+    // Trees and rocks sit on their own layer above the hatching, and appear top to bottom.
+    var c = scenery.ctx, props = scene.props;
+    c.strokeStyle = colors.ink; c.lineJoin = 'round'; c.lineCap = 'round';
+    for (; planted < props.length && props[planted].t <= T; planted++) {
+      var p = props[planted];
+      c.lineWidth = 1.15;
+      if (p.under) c.stroke(p.under);
+      if (p.body) { c.fillStyle = colors.paper; c.fill(p.body); c.stroke(p.body); }
+      if (p.solid) { c.fillStyle = colors.ink; c.fill(p.solid); c.stroke(p.solid); }
+      if (p.over) c.stroke(p.over);
+      if (p.heads) { c.lineWidth = 2.6; c.stroke(p.heads); }
+    }
+
     if (userDirty && T >= 1) {
       userDirty = false;
       userLand.ctx.clearRect(0, 0, W, H);
+      // Drawn water gets a thin margin of bare paper, which also opens the bank where it joins.
+      userLand.ctx.fillStyle = colors.paper;
+      user.streams.concat(user.ponds).forEach(function (shape) {
+        var h = shape.halo, c = userLand.ctx;
+        c.beginPath();
+        c.moveTo(h[0], h[1]);
+        for (var q = 2; q < h.length; q += 2) c.lineTo(h[q], h[q + 1]);
+        c.closePath();
+        c.fill();
+      });
       paintStrokes(userLand.ctx, user.strokes, 0, user.strokes.length);
     }
   }
@@ -465,25 +635,6 @@
     // Visitor drawings join the picture once the river itself has finished inking in.
     if (T >= 1) {
       user.streams.forEach(fillBranch);
-      user.ponds.forEach(function (pond) {
-        var q;
-        ctx.beginPath();
-        ctx.moveTo(pond.poly[0], pond.poly[1]);
-        for (q = 2; q < pond.poly.length; q += 2) ctx.lineTo(pond.poly[q], pond.poly[q + 1]);
-        ctx.closePath();
-        ctx.fillStyle = colors.ink; ctx.fill();
-        ctx.strokeStyle = colors.paper; ctx.lineWidth = Math.max(1.1, 1.4 * scene.S); ctx.lineCap = 'round';
-        ctx.setLineDash([16 * scene.S, 11 * scene.S]);
-        pond.rings.forEach(function (ring, ri) {
-          ctx.lineDashOffset = ri * 9;
-          ctx.beginPath();
-          ctx.moveTo(ring[0], ring[1]);
-          for (q = 2; q < ring.length; q += 2) ctx.lineTo(ring[q], ring[q + 1]);
-          ctx.closePath();
-          ctx.stroke();
-        });
-        ctx.setLineDash([]);
-      });
     }
     ctx.fillStyle = colors.paper;
     scene.islands.forEach(function (isl) {
@@ -536,6 +687,29 @@
     }
     ctx.stroke();
 
+    // Ponds go on top of the current lines, so a pond drawn across a river covers its flow.
+    // All the pond water first, then the ripple marks, so ponds that touch read as one; the
+    // heavy outline closes any hairline gap between them.
+    if (T >= 1 && user.ponds.length) {
+      ctx.fillStyle = colors.ink; ctx.strokeStyle = colors.ink; ctx.lineWidth = 5 * S;
+      user.ponds.forEach(function (pond) {
+        ctx.beginPath();
+        ctx.moveTo(pond.poly[0], pond.poly[1]);
+        for (var q = 2; q < pond.poly.length; q += 2) ctx.lineTo(pond.poly[q], pond.poly[q + 1]);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke();
+      });
+      ctx.strokeStyle = colors.paper; ctx.lineWidth = Math.max(1.1, 1.3 * S);
+      ctx.beginPath();
+      user.ponds.forEach(function (pond) {
+        pond.marks.forEach(function (m) {
+          ctx.moveTo(m[0], m[1]);
+          ctx.quadraticCurveTo((m[0] + m[2]) / 2, m[1] + m[3], m[2], m[1]);
+        });
+      });
+      ctx.stroke();
+    }
+
     // The stroke being drawn right now, as a plain brush line until it is let go.
     if (stroke && stroke.length >= 4) {
       ctx.strokeStyle = colors.ink; ctx.lineWidth = Math.max(2.5, 4 * S);
@@ -569,7 +743,7 @@
       carry = seg - (d - STEP);
     }
     var n = x.length;
-    for (var pass = 0; pass < 3; pass++) {
+    for (var pass = 0; pass < 9; pass++) {
       var sx = x.slice(), sy = y.slice();
       for (i = 0; i < n; i++) {
         if (!closed && (i === 0 || i === n - 1)) continue;
@@ -580,30 +754,99 @@
     return { x: x, y: y };
   }
 
-  // Index 0 is the downstream end, as for the generated streams. The channel widens
-  // toward it, and runs to a point there unless that end meets existing water.
-  function makeStream(pts, touch, k) {
+  // The nearest water to a point: a channel whose bank is within reach, or a pond.
+  function nearWater(x, y, reach, channelsOnly) {
+    var best = null, bestGap = reach;
+    scene.branches.concat(user.streams).forEach(function (b) {
+      for (var i = 0; i < b.n; i += 2) {
+        var gap = hyp(b.x[i] - x, b.y[i] - y) - b.hw[i];
+        if (gap < bestGap) { bestGap = gap; best = { b: b, i: i, gap: gap }; }
+      }
+    });
+    if (!channelsOnly) {
+      user.ponds.forEach(function (p) {
+        var gap = inPoly(p.poly, x, y) ? -1 : hyp.apply(null, shoreOffset(p, x, y));
+        if (gap < bestGap) { bestGap = gap; best = { pond: p, gap: gap }; }
+      });
+    }
+    return best;
+  }
+
+  function inPoly(poly, x, y) {
+    var inside = false;
+    for (var i = 0, j = poly.length - 2; i < poly.length; j = i, i += 2) {
+      if ((poly[i + 1] > y) !== (poly[j + 1] > y) &&
+          x < (poly[j] - poly[i]) * (y - poly[i + 1]) / (poly[j + 1] - poly[i + 1]) + poly[i]) inside = !inside;
+    }
+    return inside;
+  }
+
+  // From a point to the nearest spot on a pond's shore.
+  function shoreOffset(pond, x, y) {
+    var best = Infinity, bx = 0, by = 0;
+    for (var i = 0; i < pond.poly.length; i += 2) {
+      var d = hyp(pond.poly[i] - x, pond.poly[i + 1] - y);
+      if (d < best) { best = d; bx = pond.poly[i] - x; by = pond.poly[i + 1] - y; }
+    }
+    return [bx, by];
+  }
+
+  // Where a stream reaching (x, y) meets that water: just inside a pond's shore, so nothing
+  // is drawn across the pond, or on a channel's centreline. A stream flowing into a channel
+  // is carried a little way downstream first, the way tributaries join.
+  function meetingPoint(hit, flowingIn, x, y) {
+    if (hit.pond) {
+      var off = shoreOffset(hit.pond, x, y), sx = x + off[0], sy = y + off[1];
+      var inward = hyp(hit.pond.cx - sx, hit.pond.cy - sy) || 1, step = Math.min(8 * scene.S, inward * 0.5);
+      return [sx + (hit.pond.cx - sx) / inward * step, sy + (hit.pond.cy - sy) / inward * step];
+    }
+    var b = hit.b, i = hit.i;
+    if (flowingIn) i = Math.max(0, i - Math.round((b.hw[i] * 1.6 + 8) / STEP));
+    return [b.x[i], b.y[i]];
+  }
+
+  // A gently bowed run from a point to that water, listed downstream end first.
+  function runTo(hit, x, y) {
+    var to = meetingPoint(hit, true, x, y), at = meetingPoint(hit, false, x, y);
+    var ux = x - at[0], uy = y - at[1], ul = hyp(ux, uy) || 1;
+    var bow = (scene.rng() - 0.5) * Math.min(60 * scene.S, ul * 0.35);
+    return [
+      to[0], to[1],
+      at[0] + ux * 0.3 - uy / ul * bow * 0.6, at[1] + uy * 0.3 + ux / ul * bow * 0.6,
+      at[0] + ux * 0.65 - uy / ul * bow, at[1] + uy * 0.65 + ux / ul * bow
+    ];
+  }
+
+  // Index 0 is the downstream end, as for the generated streams. The channel widens toward
+  // it. An end that meets water opens into it; a loose end runs to a point.
+  function makeStream(pts, meetsDown, meetsUp, k, minTop) {
     var c = tidy(pts, false), n = c.x.length;
     if (n < 6) return null;
     var S = scene.S, noise = scene.noise;
-    var top = Math.max(2.6, Math.min(10, (n - 1) * STEP / 38)) * S;
+    var top = Math.max(minTop || 2.6, Math.min(10, (n - 1) * STEP / 38)) * S;
     var b = {
       id: 500 + k, depth: 2, d0: 0, n: n, x: c.x, y: c.y, maxhw: 0,
       nx: new Array(n), ny: new Array(n), hw: new Array(n), hl: new Array(n), hr: new Array(n), t: new Array(n)
     };
+    var halo = [], far = [];
     for (var i = 0; i < n; i++) {
       var i0 = Math.max(0, i - 1), i1 = Math.min(n - 1, i + 1);
       var tx = c.x[i1] - c.x[i0], ty = c.y[i1] - c.y[i0], tl = hyp(tx, ty) || 1;
       b.nx[i] = -ty / tl; b.ny[i] = tx / tl;
-      var w = top * (0.16 + 0.84 * Math.pow(1 - i / (n - 1), 0.75));
-      if (!touch) w *= Math.min(1, (i + 1) / 7);
+      var thin = meetsUp ? 0.5 : 0.16;
+      var w = top * (thin + (1 - thin) * Math.pow(1 - i / (n - 1), 0.75));
+      if (meetsDown) w *= 1 + 0.6 * Math.max(0, 1 - i / 12);
+      else w *= Math.min(1, (i + 1) / 7);
       w = Math.max(0.45, w);
       b.hw[i] = w;
       b.hl[i] = w * (1 + 0.4 * (noise.n2(i * STEP * 0.022, b.id * 3.7) - 0.5));
       b.hr[i] = w * (1 + 0.4 * (noise.n2(i * STEP * 0.022, b.id * 3.7 + 50) - 0.5));
       b.t[i] = 1;
       b.maxhw = Math.max(b.maxhw, w);
+      halo.push(c.x[i] + b.nx[i] * (b.hl[i] + 5 * S), c.y[i] + b.ny[i] * (b.hl[i] + 5 * S));
+      far.unshift(c.x[i] - b.nx[i] * (b.hr[i] + 5 * S), c.y[i] - b.ny[i] * (b.hr[i] + 5 * S));
     }
+    b.halo = halo.concat(far);
     return b;
   }
 
@@ -612,14 +855,15 @@
     var cx = 0, cy = 0, reach = 0;
     for (i = 0; i < n; i++) { cx += c.x[i]; cy += c.y[i]; }
     cx /= n; cy /= n;
-    var poly = [], inner = [[], []];
+    var poly = [], halo = [], minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (i = 0; i < n; i++) {
       var ragged = 1 + 0.07 * (noise.n2(i * 0.09, k * 5.1) - 0.5);
       var px = cx + (c.x[i] - cx) * ragged, py = cy + (c.y[i] - cy) * ragged;
+      var radius = hyp(px - cx, py - cy) || 1;
       poly.push(px, py);
-      reach += hyp(px - cx, py - cy) / n;
-      inner[0].push(cx + (px - cx) * 0.66, cy + (py - cy) * 0.66);
-      inner[1].push(cx + (px - cx) * 0.34, cy + (py - cy) * 0.34);
+      reach += radius / n;
+      halo.push(px + (px - cx) / radius * 5 * S, py + (py - cy) / radius * 5 * S);
+      minX = Math.min(minX, px); maxX = Math.max(maxX, px); minY = Math.min(minY, py); maxY = Math.max(maxY, py);
 
       // Shore hachures on the shaded side, as on the river banks.
       var p = (i - 1 + n) % n, q = (i + 1) % n;
@@ -652,22 +896,64 @@
       }
       if (run && run.length >= 6) user.strokes.push({ k: 2, t: 0, p: run });
     }
-    var rings = [];
-    if (reach > 26) rings.push(inner[0]);
-    if (reach > 60) rings.push(inner[1]);
-    return { poly: poly, rings: rings };
+    // Ripple marks: short strokes scattered over the water, kept clear of the shore and of
+    // each other. They work for any outline, however knotted the stroke was.
+    var marks = [], want = Math.max(1, Math.min(60, Math.round((maxX - minX) * (maxY - minY) / (2600 * S * S))));
+    for (var tries = 0; tries < want * 14 && marks.length < want; tries++) {
+      var mx = minX + rng() * (maxX - minX), my = minY + rng() * (maxY - minY), half = (6 + rng() * 11) * S;
+      var clear = inPoly(poly, mx, my) && inPoly(poly, mx - half - 6 * S, my) && inPoly(poly, mx + half + 6 * S, my) &&
+        inPoly(poly, mx, my - 7 * S) && inPoly(poly, mx, my + 7 * S);
+      for (var e = 0; clear && e < marks.length; e++) {
+        if (Math.abs(marks[e][1] - my) < 9 * S && Math.abs((marks[e][0] + marks[e][2]) / 2 - mx) < half * 2 + 10 * S) clear = false;
+      }
+      if (clear) marks.push([mx - half, my, mx + half, (rng() - 0.5) * 5 * S]);
+    }
+    return { poly: poly, marks: marks, halo: halo, cx: cx, cy: cy, reach: reach };
   }
 
+  function addStream(b) {
+    if (!b) return;
+    user.streams.push(b);
+    scene.bankInk(b, user.strokes);
+    scene.laneDashes(b, user.dashes);
+  }
+
+  // Drawings are stored as bare strokes and joined to the water afresh on every build, so
+  // they stay attached when the hero is resized.
   function buildUser() {
     user = { streams: [], ponds: [], strokes: [], dashes: [] };
+    var S = scene.S;
     shapes.forEach(function (shape, k) {
       var pts = shape.p.map(function (v, i) { return v * (i % 2 ? H : W); });
-      if (shape.k === 'p') { user.ponds.push(makePond(pts, k)); return; }
-      var b = makeStream(pts, shape.touch, k);
-      if (!b) return;
-      user.streams.push(b);
-      scene.bankInk(b, user.strokes);
-      scene.laneDashes(b, user.dashes);
+      var last = pts.length - 2;
+      if (shape.k === 'p') {
+        var pond = makePond(pts, k);
+        // A pond near a channel drains into it.
+        // A pond near a channel drains into it, from the shore nearest that channel. One drawn
+        // over a channel or over another pond is already part of that water.
+        var drain = nearWater(pond.cx, pond.cy, pond.reach + 230 * S, true);
+        var joined = user.ponds.some(function (other) { return hyp(other.cx - pond.cx, other.cy - pond.cy) < other.reach + pond.reach; });
+        user.ponds.push(pond);
+        if (drain && !joined && drain.gap > pond.reach * 0.8) {
+          var out = meetingPoint({ pond: pond }, false, drain.b.x[drain.i], drain.b.y[drain.i]);
+          addStream(makeStream(runTo(drain, out[0], out[1]).concat(out), true, true, k + 0.5, 5));
+        }
+        return;
+      }
+      var down = nearWater(pts[0], pts[1], 44 * S), up = nearWater(pts[last], pts[last + 1], 44 * S);
+      if (up) pts = pts.concat(meetingPoint(up, false, pts[last], pts[last + 1]));
+      if (down) pts = meetingPoint(down, true, pts[0], pts[1]).concat(pts);
+      if (!down && !up) {
+        // A stroke left in open land runs on to the nearest water, from whichever end is closer.
+        var a = nearWater(pts[0], pts[1], 300 * S), z = nearWater(pts[last], pts[last + 1], 300 * S);
+        if (z && (!a || z.gap < a.gap)) {
+          var turned = [];
+          for (var q = last; q >= 0; q -= 2) turned.push(pts[q], pts[q + 1]);
+          pts = turned; a = z;
+        }
+        if (a) { pts = runTo(a, pts[0], pts[1]).concat(pts); down = a; }
+      }
+      addStream(makeStream(pts, !!down, !!up, k));
     });
     flowDashes = scene.dashes.concat(user.dashes);
     userDirty = true; waterT = -1;
@@ -679,28 +965,6 @@
       if (shapes.length) localStorage.setItem(STORE, JSON.stringify({ seed: seed, shapes: shapes }));
       else localStorage.removeItem(STORE);
     } catch (e) {}
-  }
-
-  function onWater(x, y) {
-    var spots = [0, 0, 5, 0, -5, 0, 0, 5, 0, -5];
-    for (var i = 0; i < spots.length; i += 2) {
-      var px = Math.round((x + spots[i]) * dpr), py = Math.round((y + spots[i + 1]) * dpr);
-      if (px < 0 || py < 0 || px >= water.el.width || py >= water.el.height) continue;
-      if (water.ctx.getImageData(px, py, 1, 1).data[3] > 100) return true;
-    }
-    return false;
-  }
-
-  // A stroke that stops just short of water is carried on into it.
-  function snapToWater(x, y) {
-    if (onWater(x, y)) return [x, y];
-    for (var r = 8; r <= 32; r += 8) {
-      for (var a = 0; a < 12; a++) {
-        var dx = Math.cos(a * TAU / 12), dy = Math.sin(a * TAU / 12);
-        if (onWater(x + dx * r, y + dy * r)) return [x + dx * (r + 8), y + dy * (r + 8)];
-      }
-    }
-    return null;
   }
 
   function finishStroke() {
@@ -721,18 +985,14 @@
       shape = { k: 'p' };
     } else {
       // The end that meets water is downstream; failing that, the lower end.
-      var startSnap = snapToWater(pts[0], pts[1]), endSnap = snapToWater(pts[last], pts[last + 1]);
-      var startWet = !!startSnap, endWet = !!endSnap;
-      if (endSnap) pts.push(endSnap[0], endSnap[1]);
-      if (startSnap) pts.unshift(startSnap[0], startSnap[1]);
-      count = pts.length / 2; last = pts.length - 2;
+      var startWet = !!nearWater(pts[0], pts[1], 44 * scene.S), endWet = !!nearWater(pts[last], pts[last + 1], 44 * scene.S);
       var endIsDown = startWet === endWet ? pts[last + 1] > pts[1] : endWet;
       if (endIsDown) {
         var flipped = [];
         for (i = count - 1; i >= 0; i--) flipped.push(pts[i * 2], pts[i * 2 + 1]);
         pts = flipped;
       }
-      shape = { k: 's', touch: startWet || endWet };
+      shape = { k: 's' };
     }
     var every = Math.ceil(count / 400);
     shape.p = [];
@@ -829,7 +1089,13 @@
   function rebuild() {
     sizeLayers();
     readColors();
-    scene = buildScene(seed, W, H);
+    // Keep trees and rocks out from under the name and the buttons.
+    var frame = root.getBoundingClientRect();
+    var avoid = Array.prototype.map.call(document.querySelectorAll('.title, .controls, .top .seal, .top .nav'), function (node) {
+      var r = node.getBoundingClientRect();
+      return [r.left - frame.left - 10, r.top - frame.top - 10, r.right - frame.left + 10, r.bottom - frame.top + 10];
+    });
+    scene = buildScene(seed, W, H, avoid);
     buildUser();
     // The page river picks up where the hero's main channel leaves the frame.
     api.seed = seed;
@@ -837,7 +1103,7 @@
     window.dispatchEvent(new Event('ink:scene'));
   }
 
-  var api = window.InkRiver = { mulberry32: mulberry32, makeNoise: makeNoise, art: root, seed: 0, mouth: null };
+  var api = window.InkRiver = { mulberry32: mulberry32, makeNoise: makeNoise, glyphs: makeGlyphs, art: root, seed: 0, mouth: null };
 
   var resizeTimer = 0;
   window.addEventListener('resize', function () {

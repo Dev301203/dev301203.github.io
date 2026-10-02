@@ -197,8 +197,10 @@
   // ── Projects ───────────────────────────────
   var big = byId('projects-big'), small = byId('projects-small');
   data.projects.items.forEach(function (proj) {
-    var card = el('a', 'proj');
-    card.href = proj.href; card.target = '_blank'; card.rel = 'noopener noreferrer';
+    // A project without a public link is a plain panel.
+    var card = el(proj.href ? 'a' : 'article', 'proj');
+    if (proj.href) { card.href = proj.href; card.target = '_blank'; card.rel = 'noopener noreferrer'; }
+    else card.classList.add('proj--static');
     card.setAttribute('data-reveal', '');
     if (proj.image) {
       var img = el('img', 'proj__img');
@@ -210,6 +212,7 @@
     body.appendChild(el('h3', 'proj__title', proj.title));
     body.appendChild(meta([proj.tech, proj.date]));
     body.appendChild(el('p', 'proj__desc', proj.description));
+    if (proj.award) body.appendChild(el('div', 'proj__award', proj.award));
     card.appendChild(body);
     (proj.featured ? big : small).appendChild(card);
   });
@@ -247,8 +250,10 @@
   // ── Contact ────────────────────────────────
   var contact = data.contact, contactEl = byId('contact-links');
   [
+    // Addresses are stored and shown as "name <at> domain" so they are not sitting in the
+    // source for scrapers. The real mail link is only put together when someone goes to use it.
     { label: 'Email', links: [contact.email, contact.email2].filter(Boolean).map(function (address) {
-      return { text: address, href: 'mailto:' + address };
+      return { text: address, mail: true };
     }) },
     { label: 'GitHub', links: [{ text: 'Dev301203', href: contact.github }] },
     { label: 'LinkedIn', links: [{ text: 'devanshu-singhvi', href: contact.linkedin }] }
@@ -258,8 +263,16 @@
     li.appendChild(el('span', 'contact__label', item.label));
     item.links.forEach(function (link) {
       var a = el('a', 'contact__link', link.text);
-      a.href = link.href;
-      if (link.href.indexOf('mailto:') !== 0) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      if (link.mail) {
+        a.tabIndex = 0;
+        a.setAttribute('role', 'link');
+        var arm = function () {
+          if (!a.getAttribute('href')) a.href = 'mail' + 'to:' + link.text.replace(/\s*<at>\s*/i, String.fromCharCode(64));
+        };
+        ['pointerenter', 'focus', 'touchstart'].forEach(function (type) { a.addEventListener(type, arm, { passive: true }); });
+      } else {
+        a.href = link.href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      }
       li.appendChild(a);
     });
     contactEl.appendChild(li);

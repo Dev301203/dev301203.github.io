@@ -2,7 +2,7 @@
 window.__SITE_CONTENT__ = {
   "meta": {
     "title": "Devanshu Singhvi",
-    "description": "Devanshu Singhvi — systems, security, data lineage. AI engineer building infrastructure-grade tools.",
+    "description": "Devanshu Singhvi. AI engineer and graduate student at the University of Toronto.",
     "favicon": "./assets/images/berserk.jpg"
   },
   "hero": {
@@ -14,9 +14,9 @@ window.__SITE_CONTENT__ = {
   },
   "about": {
     "paragraphs": [
-      "Graduate student and engineer with an Honours B.Sc. in Computer Science and Mathematical Sciences from the University of Toronto. I build systems that process, trace, and secure data at scale.",
-      "Currently pursuing an MScAC at UofT while working as a SHIFT AI Engineer at Next Pathway, building AI-driven data lineage extraction and migration tools across 370+ enterprise data sources.",
-      "Previously: full-stack engineering at dAItaflow, IT security at Bank of Bahrain and Kuwait, transit I&IT at Metrolinx. Teaching assistant for 9 courses including Operating Systems, Computer Security, and Systems Programming."
+      "I'm a graduate student at the University of Toronto, where I also did my undergrad in computer science and math. I like systems and databases: storage engines, operating systems, and working out why something is fast or slow.",
+      "Right now I'm in the MScAC program and working as an AI engineer at Next Pathway. The things I build for fun tend to sit close to the machine: a key-value store, a minimal perfect hash function, an ext2 filesystem clone.",
+      "Before that I worked at an early-stage startup, on a bank's security team and at a transit agency. I've also been a teaching assistant for courses like Operating Systems, Computer Security and Systems Programming."
     ]
   },
   "skills": {
@@ -148,7 +148,7 @@ window.__SITE_CONTENT__ = {
         "featured": true
       },
       {
-        "title": "Advisory Tutor",
+        "title": "Advisory",
         "tech": "FastAPI, React, Neo4j, GPT-4, Docker",
         "date": "Jan–Apr 2025",
         "description": "GraphRAG tutoring system achieving 92% top-5 retrieval accuracy. Knowledge graph with 15k+ nodes and 60k+ relationships from 200+ documents.",
@@ -158,9 +158,10 @@ window.__SITE_CONTENT__ = {
       },
       {
         "title": "LegalEase",
-        "tech": "Python, AI",
-        "date": "2024",
-        "description": "AI negotiation simulator for family lawyers to practice realistic, emotionally aware divorce-case dialogues.",
+        "tech": "React, TypeScript, FastAPI, Qwen 3, Boson AI Higgs Audio",
+        "date": "Oct 2025",
+        "description": "AI negotiation simulator for family lawyers to practice realistic, emotionally aware divorce-case dialogues, with branching conversations and voiced roles.",
+        "award": "3rd place, Boson AI Higgs Audio Hackathon 2025",
         "href": "https://github.com/Dev301203/legal-ease",
         "image": "./assets/images/projects/legal-ease.png",
         "featured": true
@@ -170,14 +171,20 @@ window.__SITE_CONTENT__ = {
         "tech": "C++",
         "date": "Sep–Dec 2025",
         "description": "Persistent LSM-tree KV store with AVL memtables, B-tree SSTs, Bloom filters, and benchmarked lookup paths up to 67M entries.",
-        "href": "https://github.com/mnkhoi/kv-database",
         "image": "./assets/images/projects/lsm.png",
         "featured": true
       },
       {
+        "title": "Backchannel",
+        "tech": "JavaScript, TypeScript, WebSockets, Postgres, Redis",
+        "date": "Jul–Aug 2026",
+        "description": "A public chat room for every website: a browser extension and realtime backend with page and site rooms, threads, reactions and moderation.",
+        "href": "https://github.com/Dev301203/Backchannel"
+      },
+      {
         "title": "Ticket Priority MLOps",
         "tech": "AWS, SageMaker, Python",
-        "date": "2024",
+        "date": "Sep–Dec 2025",
         "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
         "href": "https://github.com/Dev301203/ticket-priority-mlops",
         "image": "./assets/images/projects/tp.png"
@@ -193,7 +200,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Customer Support AI",
         "tech": "Python, Gemini API",
-        "date": "2024",
+        "date": "Jan 2026",
         "description": "Gemini-powered support assistant that drafts empathetic replies while extracting structured ticket metadata for triage and analytics.",
         "href": "https://github.com/Dev301203/customer-support-ai",
         "image": "./assets/images/projects/customer-support-ai.png"
@@ -217,7 +224,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Company Management System",
         "tech": "Java, JavaFX",
-        "date": "2023",
+        "date": "2022",
         "description": "JavaFX company operations manager for departments, teams, employees, budgets, and expenses.",
         "href": "https://github.com/Dev301203/company-management-system",
         "image": "./assets/images/projects/cms.jpg"
@@ -242,8 +249,8 @@ window.__SITE_CONTENT__ = {
     ]
   },
   "contact": {
-    "email": "dev.singhvi@utoronto.ca",
-    "email2": "devanshu301203@gmail.com",
+    "email": "dev.singhvi <at> utoronto.ca",
+    "email2": "devanshu301203 <at> gmail.com",
     "github": "https://github.com/Dev301203",
     "linkedin": "https://www.linkedin.com/in/devanshu-singhvi/",
     "website": "https://dev301203.github.io"
