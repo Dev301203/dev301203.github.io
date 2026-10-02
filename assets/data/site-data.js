@@ -233,7 +233,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Brick Breaker",
         "tech": "Assembly (MIPS)",
-        "date": "Aug 2024",
+        "date": "2022",
         "description": "Assembly brick breaker game with paddle controls, ball physics, score tracking, lives, and sound effects.",
         "href": "https://github.com/Dev301203/Brick-Breaker",
         "image": "./assets/images/projects/brickbreaker.jpg",
@@ -242,7 +242,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Braille Translator",
         "tech": "Python",
-        "date": "Oct 2024",
+        "date": "2022",
         "description": "Command-line translator that automatically converts between English text and six-dot Braille notation.",
         "href": "https://github.com/Dev301203/Braille-Translator",
         "image": "./assets/images/projects/braille.jpg"
