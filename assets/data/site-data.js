@@ -14,8 +14,8 @@ window.__SITE_CONTENT__ = {
   },
   "about": {
     "paragraphs": [
-      "I'm a graduate student at the University of Toronto, where I also did my undergrad in computer science and math. I like systems and databases: storage engines, query processing, operating systems, and working out why something is fast or slow.",
-      "Right now I'm in the MScAC program and working as an AI engineer at Next Pathway. The things I build for fun tend to sit close to the machine: a key-value store, a minimal perfect hash function, a social network server over raw sockets.",
+      "I'm a graduate student at the University of Toronto, where I also did my undergrad in computer science and math. I like systems and databases: storage engines, operating systems, and working out why something is fast or slow.",
+      "Right now I'm in the MScAC program and working as an AI engineer at Next Pathway. The things I build for fun tend to sit close to the machine: a key-value store, a minimal perfect hash function, an ext2 filesystem clone.",
       "Before that I worked at an early-stage startup, on a bank's security team and at a transit agency. I've also been a teaching assistant for courses like Operating Systems, Computer Security and Systems Programming."
     ]
   },
@@ -141,7 +141,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Leveled Minimal Perfect Hash Function",
         "tech": "Rust, Python",
-        "date": "Jan–Apr 2026",
+        "date": "Mar–Apr 2026",
         "description": "Hardware-aware BBHash-style MPHF with cache-aligned rank bitsets. Outperformed boomphf and C++ BBHash on 48/54 lookup and 45/54 build configs.",
         "href": "https://github.com/Dev301203/better-leveledmphf",
         "image": "./assets/images/projects/mphf.png",
@@ -185,7 +185,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Ticket Priority MLOps",
         "tech": "AWS, SageMaker, Python",
-        "date": "2024",
+        "date": "Oct–Nov 2025",
         "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
         "href": "https://github.com/Dev301203/ticket-priority-mlops",
         "image": "./assets/images/projects/tp.png"
@@ -193,7 +193,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Book Cover Identification",
         "tech": "Python, OpenCV",
-        "date": "2024",
+        "date": "Sep 2024",
         "description": "Computer vision system using SIFT features and hierarchical vocabulary tree for oblique book cover recognition.",
         "href": "https://github.com/Dev301203/Book-Cover-Via-Vocabulary-Tree",
         "image": "./assets/images/projects/bookcover.jpg"
@@ -201,7 +201,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Customer Support AI",
         "tech": "Python, Gemini API",
-        "date": "2024",
+        "date": "Jan 2026",
         "description": "Gemini-powered support assistant that drafts empathetic replies while extracting structured ticket metadata for triage and analytics.",
         "href": "https://github.com/Dev301203/customer-support-ai",
         "image": "./assets/images/projects/customer-support-ai.png"
@@ -209,7 +209,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Appointify",
         "tech": "Full-stack web app",
-        "date": "2024",
+        "date": "Mar–Apr 2024",
         "description": "Appointment scheduling dashboard with authentication, calendars, contacts, and event management.",
         "href": "https://github.com/Dev301203/Appointify",
         "image": "./assets/images/projects/appointify.png"
@@ -217,7 +217,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "CLI Social Network",
         "tech": "C",
-        "date": "2023",
+        "date": "Dec 2023",
         "description": "Socket-based C social network server where users can list profiles, make friends, and post messages asynchronously.",
         "href": "https://github.com/Dev301203/Social-Media-App",
         "image": "./assets/images/projects/socialmedia.jpg"
@@ -225,7 +225,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Company Management System",
         "tech": "Java, JavaFX",
-        "date": "2023",
+        "date": "Oct–Dec 2022",
         "description": "JavaFX company operations manager for departments, teams, employees, budgets, and expenses.",
         "href": "https://github.com/Dev301203/company-management-system",
         "image": "./assets/images/projects/cms.jpg"
@@ -233,7 +233,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Brick Breaker",
         "tech": "Assembly (MIPS)",
-        "date": "2022",
+        "date": "Aug 2024",
         "description": "Assembly brick breaker game with paddle controls, ball physics, score tracking, lives, and sound effects.",
         "href": "https://github.com/Dev301203/Brick-Breaker",
         "image": "./assets/images/projects/brickbreaker.jpg",
@@ -242,7 +242,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Braille Translator",
         "tech": "Python",
-        "date": "2022",
+        "date": "Oct 2024",
         "description": "Command-line translator that automatically converts between English text and six-dot Braille notation.",
         "href": "https://github.com/Dev301203/Braille-Translator",
         "image": "./assets/images/projects/braille.jpg"

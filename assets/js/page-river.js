@@ -404,77 +404,7 @@
       return true;
     }
 
-    function jit(v) { return v + (rng() - 0.5) * 0.06; }
-    function spot(x, y, s, u, v) { return f1(x + u * s) + ' ' + f1(y + v * s); }
-
-    var draw = {
-      pine: function (x, y, s) {
-        var L = [[0.17, 0.66], [0.07, 0.66], [0.28, 0.36], [0.11, 0.36], [0.39, 0.07], [0.06, 0.07]].map(function (p) {
-          return [jit(p[0]), jit(p[1])];
-        });
-        var left = L.map(function (p) { return spot(x, y, s, -p[0], -p[1]); });
-        var right = L.map(function (p) { return spot(x, y, s, p[0], -p[1]); });
-        var top = spot(x, y, s, 0, -1), foot = spot(x, y, s, -0.06, 0) + 'L' + spot(x, y, s, 0.06, 0);
-        return {
-          body: 'M' + top + 'L' + left.join('L') + 'L' + foot + 'L' + right.slice().reverse().join('L') + 'Z',
-          solid: 'M' + top + 'L' + right.join('L') + 'L' + spot(x, y, s, 0.06, 0) + 'L' + spot(x, y, s, 0, 0) + 'Z'
-        };
-      },
-      tree: function (x, y, s) {
-        var r = 0.36, cy = -0.62, lobes = 7 + ((rng() * 3) | 0), turn = rng() * 6.28, d = '', q;
-        for (q = 0; q <= lobes; q++) {
-          var a = turn + q / lobes * 6.2832, b = a - 3.1416 / lobes, rr = r * (0.94 + rng() * 0.14);
-          var here = spot(x, y, s, Math.cos(a) * rr, cy + Math.sin(a) * rr);
-          d += q ? 'Q' + spot(x, y, s, Math.cos(b) * r * 1.3, cy + Math.sin(b) * r * 1.3) + ' ' + here : 'M' + here;
-        }
-        var over = '';
-        [[0, 0.72], [0.22, 0.78], [0.46, 0.66], [0.28, 0.42]].forEach(function (h) {
-          over += 'M' + spot(x, y, s, r * h[0], cy + r * h[1]) + 'L' + spot(x, y, s, r * (h[0] + 0.2), cy + r * (h[1] - 0.2));
-        });
-        return {
-          under: 'M' + spot(x, y, s, -0.045, -0.34) + 'L' + spot(x, y, s, -0.055, 0) + 'M' + spot(x, y, s, 0.045, -0.34) + 'L' + spot(x, y, s, 0.055, 0),
-          body: d + 'Z', over: over
-        };
-      },
-      bush: function (x, y, s) {
-        var lobes = 4 + ((rng() * 2) | 0), d = 'M' + spot(x, y, s, -0.5, 0), q;
-        for (q = 1; q <= lobes; q++) {
-          var a = 3.1416 * (1 - q / lobes), b = 3.1416 * (1 - (q - 0.5) / lobes);
-          d += 'Q' + spot(x, y, s, Math.cos(b) * 0.66, -Math.sin(b) * 0.92) + ' ' + spot(x, y, s, Math.cos(a) * 0.5, -Math.sin(a) * 0.62);
-        }
-        return {
-          body: d + 'Z',
-          over: 'M' + spot(x, y, s, 0.1, -0.12) + 'L' + spot(x, y, s, 0.24, -0.3) + 'M' + spot(x, y, s, 0.24, -0.08) + 'L' + spot(x, y, s, 0.36, -0.24)
-        };
-      },
-      rock: function (x, y, s) {
-        var p = [[-0.5, 0], [-0.44, -0.3], [-0.16, -0.58], [0.2, -0.5], [0.46, -0.24], [0.5, 0]].map(function (v) {
-          return [jit(v[0]), v[1] ? jit(v[1]) : 0];
-        });
-        var over = 'M' + spot(x, y, s, p[2][0], p[2][1]) + 'L' + spot(x, y, s, 0.04, -0.2) + 'L' + spot(x, y, s, 0.1, 0);
-        for (var q = 0; q < 4; q++) {
-          over += 'M' + spot(x, y, s, 0.16 + 0.08 * q, -0.03) + 'L' + spot(x, y, s, 0.22 + 0.07 * q, -0.34 + 0.07 * q);
-        }
-        return { body: 'M' + p.map(function (v) { return spot(x, y, s, v[0], v[1]); }).join('L') + 'Z', over: over };
-      },
-      grass: function (x, y, s) {
-        var blades = 3 + ((rng() * 3) | 0), over = '';
-        for (var q = 0; q < blades; q++) {
-          var from = (q / (blades - 1) - 0.5) * 0.5, lean = from * 1.5 + (rng() - 0.5) * 0.3, h = 0.6 + rng() * 0.4;
-          over += 'M' + spot(x, y, s, from, 0) + 'Q' + spot(x, y, s, from + lean * 0.25, -h * 0.6) + ' ' + spot(x, y, s, from + lean, -h);
-        }
-        return { over: over };
-      },
-      reeds: function (x, y, s) {
-        var stems = 3 + ((rng() * 3) | 0), over = '', heads = '';
-        for (var q = 0; q < stems; q++) {
-          var from = (q / (stems - 1) - 0.5) * 0.55, lean = (rng() - 0.5) * 0.22, h = 0.62 + rng() * 0.38;
-          over += 'M' + spot(x, y, s, from, 0) + 'L' + spot(x, y, s, from + lean, -h);
-          heads += 'M' + spot(x, y, s, from + lean * 0.78, -h * 0.78) + 'L' + spot(x, y, s, from + lean, -h);
-        }
-        return { over: over, heads: heads };
-      }
-    };
+    var draw = K.glyphs(rng);
 
     function plant(kind, x, y, s, nearWater) {
       if (!clearGround(x, y, s, nearWater)) return false;

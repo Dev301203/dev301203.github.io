@@ -45,8 +45,87 @@
     return { n2: n2, fbm: fbm };
   }
 
+  // ── Map symbols ────────────────────────────
+  // Trees, rocks and grass as SVG path data, so the page river can use them directly and
+  // the hero canvas can draw them through Path2D. (x, y) is where a symbol stands; it rises
+  // s above that point. Parts: under and over are ink lines, body is paper-filled, solid is ink.
+  function makeGlyphs(rng) {
+    function f1(v) { return v.toFixed(1); }
+    function jit(v) { return v + (rng() - 0.5) * 0.06; }
+    function spot(x, y, s, u, v) { return f1(x + u * s) + ' ' + f1(y + v * s); }
+    return {
+      pine: function (x, y, s) {
+        var L = [[0.17, 0.66], [0.07, 0.66], [0.28, 0.36], [0.11, 0.36], [0.39, 0.07], [0.06, 0.07]].map(function (p) {
+          return [jit(p[0]), jit(p[1])];
+        });
+        var left = L.map(function (p) { return spot(x, y, s, -p[0], -p[1]); });
+        var right = L.map(function (p) { return spot(x, y, s, p[0], -p[1]); });
+        var top = spot(x, y, s, 0, -1), foot = spot(x, y, s, -0.06, 0) + 'L' + spot(x, y, s, 0.06, 0);
+        return {
+          body: 'M' + top + 'L' + left.join('L') + 'L' + foot + 'L' + right.slice().reverse().join('L') + 'Z',
+          solid: 'M' + top + 'L' + right.join('L') + 'L' + spot(x, y, s, 0.06, 0) + 'L' + spot(x, y, s, 0, 0) + 'Z'
+        };
+      },
+      tree: function (x, y, s) {
+        var r = 0.36, cy = -0.62, lobes = 7 + ((rng() * 3) | 0), turn = rng() * 6.28, d = '', q;
+        for (q = 0; q <= lobes; q++) {
+          var a = turn + q / lobes * 6.2832, b = a - 3.1416 / lobes, rr = r * (0.94 + rng() * 0.14);
+          var here = spot(x, y, s, Math.cos(a) * rr, cy + Math.sin(a) * rr);
+          d += q ? 'Q' + spot(x, y, s, Math.cos(b) * r * 1.3, cy + Math.sin(b) * r * 1.3) + ' ' + here : 'M' + here;
+        }
+        var over = '';
+        [[0, 0.72], [0.22, 0.78], [0.46, 0.66], [0.28, 0.42]].forEach(function (h) {
+          over += 'M' + spot(x, y, s, r * h[0], cy + r * h[1]) + 'L' + spot(x, y, s, r * (h[0] + 0.2), cy + r * (h[1] - 0.2));
+        });
+        return {
+          under: 'M' + spot(x, y, s, -0.045, -0.34) + 'L' + spot(x, y, s, -0.055, 0) + 'M' + spot(x, y, s, 0.045, -0.34) + 'L' + spot(x, y, s, 0.055, 0),
+          body: d + 'Z', over: over
+        };
+      },
+      bush: function (x, y, s) {
+        var lobes = 4 + ((rng() * 2) | 0), d = 'M' + spot(x, y, s, -0.5, 0), q;
+        for (q = 1; q <= lobes; q++) {
+          var a = 3.1416 * (1 - q / lobes), b = 3.1416 * (1 - (q - 0.5) / lobes);
+          d += 'Q' + spot(x, y, s, Math.cos(b) * 0.66, -Math.sin(b) * 0.92) + ' ' + spot(x, y, s, Math.cos(a) * 0.5, -Math.sin(a) * 0.62);
+        }
+        return {
+          body: d + 'Z',
+          over: 'M' + spot(x, y, s, 0.1, -0.12) + 'L' + spot(x, y, s, 0.24, -0.3) + 'M' + spot(x, y, s, 0.24, -0.08) + 'L' + spot(x, y, s, 0.36, -0.24)
+        };
+      },
+      rock: function (x, y, s) {
+        var p = [[-0.5, 0], [-0.44, -0.3], [-0.16, -0.58], [0.2, -0.5], [0.46, -0.24], [0.5, 0]].map(function (v) {
+          return [jit(v[0]), v[1] ? jit(v[1]) : 0];
+        });
+        var over = 'M' + spot(x, y, s, p[2][0], p[2][1]) + 'L' + spot(x, y, s, 0.04, -0.2) + 'L' + spot(x, y, s, 0.1, 0);
+        for (var q = 0; q < 4; q++) {
+          over += 'M' + spot(x, y, s, 0.16 + 0.08 * q, -0.03) + 'L' + spot(x, y, s, 0.22 + 0.07 * q, -0.34 + 0.07 * q);
+        }
+        return { body: 'M' + p.map(function (v) { return spot(x, y, s, v[0], v[1]); }).join('L') + 'Z', over: over };
+      },
+      grass: function (x, y, s) {
+        var blades = 3 + ((rng() * 3) | 0), over = '';
+        for (var q = 0; q < blades; q++) {
+          var from = (q / (blades - 1) - 0.5) * 0.5, lean = from * 1.5 + (rng() - 0.5) * 0.3, h = 0.6 + rng() * 0.4;
+          over += 'M' + spot(x, y, s, from, 0) + 'Q' + spot(x, y, s, from + lean * 0.25, -h * 0.6) + ' ' + spot(x, y, s, from + lean, -h);
+        }
+        return { over: over };
+      },
+      reeds: function (x, y, s) {
+        var stems = 3 + ((rng() * 3) | 0), over = '', heads = '';
+        for (var q = 0; q < stems; q++) {
+          var from = (q / (stems - 1) - 0.5) * 0.55, lean = (rng() - 0.5) * 0.22, h = 0.62 + rng() * 0.38;
+          over += 'M' + spot(x, y, s, from, 0) + 'L' + spot(x, y, s, from + lean, -h);
+          heads += 'M' + spot(x, y, s, from + lean * 0.78, -h * 0.78) + 'L' + spot(x, y, s, from + lean, -h);
+        }
+        return { over: over, heads: heads };
+      }
+    };
+  }
+
   // ── Scene generation ───────────────────────
-  function buildScene(seed, W, H) {
+  // avoid: rectangles [left, top, right, bottom] the scenery should stay out of.
+  function buildScene(seed, W, H, avoid) {
     var rng = mulberry32(seed);
     var noise = makeNoise(rng);
     var S = Math.max(0.55, Math.min(1.25, Math.sqrt(W * H) / 1140));
@@ -358,10 +437,75 @@
     }
     branches.forEach(function (b) { laneDashes(b, dashes); });
 
+    // Scenery: map symbols on the land, chosen by terrain. Pines and rocks on the hatched
+    // uplands, reeds and grass on the dotted lowlands, round trees and bushes in between.
+    avoid = avoid || [];
+    var props = [], glyphs = makeGlyphs(rng), wetCell = 52, wetGrid = {};
+    branches.forEach(function (b) {
+      for (var q = 0; q < b.n; q += 2) {
+        var key = Math.floor(b.x[q] / wetCell) + ':' + Math.floor(b.y[q] / wetCell);
+        (wetGrid[key] || (wetGrid[key] = [])).push(b.x[q], b.y[q], b.hw[q]);
+      }
+    });
+    function openGround(x, y, s) {
+      var r = s * 0.5, my = y - r, q;
+      if (x < r + 6 || x > W - r - 6 || y - s < 6 || y > H - 6) return false;
+      for (q = 0; q < avoid.length; q++) {
+        if (x + r > avoid[q][0] && x - r < avoid[q][2] && y > avoid[q][1] && y - s < avoid[q][3]) return false;
+      }
+      var gx = Math.floor(x / wetCell), gy = Math.floor(my / wetCell);
+      for (var ix = -2; ix <= 2; ix++) {
+        for (var iy = -2; iy <= 2; iy++) {
+          var list = wetGrid[(gx + ix) + ':' + (gy + iy)];
+          if (!list) continue;
+          for (q = 0; q < list.length; q += 3) {
+            var dx = list[q] - x, dy = list[q + 1] - my, keep = list[q + 2] + r + 20 * S;
+            if (dx * dx + dy * dy < keep * keep) return false;
+          }
+        }
+      }
+      for (q = 0; q < props.length; q++) {
+        var ex = props[q].x - x, ey = props[q].y - y, gap = (props[q].s + s) * 0.34;
+        if (ex * ex + ey * ey < gap * gap) return false;
+      }
+      return true;
+    }
+    var MIX = {
+      high: [['pine', 22, 40, 6], ['rock', 12, 24, 2]],
+      mid: [['tree', 24, 38, 4], ['bush', 12, 19, 3], ['grass', 8, 12, 3]],
+      low: [['reeds', 14, 22, 3], ['bush', 12, 18, 2], ['grass', 8, 12, 3]]
+    };
+    for (var grove = Math.round(W * H / 21000); grove > 0; grove--) {
+      var px0 = 0, py0 = 0, found = false;
+      for (var attempt = 0; attempt < 30 && !found; attempt++) {
+        px0 = rng() * W; py0 = rng() * H;
+        found = openGround(px0, py0, 30 * S);
+      }
+      if (!found) continue;
+      var level = field(px0, py0), mix = level > 0.6 ? MIX.high : level < 0.4 ? MIX.low : MIX.mid;
+      var share = 0, kind = mix[0];
+      mix.forEach(function (m) { share += m[3]; });
+      var pick = rng() * share;
+      for (var mk = 0; mk < mix.length; mk++) { pick -= mix[mk][3]; if (pick <= 0) { kind = mix[mk]; break; } }
+      var members = kind[0] === 'grass' ? 4 + ((rng() * 5) | 0) : kind[0] === 'rock' ? 1 + ((rng() * 4) | 0) : 2 + ((rng() * 6) | 0);
+      var spread = kind[2] * S * (1.2 + rng() * 1.4);
+      for (var mb = 0; mb < members; mb++) {
+        var ang = rng() * TAU, far = Math.sqrt(rng()) * spread;
+        var sx = px0 + Math.cos(ang) * far * 1.5, sy = py0 + Math.sin(ang) * far * 0.8;
+        var size = (kind[1] + rng() * (kind[2] - kind[1])) * S;
+        if (!openGround(sx, sy, size)) continue;
+        var parts = glyphs[kind[0]](sx, sy, size), prop = { x: sx, y: sy, s: size, t: 0.42 + 0.5 * sy / H + rng() * 0.03 };
+        for (var part in parts) prop[part] = new Path2D(parts[part]);
+        props.push(prop);
+      }
+    }
+    props.sort(function (p, q) { return p.y - q.y; });
+
     var mi = 0;
     while (mi < trunk.n - 1 && trunk.y[mi] > H) mi++;
 
     return {
+      props: props,
       mouth: { x: trunk.x[mi], hw: trunk.hw[mi] },
       noise: noise, rng: rng, bankInk: bankInk, laneDashes: laneDashes,
       W: W, H: H, S: S, Dmax: Dmax, branches: branches, strokes: strokes,
@@ -375,7 +519,8 @@
     root.appendChild(el);
     return { el: el, ctx: el.getContext('2d') };
   }
-  var land = makeLayer(), userLand = makeLayer(), water = makeLayer(), flow = makeLayer();
+  var land = makeLayer(), scenery = makeLayer(), userLand = makeLayer(), water = makeLayer(), flow = makeLayer();
+  var planted = 0;
   var scene = null, W = 0, H = 0, dpr = 1;
   var colors = { ink: '#131312', paper: '#f1f0ea' };
   var progress = { T: 0 };
@@ -395,7 +540,7 @@
   function sizeLayers() {
     W = root.clientWidth; H = root.clientHeight;
     dpr = Math.min(2, window.devicePixelRatio || 1);
-    [land, userLand, water, flow].forEach(function (l) {
+    [land, scenery, userLand, water, flow].forEach(function (l) {
       l.el.width = Math.round(W * dpr); l.el.height = Math.round(H * dpr);
       l.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     });
@@ -404,13 +549,28 @@
   function resetInk() {
     land.ctx.clearRect(0, 0, W, H);
     userLand.ctx.clearRect(0, 0, W, H);
-    drawn = 0; waterT = -1; userDirty = true;
+    scenery.ctx.clearRect(0, 0, W, H);
+    drawn = 0; planted = 0; waterT = -1; userDirty = true;
   }
 
   function renderLand(T) {
     var st = scene.strokes, from = drawn;
     while (drawn < st.length && st[drawn].t <= T) drawn++;
     if (drawn > from) paintStrokes(land.ctx, st, from, drawn);
+
+    // Trees and rocks sit on their own layer above the hatching, and appear top to bottom.
+    var c = scenery.ctx, props = scene.props;
+    c.strokeStyle = colors.ink; c.lineJoin = 'round'; c.lineCap = 'round';
+    for (; planted < props.length && props[planted].t <= T; planted++) {
+      var p = props[planted];
+      c.lineWidth = 1.15;
+      if (p.under) c.stroke(p.under);
+      if (p.body) { c.fillStyle = colors.paper; c.fill(p.body); c.stroke(p.body); }
+      if (p.solid) { c.fillStyle = colors.ink; c.fill(p.solid); c.stroke(p.solid); }
+      if (p.over) c.stroke(p.over);
+      if (p.heads) { c.lineWidth = 2.6; c.stroke(p.heads); }
+    }
+
     if (userDirty && T >= 1) {
       userDirty = false;
       userLand.ctx.clearRect(0, 0, W, H);
@@ -475,23 +635,6 @@
     // Visitor drawings join the picture once the river itself has finished inking in.
     if (T >= 1) {
       user.streams.forEach(fillBranch);
-      // All the pond water first, then the ripple marks, so overlapping ponds read as one.
-      user.ponds.forEach(function (pond) {
-        ctx.beginPath();
-        ctx.moveTo(pond.poly[0], pond.poly[1]);
-        for (var q = 2; q < pond.poly.length; q += 2) ctx.lineTo(pond.poly[q], pond.poly[q + 1]);
-        ctx.closePath();
-        ctx.fill();
-      });
-      ctx.strokeStyle = colors.paper; ctx.lineWidth = Math.max(1.1, 1.3 * scene.S); ctx.lineCap = 'round';
-      ctx.beginPath();
-      user.ponds.forEach(function (pond) {
-        pond.marks.forEach(function (m) {
-          ctx.moveTo(m[0], m[1]);
-          ctx.quadraticCurveTo((m[0] + m[2]) / 2, m[1] + m[3], m[2], m[1]);
-        });
-      });
-      ctx.stroke();
     }
     ctx.fillStyle = colors.paper;
     scene.islands.forEach(function (isl) {
@@ -543,6 +686,29 @@
       }
     }
     ctx.stroke();
+
+    // Ponds go on top of the current lines, so a pond drawn across a river covers its flow.
+    // All the pond water first, then the ripple marks, so ponds that touch read as one; the
+    // heavy outline closes any hairline gap between them.
+    if (T >= 1 && user.ponds.length) {
+      ctx.fillStyle = colors.ink; ctx.strokeStyle = colors.ink; ctx.lineWidth = 5 * S;
+      user.ponds.forEach(function (pond) {
+        ctx.beginPath();
+        ctx.moveTo(pond.poly[0], pond.poly[1]);
+        for (var q = 2; q < pond.poly.length; q += 2) ctx.lineTo(pond.poly[q], pond.poly[q + 1]);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke();
+      });
+      ctx.strokeStyle = colors.paper; ctx.lineWidth = Math.max(1.1, 1.3 * S);
+      ctx.beginPath();
+      user.ponds.forEach(function (pond) {
+        pond.marks.forEach(function (m) {
+          ctx.moveTo(m[0], m[1]);
+          ctx.quadraticCurveTo((m[0] + m[2]) / 2, m[1] + m[3], m[2], m[1]);
+        });
+      });
+      ctx.stroke();
+    }
 
     // The stroke being drawn right now, as a plain brush line until it is let go.
     if (stroke && stroke.length >= 4) {
@@ -923,7 +1089,13 @@
   function rebuild() {
     sizeLayers();
     readColors();
-    scene = buildScene(seed, W, H);
+    // Keep trees and rocks out from under the name and the buttons.
+    var frame = root.getBoundingClientRect();
+    var avoid = Array.prototype.map.call(document.querySelectorAll('.title, .controls, .top .seal, .top .nav'), function (node) {
+      var r = node.getBoundingClientRect();
+      return [r.left - frame.left - 10, r.top - frame.top - 10, r.right - frame.left + 10, r.bottom - frame.top + 10];
+    });
+    scene = buildScene(seed, W, H, avoid);
     buildUser();
     // The page river picks up where the hero's main channel leaves the frame.
     api.seed = seed;
@@ -931,7 +1103,7 @@
     window.dispatchEvent(new Event('ink:scene'));
   }
 
-  var api = window.InkRiver = { mulberry32: mulberry32, makeNoise: makeNoise, art: root, seed: 0, mouth: null };
+  var api = window.InkRiver = { mulberry32: mulberry32, makeNoise: makeNoise, glyphs: makeGlyphs, art: root, seed: 0, mouth: null };
 
   var resizeTimer = 0;
   window.addEventListener('resize', function () {
