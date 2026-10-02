@@ -249,8 +249,8 @@ window.__SITE_CONTENT__ = {
     ]
   },
   "contact": {
-    "email": "dev.singhvi@utoronto.ca",
-    "email2": "devanshu301203@gmail.com",
+    "email": "dev.singhvi <at> utoronto.ca",
+    "email2": "devanshu301203 <at> gmail.com",
     "github": "https://github.com/Dev301203",
     "linkedin": "https://www.linkedin.com/in/devanshu-singhvi/",
     "website": "https://dev301203.github.io"
