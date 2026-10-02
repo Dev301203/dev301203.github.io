@@ -171,7 +171,6 @@ window.__SITE_CONTENT__ = {
         "tech": "C++",
         "date": "Sep–Dec 2025",
         "description": "Persistent LSM-tree KV store with AVL memtables, B-tree SSTs, Bloom filters, and benchmarked lookup paths up to 67M entries.",
-        "href": "https://github.com/mnkhoi/kv-database",
         "image": "./assets/images/projects/lsm.png",
         "featured": true
       },

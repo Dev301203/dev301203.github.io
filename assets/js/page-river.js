@@ -38,6 +38,118 @@
 
   var height = 0, inked = 0, centre = null;
 
+  // ── Ground texture ─────────────────────────
+  // The hero's cross-hatching and halftone dots, carried down the whole page. It is built in
+  // horizontal bands, each a pure function of position, so bands meet without a seam and
+  // only new ones are generated when the page gets taller.
+  var ground = document.createElement('div');
+  ground.className = 'ground' + (canAnimate ? ' anim' : '');
+  ground.setAttribute('aria-hidden', 'true');
+  main.insertBefore(ground, layer);
+  var gsvg = document.createElementNS(NS, 'svg');
+  ground.appendChild(gsvg);
+  // A paper-coloured veil below the ink front hides the texture the river has not reached yet.
+  var veil = document.createElement('div');
+  veil.className = 'ground__veil';
+  ground.appendChild(veil);
+
+  var BAND = 220, bands = [], groundKey = '', groundNoise = null, groundScale = 1;
+  var FAMILIES = [{ ang: -0.62, thr: 0.62, off: 0 }, { ang: 0.82, thr: 0.71, off: 0 }, { ang: -0.62, thr: 0.79, off: 0.5 }];
+
+  function hash(v) { var s = Math.sin(v * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+
+  function makeBand(index, W) {
+    var y0 = index * BAND, y1 = y0 + BAND, S = groundScale, noise = groundNoise;
+
+    // The terrain field, sampled on a coarse grid and interpolated.
+    var cell = 8, cols = Math.ceil(W / cell) + 3, rows = Math.ceil(BAND / cell) + 4;
+    var grid = new Float32Array(cols * rows), reach = 280 * S, r, c;
+    for (r = 0; r < rows; r++) {
+      for (c = 0; c < cols; c++) grid[r * cols + c] = noise.fbm((c - 1) * cell / reach, (y0 + (r - 2) * cell) / reach);
+    }
+    function field(x, y) {
+      var fx = x / cell + 1, fy = (y - y0) / cell + 2;
+      var ci = Math.max(0, Math.min(cols - 2, Math.floor(fx))), ri = Math.max(0, Math.min(rows - 2, Math.floor(fy)));
+      var u = Math.max(0, Math.min(1, fx - ci)), v = Math.max(0, Math.min(1, fy - ri)), i = ri * cols + ci;
+      return (grid[i] * (1 - u) + grid[i + 1] * u) * (1 - v) + (grid[i + cols] * (1 - u) + grid[i + cols + 1] * u) * v;
+    }
+
+    // High ground: families of parallel lines, clipped to where the field is high.
+    var sp = Math.max(4, 5.2 * S), step = 6, lines = '';
+    FAMILIES.forEach(function (fam, fi) {
+      var ux = Math.cos(fam.ang), uy = Math.sin(fam.ang), vx = -uy, vy = ux;
+      var kMin = Infinity, kMax = -Infinity, aMin = Infinity, aMax = -Infinity;
+      [[-4, y0 - step], [W + 4, y0 - step], [-4, y1], [W + 4, y1]].forEach(function (p) {
+        var k = p[0] * vx + p[1] * vy, a = p[0] * ux + p[1] * uy;
+        kMin = Math.min(kMin, k); kMax = Math.max(kMax, k); aMin = Math.min(aMin, a); aMax = Math.max(aMax, a);
+      });
+      for (var li = Math.ceil(kMin / sp - fam.off); (li + fam.off) * sp <= kMax; li++) {
+        var kk = (li + fam.off) * sp + (hash(li * 3.7 + fi * 91.3) - 0.5) * sp * 0.35, run = [];
+        for (var ai = Math.ceil(aMin / step); ai * step <= aMax; ai++) {
+          var a = ai * step, x = ux * a + vx * kk, y = uy * a + vy * kk;
+          // A band overlaps the one above by a step, so lines that cross the boundary join up.
+          if (x > -4 && x < W + 4 && y >= y0 - step && y < y1 &&
+              field(x, y) > fam.thr + (hash(li * 12.9 + ai * 78.2 + fi) - 0.5) * 0.035) {
+            var wob = (noise.n2(x * 0.05, y * 0.05) - 0.5) * 1.6;
+            run.push(f1(x + vx * wob) + ' ' + f1(y + vy * wob));
+          } else {
+            if (run.length >= 2) lines += 'M' + run.join('L');
+            run = [];
+          }
+        }
+        if (run.length >= 2) lines += 'M' + run.join('L');
+      }
+    });
+
+    // Low ground: halftone dots on a 45 degree lattice, in four sizes.
+    var pitch = Math.max(5, 6.5 * S), half = pitch / Math.SQRT2, dots = ['', '', '', ''];
+    for (var n = Math.ceil(y0 / half); n * half < y1; n++) {
+      for (var m = n & 1; m * half <= W + 2; m += 2) {
+        var v = field(m * half, n * half);
+        if (v >= 0.37) continue;
+        var size = Math.min(1, (0.37 - v) / 0.16);
+        if (size * pitch * 0.4 > 0.5) dots[Math.min(3, Math.floor(size * 4))] += 'M' + f1(m * half) + ' ' + f1(n * half) + 'h.1';
+      }
+    }
+
+    var g = document.createElementNS(NS, 'g');
+    if (lines) {
+      var lp = addPath('', g);
+      lp.setAttribute('d', lines);
+      lp.setAttribute('stroke-width', Math.max(0.8, 0.95 * S).toFixed(2));
+    }
+    dots.forEach(function (d, k) {
+      if (!d) return;
+      var dp = addPath('', g);
+      dp.setAttribute('d', d);
+      dp.setAttribute('stroke-width', (pitch * 0.8 * (k + 0.6) / 4).toFixed(2));
+    });
+    gsvg.appendChild(g);
+    return { el: g };
+  }
+
+  function updateGround(W, limit) {
+    var key = K.seed + ':' + Math.round(W);
+    if (key !== groundKey) {
+      groundKey = key;
+      bands.forEach(function (b) { gsvg.removeChild(b.el); });
+      bands = [];
+      groundNoise = K.makeNoise(K.mulberry32((K.seed || 1) * 13 + 5));
+      groundScale = Math.max(0.6, Math.min(1.2, W / 1440));
+    }
+    var count = Math.ceil(limit / BAND);
+    while (bands.length < count) bands.push(makeBand(bands.length, W));
+    while (bands.length > count) gsvg.removeChild(bands.pop().el);
+    gsvg.setAttribute('width', W);
+    gsvg.setAttribute('height', count * BAND);
+  }
+
+  function showGround(above) {
+    if (above === Infinity) { veil.style.display = 'none'; return; }
+    veil.style.display = '';
+    veil.style.transform = 'translateY(' + Math.round(above - 80) + 'px)';
+  }
+
   function build() {
     var mr = main.getBoundingClientRect();
     var W = mr.width, H = main.offsetHeight;
@@ -48,6 +160,7 @@
     var small = W < 880;
     var sea = main.querySelector('.sea');
     var seaTop = sea ? sea.offsetTop : H;
+    updateGround(W, seaTop);
     var baseHw = (small ? 10 : Math.max(26, Math.min(38, W * 0.027))) * (0.85 + rng() * 0.3);
     var flare = small ? 170 : 290;
     var artRect = K.art.getBoundingClientRect();
@@ -496,8 +609,9 @@
   }
 
   function applyReveal() {
-    if (!canAnimate || !centre || inked >= height - 2) { layer.style.clipPath = ''; showProps(Infinity); return; }
+    if (!canAnimate || !centre || inked >= height - 2) { layer.style.clipPath = ''; showProps(Infinity); showGround(Infinity); return; }
     showProps(inked - TIP - 6);
+    showGround(inked - TIP);
     var lo = 0, hi = centre.y.length - 1;
     while (lo < hi) { var mid = (lo + hi) >> 1; if (centre.y[mid] < inked) lo = mid + 1; else hi = mid; }
     var cx = centre.x[lo], reach = centre.hw[lo] + 14, y = inked.toFixed(0), y1 = (inked - TIP).toFixed(0);
@@ -527,6 +641,7 @@
     } catch (err) {
       canAnimate = false;
       layer.classList.remove('anim');
+      ground.classList.remove('anim');
       applyReveal();
     }
   }

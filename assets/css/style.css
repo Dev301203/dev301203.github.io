@@ -226,6 +226,20 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .river-layer .lines { fill: none; stroke: var(--ink); stroke-width: 0.95; stroke-linecap: round; }
 .river-layer .current { fill: none; stroke: var(--paper); stroke-width: 1.4; stroke-linecap: round; }
 
+/* Ground texture: the hero's cross-hatching and halftone dots, carried down the page. */
+.ground { position: absolute; inset: 0; z-index: var(--z-art); pointer-events: none; overflow: hidden; }
+.ground svg { position: absolute; left: 0; top: 0; display: block; }
+.ground path { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+
+.ground__veil {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, var(--paper) 220px);
+  will-change: transform;
+}
+.ground.anim .ground__veil { display: block; }
+
 /* Scenery: small map symbols on the open ground. */
 .river-layer .prop path { fill: none; stroke: var(--ink); stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
 .river-layer .prop .body { fill: var(--paper); }
@@ -512,8 +526,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: var(--paper);
   transition: translate 0.18s ease, box-shadow 0.18s ease;
 }
-.proj:hover, .proj:focus-visible { translate: -3px -3px; box-shadow: 6px 6px 0 var(--ink); }
-.proj:active { translate: 0 0; box-shadow: none; }
+a.proj:hover, a.proj:focus-visible { translate: -3px -3px; box-shadow: 6px 6px 0 var(--ink); }
+a.proj:active { translate: 0 0; box-shadow: none; }
 
 .proj__img {
   width: 100%;

@@ -197,8 +197,10 @@
   // ── Projects ───────────────────────────────
   var big = byId('projects-big'), small = byId('projects-small');
   data.projects.items.forEach(function (proj) {
-    var card = el('a', 'proj');
-    card.href = proj.href; card.target = '_blank'; card.rel = 'noopener noreferrer';
+    // A project without a public link is a plain panel.
+    var card = el(proj.href ? 'a' : 'article', 'proj');
+    if (proj.href) { card.href = proj.href; card.target = '_blank'; card.rel = 'noopener noreferrer'; }
+    else card.classList.add('proj--static');
     card.setAttribute('data-reveal', '');
     if (proj.image) {
       var img = el('img', 'proj__img');
