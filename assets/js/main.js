@@ -36,33 +36,36 @@
     var card = el('article', 'card job');
     card.setAttribute('data-reveal', '');
 
-    var head = el('div', 'job__head');
+    // First row: the logo, with when and where beside it.
+    var top = el('div', 'job__top');
     if (job.logo) {
       var logo = el('img', 'job__logo');
-      logo.src = job.logo; logo.alt = ''; logo.width = 132; logo.height = 70; logo.loading = 'lazy';
+      logo.src = job.logo; logo.alt = job.company + ' logo'; logo.loading = 'lazy';
       logo.onerror = function () { this.remove(); };
-      head.appendChild(logo);
+      top.appendChild(logo);
     }
-    var heading = el('div');
-    heading.appendChild(el('h3', 'job__title', job.title));
-    heading.appendChild(el('div', 'job__company', job.company));
-    heading.appendChild(meta([job.date, job.location]));
-    head.appendChild(heading);
-    card.appendChild(head);
+    var when = meta([job.date, job.location]);
+    when.classList.add('job__when');
+    top.appendChild(when);
+    card.appendChild(top);
 
+    var body = el('div', 'job__body');
+    body.appendChild(el('h3', 'job__title', job.title));
+    body.appendChild(el('div', 'job__company', job.company));
+
+    // What the work involved stays folded away until asked for.
     var bullets = job.bullets || [];
-    if (bullets.length) card.appendChild(el('p', 'job__lead', bullets[0]));
-    if (bullets.length > 1) {
+    if (bullets.length) {
       var more = el('details', 'more');
-      var closed = bullets.length - 1 + ' more';
-      var summary = el('summary', '', closed);
+      var summary = el('summary', '', 'More');
       more.appendChild(summary);
       var ul = el('ul');
-      bullets.slice(1).forEach(function (b) { ul.appendChild(el('li', '', b)); });
+      bullets.forEach(function (b) { ul.appendChild(el('li', '', b)); });
       more.appendChild(ul);
-      more.addEventListener('toggle', function () { summary.textContent = more.open ? 'Less' : closed; });
-      card.appendChild(more);
+      more.addEventListener('toggle', function () { summary.textContent = more.open ? 'Less' : 'More'; });
+      body.appendChild(more);
     }
+    card.appendChild(body);
     workList.appendChild(card);
   });
 
@@ -144,18 +147,21 @@
   // ── Contact ────────────────────────────────
   var contact = data.contact, contactEl = byId('contact-links');
   [
-    { label: 'Email', text: contact.email, href: 'mailto:' + contact.email },
-    { label: 'Email', text: contact.email2, href: 'mailto:' + contact.email2 },
-    { label: 'GitHub', text: 'Dev301203', href: contact.github },
-    { label: 'LinkedIn', text: 'devanshu-singhvi', href: contact.linkedin }
+    { label: 'Email', links: [contact.email, contact.email2].filter(Boolean).map(function (address) {
+      return { text: address, href: 'mailto:' + address };
+    }) },
+    { label: 'GitHub', links: [{ text: 'Dev301203', href: contact.github }] },
+    { label: 'LinkedIn', links: [{ text: 'devanshu-singhvi', href: contact.linkedin }] }
   ].forEach(function (item) {
-    if (!item.text) return;
-    var li = el('li');
+    if (!item.links.length) return;
+    var li = el('li', 'contact__group');
     li.appendChild(el('span', 'contact__label', item.label));
-    var a = el('a', 'contact__link', item.text);
-    a.href = item.href;
-    if (item.href.indexOf('mailto:') !== 0) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
-    li.appendChild(a);
+    item.links.forEach(function (link) {
+      var a = el('a', 'contact__link', link.text);
+      a.href = link.href;
+      if (link.href.indexOf('mailto:') !== 0) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      li.appendChild(a);
+    });
     contactEl.appendChild(li);
   });
 

@@ -153,7 +153,7 @@ window.__SITE_CONTENT__ = {
         "date": "Jan–Apr 2025",
         "description": "GraphRAG tutoring system achieving 92% top-5 retrieval accuracy. Knowledge graph with 15k+ nodes and 60k+ relationships from 200+ documents.",
         "href": "https://github.com/CSC392-CSC492-Building-AI-ML-systems/personalAITutor",
-        "image": "./assets/images/projects/customer-support-ai.png",
+        "image": "./assets/images/projects/advsry.png",
         "featured": true
       },
       {
@@ -181,14 +181,6 @@ window.__SITE_CONTENT__ = {
         "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
         "href": "https://github.com/Dev301203/ticket-priority-mlops",
         "image": "./assets/images/projects/tp.png"
-      },
-      {
-        "title": "Advisory",
-        "tech": "Full-stack web app",
-        "date": "2024",
-        "description": "Academic advising web app for degree planning and course decisions at UofT.",
-        "href": "https://advsry.utm.utoronto.ca",
-        "image": "./assets/images/projects/advsry.png"
       },
       {
         "title": "Book Cover Identification",
