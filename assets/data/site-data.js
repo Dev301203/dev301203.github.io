@@ -141,14 +141,14 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Leveled Minimal Perfect Hash Function",
         "tech": "Rust, Python",
-        "date": "Mar–Apr 2026",
+        "date": "Jan–Apr 2026",
         "description": "Hardware-aware BBHash-style MPHF with cache-aligned rank bitsets. Outperformed boomphf and C++ BBHash on 48/54 lookup and 45/54 build configs.",
         "href": "https://github.com/Dev301203/better-leveledmphf",
         "image": "./assets/images/projects/mphf.png",
         "featured": true
       },
       {
-        "title": "Advisory Tutor",
+        "title": "Advisory",
         "tech": "FastAPI, React, Neo4j, GPT-4, Docker",
         "date": "Jan–Apr 2025",
         "description": "GraphRAG tutoring system achieving 92% top-5 retrieval accuracy. Knowledge graph with 15k+ nodes and 60k+ relationships from 200+ documents.",
@@ -177,14 +177,14 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Backchannel",
         "tech": "JavaScript, TypeScript, WebSockets, Postgres, Redis",
-        "date": "Jul 2026",
+        "date": "Jul-Aug 2026",
         "description": "A public chat room for every website: a browser extension and realtime backend with page and site rooms, threads, reactions and moderation.",
         "href": "https://github.com/Dev301203/Backchannel"
       },
       {
         "title": "Ticket Priority MLOps",
         "tech": "AWS, SageMaker, Python",
-        "date": "Oct–Nov 2025",
+        "date": "Sept–Dec 2025",
         "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
         "href": "https://github.com/Dev301203/ticket-priority-mlops",
         "image": "./assets/images/projects/tp.png"
@@ -192,7 +192,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Book Cover Identification",
         "tech": "Python, OpenCV",
-        "date": "Sep 2024",
+        "date": "2024",
         "description": "Computer vision system using SIFT features and hierarchical vocabulary tree for oblique book cover recognition.",
         "href": "https://github.com/Dev301203/Book-Cover-Via-Vocabulary-Tree",
         "image": "./assets/images/projects/bookcover.jpg"
@@ -208,7 +208,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Appointify",
         "tech": "Full-stack web app",
-        "date": "Mar–Apr 2024",
+        "date": "2024",
         "description": "Appointment scheduling dashboard with authentication, calendars, contacts, and event management.",
         "href": "https://github.com/Dev301203/Appointify",
         "image": "./assets/images/projects/appointify.png"
@@ -216,7 +216,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "CLI Social Network",
         "tech": "C",
-        "date": "Dec 2023",
+        "date": "2023",
         "description": "Socket-based C social network server where users can list profiles, make friends, and post messages asynchronously.",
         "href": "https://github.com/Dev301203/Social-Media-App",
         "image": "./assets/images/projects/socialmedia.jpg"
@@ -224,7 +224,7 @@ window.__SITE_CONTENT__ = {
       {
         "title": "Company Management System",
         "tech": "Java, JavaFX",
-        "date": "Oct–Dec 2022",
+        "date": "2022",
         "description": "JavaFX company operations manager for departments, teams, employees, budgets, and expenses.",
         "href": "https://github.com/Dev301203/company-management-system",
         "image": "./assets/images/projects/cms.jpg"
