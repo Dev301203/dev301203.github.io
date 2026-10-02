@@ -144,7 +144,8 @@ window.__SITE_CONTENT__ = {
         "date": "Jan–Apr 2026",
         "description": "Hardware-aware BBHash-style MPHF with cache-aligned rank bitsets. Outperformed boomphf and C++ BBHash on 48/54 lookup and 45/54 build configs.",
         "href": "https://github.com/Dev301203/better-leveledmphf",
-        "image": "./assets/images/projects/mphf.png"
+        "image": "./assets/images/projects/mphf.png",
+        "featured": true
       },
       {
         "title": "Advisory Tutor",
@@ -152,7 +153,8 @@ window.__SITE_CONTENT__ = {
         "date": "Jan–Apr 2025",
         "description": "GraphRAG tutoring system achieving 92% top-5 retrieval accuracy. Knowledge graph with 15k+ nodes and 60k+ relationships from 200+ documents.",
         "href": "https://github.com/CSC392-CSC492-Building-AI-ML-systems/personalAITutor",
-        "image": "./assets/images/projects/customer-support-ai.png"
+        "image": "./assets/images/projects/advsry.png",
+        "featured": true
       },
       {
         "title": "LegalEase",
@@ -160,7 +162,8 @@ window.__SITE_CONTENT__ = {
         "date": "2024",
         "description": "AI negotiation simulator for family lawyers to practice realistic, emotionally aware divorce-case dialogues.",
         "href": "https://github.com/Dev301203/legal-ease",
-        "image": "./assets/images/projects/legal-ease.png"
+        "image": "./assets/images/projects/legal-ease.png",
+        "featured": true
       },
       {
         "title": "LSM Key-Value Store",
@@ -168,7 +171,8 @@ window.__SITE_CONTENT__ = {
         "date": "Sep–Dec 2025",
         "description": "Persistent LSM-tree KV store with AVL memtables, B-tree SSTs, Bloom filters, and benchmarked lookup paths up to 67M entries.",
         "href": "https://github.com/mnkhoi/kv-database",
-        "image": "./assets/images/projects/lsm.png"
+        "image": "./assets/images/projects/lsm.png",
+        "featured": true
       },
       {
         "title": "Ticket Priority MLOps",
@@ -177,14 +181,6 @@ window.__SITE_CONTENT__ = {
         "description": "Automated AWS MLOps pipeline that ingests support tickets, retrains SageMaker models, and deploys an inference API.",
         "href": "https://github.com/Dev301203/ticket-priority-mlops",
         "image": "./assets/images/projects/tp.png"
-      },
-      {
-        "title": "Advisory",
-        "tech": "Full-stack web app",
-        "date": "2024",
-        "description": "Academic advising web app for degree planning and course decisions at UofT.",
-        "href": "https://advsry.utm.utoronto.ca",
-        "image": "./assets/images/projects/advsry.png"
       },
       {
         "title": "Book Cover Identification",
@@ -232,7 +228,8 @@ window.__SITE_CONTENT__ = {
         "date": "2022",
         "description": "Assembly brick breaker game with paddle controls, ball physics, score tracking, lives, and sound effects.",
         "href": "https://github.com/Dev301203/Brick-Breaker",
-        "image": "./assets/images/projects/brickbreaker.jpg"
+        "image": "./assets/images/projects/brickbreaker.jpg",
+        "featured": true
       },
       {
         "title": "Braille Translator",

@@ -1,12 +1,18 @@
 # Portfolio - Devanshu Singhvi
 
-Single-page personal portfolio: dark high-contrast palette, speed-line motifs, and motion powered by **[anime.js](https://animejs.com/)** (CDN).
+Single-page personal portfolio drawn as a river in manga ink: a generated river system fills the hero, then runs down the page between panel-style sections and ends in a sea behind the contact links. Motion is powered by **[anime.js](https://animejs.com/)**.
 
 ## Stack
 
 - Static **HTML**, **CSS** (custom properties, no preprocessor)
-- **Vanilla JavaScript** (Intersection Observer + anime.js)
-- **Google Fonts** (Bebas Neue, Inter) · **Ionicons** (CDN)
+- **Vanilla JavaScript**, no build step
+  - `assets/js/ink-river.js`: the hero river (canvas), seeded so `?seed=123` reproduces a drawing
+  - `assets/js/page-river.js`: the river below the hero (SVG), its scroll ink-in, and the sea
+  - `assets/js/main.js`: renders the sections from `assets/data/site-data.js`
+- **anime.js 4.5.0**, vendored at `assets/js/vendor/anime.umd.min.js`
+- **Google Fonts** (Archivo, JetBrains Mono)
+
+Projects marked `"featured": true` in `content.json` get the large panels. Add `?static` to the URL to load without animation.
 
 ## Run locally
 
